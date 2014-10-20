@@ -48,7 +48,7 @@ module Dyndoc
         else 
           Utils.parse_raw_text!(texblock,self)
         end
-        #puts "After parse_raw_text";p texblock
+        #Dyndoc.warn "After parse_raw_text",texblock
         #puts "raw_key and raw_text";p Utils.dyndoc_raw_text
         #escape accolade every time a new text is scanned!
         Utils.escape!(texblock,CHARS_SET_FIRST)
@@ -67,7 +67,8 @@ module Dyndoc
 	      Envir.set_textElt!(filterLoc.envir.global,["_PWD_"],Dir.pwd) if @filename
 #puts "filterLoc";p @filename;p filterLoc.envir["_PWD_"]
       end
-      Dyndoc.cfg_dir[:current_doc_path]=filterLoc.envir["_PWD_"]
+      Dyndoc.cfg_dir[:current_doc_path]=filterLoc.envir["_PWD_"] || ""
+      ##Dyndoc.warn :current_doc_path,Dyndoc.cfg_dir[:current_doc_path]
       ##partTag tricks
       tagsOld=@tags.dup if tags #save @tags
       @tags+=tags if tags
@@ -82,7 +83,7 @@ module Dyndoc
         cmd=b[0].to_s
         @curCmd=cmd
         cmd=@@cmdAlias[cmd] if @@cmdAlias.keys.include? cmd
-#puts "parse:cmd,b";p cmd;p b
+#Dyndoc.warn "parse:cmd,b",[cmd,b]
         @@depth+=1
         ###TO temporarily AVOID RESCUE MODE: 
         ###
@@ -94,6 +95,7 @@ module Dyndoc
         rescue
           puts "=> Leaving block depth #{@@depth}: "
           codeText=b.inspect
+          ##Dyndoc.warn "codeText",codeText
           nbChar=(Dyndoc.cfg_dyn[:nbChar_error]) ? Dyndoc.cfg_dyn[:nbChar_error] : 80
           if codeText.length > nbChar
             codeText=codeText[0..((nbChar*2/3).to_int)]+" ...... "+codeText[(-(nbChar/3).to_int)..-1]
@@ -110,14 +112,14 @@ module Dyndoc
         end 
         ###TO temporarily AVOID RESCUE MODE: 
         ###
-      end
+        end
       }
       ##restore old partTag and vars
       @tags=tagsOld if tags
       @tags.uniq! 
       @vars=varsOld
       Dyndoc.vars=@vars
-#p [:out,out] if @curCmd=="dyn"
+#Dyndoc.warn "parse:out",out
       return out
     end
 
@@ -994,7 +996,7 @@ p [vars,b2]
     def do_require(tex,blck,filter)   
       ## just load and parse : read some FUNCs and EXPORT some variables
       ## in the header
-#p blck
+#Dyndoc.warn "do_require",blck
 #p parse_args(blck,filter)
       tmpl=parse_args(blck,filter).strip.split("\n")
 #Dyndoc.warn "require",tmpl
@@ -1718,7 +1720,7 @@ p call
       filter.outType=":r"
       i=0
       i,*b2=next_block(blck,i)
-#puts "rverb:b2";p b2
+#Dyndoc.warn "rverb:b2",b2
       code=parse(b2,filter)
       i+=1
       inR=nil
@@ -1739,13 +1741,14 @@ p call
       mode=:default if  newblck==:rout #or newblck==:"r>>"
       @rEnvir.unshift(inR) if inR
       process_r(code)
-#puts "rverb:rcode";p code
+#Dyndoc.warn "rverb:rcode",code,@@interactive
       res=RServer.echo_verb(code,@@interactive ? :raw : mode,@rEnvir[0], prompt: (@@interactive ? "R" : ""))
       require "dyndoc/common/uv" if @@interactive
+
       warn_level = $VERBOSE;$VERBOSE = nil
-      tex << (@@interactive ? Uv.parse(res.force_encoding("utf-8"), "xhtml", File.join(Uv.syntax_path,"r.syntax") , false, "solarized",false) : res.force_encoding("utf-8") )
+      tex << (@@interactive ? Uv.parse(res.force_encoding("utf-8"), "xhtml", File.join(Uv.syntax_path,"r.syntax") , false, "solarized",false) : res.force_encoding("utf-8") )   
       $VERBOSE = warn_level
-#puts "rverb:result";p res 
+#Dyndoc.warn "rverb:result",res
       @rEnvir.shift if inR
       filter.outType=nil
     end

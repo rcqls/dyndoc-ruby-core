@@ -22,6 +22,7 @@ module Dyndoc
     end
 
     def process_dyndoc(content)
+      ##p [:process_dyndoc_content,content]
       Dyndoc.tmpl_mngr.parse(content)
     end
 
@@ -69,13 +70,13 @@ module Dyndoc
             c.progress do |b|
               data = b.to_s.strip
               @log << data
-              ##p [:data,data]
+              #p [:data,data]
               if data =~ /^__send_cmd__\[\[([a-z]*)\]\]__(.*)__\[\[END_TOKEN\]\]__$/m
                 cmd,content = $1,$2
                 ##p [:cmd,cmd,:content,content]
                 if cmd == "dyndoc"
                   res = process_dyndoc(content)
-                  ## p [content,res]
+                  ## p [:dyndoc_server,content,res]
                   c.write "__send_cmd__[[dyndoc]]__"+res+"__[[END_TOKEN]]__"
                 end
               end

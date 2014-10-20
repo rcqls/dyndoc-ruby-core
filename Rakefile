@@ -10,6 +10,7 @@ PKG_FILES=FileList[
     'dyndoc/**/*',
     'share/julia/**/*',
     'share/R/dynArray.R',
+    'share/syntax/**/*',
     'dyndoc/**/.*' #IMPORTANT file starting with . are by default ignored!
 ]
 

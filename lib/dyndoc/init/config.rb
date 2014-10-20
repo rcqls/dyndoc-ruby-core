@@ -196,7 +196,7 @@ module Dyndoc
     pathenv += PATH_SEP + Dyndoc.cfg_dyn[:root_doc]  unless Dyndoc.cfg_dyn[:root_doc].empty?
     pathenv += PATH_SEP + ENV["TEXINPUTS"].split(RUBY_PLATFORM =~ /mingw/ ? ";" : ":" ).join(";") if ENV["TEXINPUTS"] and @@mode==:tex
     
-    #puts "pathenv";p pathenv
+    ##Dyndoc.warn "pathenv",pathenv
     return Dyndoc.ordered_pathenv(pathenv)
   end
   
