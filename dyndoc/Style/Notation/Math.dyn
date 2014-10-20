@@ -1,0 +1,7 @@
+{#meth]new.MathNot[#,].content[#,].transf[<<begin[]<<end[]]
+[#=].ind[ 0[] ][#=].exp[ 0[] ]
+[#}
+
+{#meth]print.MathNot[#>]
+[\ensuremath{#{.transf.begin}#{.content}#{.transf.end}_{{#join].ind[#,],[#}}^{{#join].exp[#,],[#}}}]
+[#}

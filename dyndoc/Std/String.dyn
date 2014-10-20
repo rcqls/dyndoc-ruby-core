@@ -1,0 +1,22 @@
+{#meth]rep.String[#,]nb[1][#,]sep[][#,]along[]
+[#?]#{0?along}[#rb>](#{=.content.value}+#{=sep})*(#{nb}-1)[#>][#{.content.value}]
+[#?]else[#%]string is supposed to be a #code block
+[#rb<]res=[][#<]{#for]#{along}[#rb<]res << #{=.content.value!}[#}
+[#rb>][res.join(#{=sep})]
+[#}
+
+{#meth]join.String[#,]sep[][#>]{#join]self.content.ary[#}[#}
+
+{#meth]apply.String[#,]_elt_[elt]
+[#rb<]
+  @nb={} unless @nb
+  @nb[#{=_elt_}]=#{#.content.ary}
+  @ind={} unless @ind
+  @ind[#{=_elt_}]=-1
+[#>]
+[{#loop][#rb<]@ind[#{=_elt_}]+=1
+  [#>]#{_elt_}[#{self.content.ary.:{@ind[#{=_elt_}]}}]
+  [#yield]default
+  [#break]:{@ind[#{=_elt_}]==@nb[#{=_elt_}]-1}
+[#}]
+[#}

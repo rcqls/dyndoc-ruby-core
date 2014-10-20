@@ -1,0 +1,14 @@
+{#def]uvTxtl[#,]code[][#,]syntax[dyndoc][#,]render[amy]
+[#rb>]require "uv"
+uv_code= #{=code}.strip
+#puts "uv code:";p uv_code;p  #{=syntax}
+Uv.parse(uv_code, "xhtml", #{=syntax}.downcase, true, #{=render})
+[#>]<\n>
+[#=]::header.css_uv?[amy]
+[#=]::header.css_uv[{#rb>](#{=header.css_uv}.split(",")+[#{=render}]).join(",")[#}]
+[#def}
+
+{#def]rverbUVTxtl[#,]code[][#,]render[amy]
+[#>]<notextile>{#uvTxtl]{#rverb]#{code}[#mode]raw[#rverb}
+[#syntax]r[#}</notextile>
+

@@ -1,0 +1,116 @@
+[#rb<]
+  $rfig=0
+  $rfig_exts={:png=>".png",:jpeg =>".jpg",:pdf=>".pdf"}
+[#<]
+
+  {#def]rfig[#,] rcode[] [#,] img[]
+  [#,] deviceR[png] [#,] widthR[10] [#,] heightR[10][#,] unitR[cm][#,] resR[128] [#,] optR[]
+  [#,] include[true] [#,] optTex[scale=0.75]
+  [#,] newR[FALSE]
+  [#,] Renvir[Global]
+  [#?]{#dyndoc_mode#} == :web[#rb<]p "ici"[#rb<]p "rfig web:"+#{=img}
+    [#<]{#if]#{0?img}[#=]img[public:rfig][#if}
+    {#if]#{=img}[0...7]=="public:" [#rb<]p "ii22"; imgName= #{=img}[7..-1]; p imgName
+    [#=]img[{#cqlsweb_auto_img]:{imgName}[#cqlsweb_auto_img}][#if}
+    {#if]:r{capabilities()["aqua"]}[#=]optR[type="quartz"][#if}
+    [#rb<]p "rfig web:"+#{=img}
+  [#?]else[#<]
+    {#if]#{0?img}[#=]img[:{File.join($dyn_rsrc,"img","rfig_:{$rfig+=1}:{$rfig_exts[:#{deviceR}]}")}]
+    [#else][#<]
+      {#if]File.dirname(#{=img})=="."[#>]img[:{File.join($dyn_rsrc,"img",#{=img})}][#if}
+    [#if}
+  [#?]end
+  [#<]{#if]File.basename(#{=img},".*")==File.basename(#{=img})[#>]img[#{img}:{$rfig_exts[:#{deviceR}]}][#}
+  [#rb<]
+    require 'fileutils'
+    imgdir=File.expand_path(File.dirname(#{=img}))
+    FileUtils.mkdir_p(imgdir) unless File.exists? imgdir
+    rcode=#{=rcode}.strip
+    Utils.clean_eol(rcode)
+  [#rb>]img[File.expand_path(#{=img})]
+  [#<]{#r]
+    if(#{newR} || !file.exists('#{img}')) {
+      #{deviceR}('#{img}',width=#{widthR},height=#{heightR}{#if]#{+?unitR}[#>],units="#{unitR}"[#}{#if]#{+?resR}[#>],res=#{resR}[#} {#if]#{+?optR}[#>],[#}#{optR})
+      :{rcode}
+      dev.off()
+    }[#in]#{Renvir}[#}
+  [#?] #{include} [#>]{#if]{#dyndoc_mode#} == :web[#>]{#if](File.exists? #{=img}) and (File.stat(#{=img}).size>0)[#>]<img src="{#cqlsweb_public_imgName]#{img}[#}" alt="rfig"/>[#else]<p>Error in the following figure R code!</p><code><pre>:{rcode}</pre></code>[#if}[#else][\includegraphics[#{optTex}]{#{img}}][#if}
+  [#}
+
+  {#hide] WITH SHORTHANDOFF
+  {#def]rfig[#,] rcode[] [#,] img[]
+  [#,] deviceR[png] [#,] widthR[10] [#,] heightR[10][#,] unitR[cm][#,] resR[128] [#,] optR[]
+  [#,] include[true] [#,] optTex[scale=0.75]
+  [#,] newR[FALSE]
+  [#,] Renvir[Global]
+  [#?]{#dyndoc_mode#} == :web[#rb<]p "ici"[#rb<]p "rfig web:"+#{=img}
+    [#<]{#if]#{0?img}[#=]img[public:rfig][#if}
+    {#if]#{=img}[0...7]=="public:" [#rb<]p "ii22"; imgName= #{=img}[7..-1]; p imgName
+    [#=]img[{#cqlsweb_auto_img]:{imgName}[#cqlsweb_auto_img}][#if}
+    {#if]:r{capabilities()["aqua"]}[#=]optR[type="quartz"][#if}
+    [#rb<]p "rfig web:"+#{=img}
+  [#?]else[#<]
+    {#if]#{0?img}[#=]img[:{File.join($dyn_rsrc,"img","rfig_:{$rfig+=1}:{$rfig_exts[:#{deviceR}]}")}]
+    [#else][#<]
+      {#if]File.dirname(#{=img})=="."[#>]img[:{File.join($dyn_rsrc,"img",#{=img})}][#if}
+    [#if}
+  [#?]end
+  [#<]{#if]File.basename(#{=img},".*")==File.basename(#{=img})[#>]img[#{img}:{$rfig_exts[:#{deviceR}]}][#}
+  [#rb<]
+    require 'fileutils'
+    imgdir=File.expand_path(File.dirname(#{=img}))
+    FileUtils.mkdir_p(imgdir) unless File.exists? imgdir
+    rcode=#{=rcode}.strip
+    Utils.clean_eol(rcode)
+  [#rb>]img[File.expand_path(#{=img})]
+  [#%]Very bad trip about (french) babel package and : (caractère actif latex) solved by \shorthandoff{:}
+  [#?]RUBY_PLATFORM =~ /mingw/ and (#{=_USEPACKAGE_} =~ /[^\[\]]*\[[^\[\]]*french[^\[\]]*\]\{babel\}/) and #{=img}.include? ":"[#=]shorthandoff[:ok][#?]end
+  [#<]{#r]
+    if(#{newR} || !file.exists('#{img}')) {
+      #{deviceR}('#{img}',width=#{widthR},height=#{heightR}{#if]#{+?unitR}[#>],units="#{unitR}"[#}{#if]#{+?resR}[#>],res=#{resR}[#} {#if]#{+?optR}[#>],[#}#{optR})
+      :{rcode}
+      dev.off()
+    }[#in]#{Renvir}[#}
+  [#?] #{include} [#>]{#if]{#dyndoc_mode#} == :web[#>]{#if](File.exists? #{=img}) and (File.stat(#{=img}).size>0)[#>]<img src="{#cqlsweb_public_imgName]#{img}[#}" alt="rfig"/>[#else]<p>Error in the following figure R code!</p><code><pre>:{rcode}</pre></code>[#if}[#else][{#if]#{shorthandoff}==:ok[#>]{\shorthandoff{:}[#if}\includegraphics[#{optTex}]{#{img}}{#if]#{shorthandoff}==:ok[#>]}[#if}][#if}
+  [#} [#hide}
+
+
+  {#def]rpng[#,] rcode[] [#,] img[]
+  [#,] widthR[15] [#,] heightR[15][#,] unitR[cm][#,] resR[72][#,] optR[]
+  [#,] include[true] [#,] optTex[scale=0.75]
+  [#,] newR[FALSE]
+  [#>][{#rfig]#{rcode}[#,]deviceR[png][#}]
+  [#}
+
+  {#def]rjpeg[#,] rcode[] [#,] img[]
+  [#,] widthR[10] [#,] heightR[10][#,] unitR[cm][#,]  resR[72][#,] optR[]
+  [#,] include[true] [#,] optTex[scale=0.75]
+  [#,] newR[FALSE]
+  [#>][{#rfig]#{rcode}[#,]deviceR[jpeg][#}]
+  [#}
+  
+  {#def]rpdf[#,] rcode[] [#,] img[]
+  [#,] widthR[5] [#,] heightR[5][#,] optR[]
+  [#,] include[true] [#,] optTex[scale=1.0]
+  [#,] newR[FALSE]
+  [#>][{#rfig]#{rcode}[#,]deviceR[pdf][#,]unitR[][#,]resR[][#}]
+  [#}
+
+  {#def]rsvg[#,] rcode[] [#,] img[]
+  [#,] widthR[5] [#,] heightR[5][#,] pointsizeR[12][#,] optR[]
+  [#,] Renvir[Global]
+  [#rb<]
+    require 'fileutils'
+    imgdir=File.expand_path("~/dyndoc/tmp")
+    FileUtils.mkdir_p(imgdir) unless File.exists? imgdir
+    rcode=#{=rcode}.strip
+    Utils.clean_eol(rcode)
+    img=File.join(imgdir,"last.svg")
+    Dyndoc.warn "img",img
+  [#<]{#r]
+    svg(:{=img},width=#{widthR},height=#{heightR}{#if]#{+?pointsizeR}[#>],pointsize="#{pointsizeR}"[#}{#if]#{+?optR}[#>],[#}#{optR})
+    :{rcode}
+    dev.off()
+  [#in]#{Renvir}[#}
+  [#rb>]File.readlines(img)[1..-1].join("\n") #everything except first line
+  [#def}

@@ -1,0 +1,44 @@
+[#require]Style/Notation/Math
+[#main]
+{@rmk]Cqls Notations:
+.data: is the letter representing the vector of data
+.pb: is an optional characteristif of the problem
+.dataPb: is the data name completed with the optional .pb 
+.mode: th or obs
+.view: data or param or all (data and param) 
+[@}
+
+{@StatCqlsTex:updatedata][#rb<]#p [#{=.dataPb}, #{=.data},#{=.pb},#{=.mode}]
+[#?]#{+?.pb}[#=].dataPb[<<obs[#{.data.obs}^#{.pb}]<<th[#{.data.th}^#{.pb}]][@}
+
+{@StatCqlsTex:data=]data[#rb>]data[#{=data}.strip.downcase][#=].data[<<obs[#{data}]<<th[:{#{=data}.upcase}]][#<]{@self:updatedata@}[@}
+
+{@StatCqlsTex:new]data[y][@,].pb[@,].mode[th][@,].view[all][#<]{@self:data=]#{data}[@}[@=].dataPb[:.data][#<]{@self:updatedata@}
+[#<]{#new].mathEst[#of]MathNot[#}
+{#new].mathData[#of]MathNot[#}
+[@}
+
+{@StatCqlsTex:pb=].pb[#<]{@self:updatedata@}[@}
+
+Directly, change .dataPb without update 
+
+{@StatCqlsTex:data][#rb>]
+(#{=.dataPb.#{.mode}}.empty? ? #{=.data.#{.mode}} : #{=.dataPb.#{.mode}})[@}
+
+The useable styles:
+
+{@StatCqlsTex:dataV][#>]\ensuremath{\bm{{@self:data@}}}[@}
+
+{@StatCqlsTex:est]param[][@,].mode[@,]int[]
+[#=].mathEst.content[#{param}]
+[#=].mathEst.ind[0[]]
+[#=].mathEst.exp[0[]]
+[#?]#{+?.pb}[#+].mathEst.exp[#{.pb}]
+[#?]#{0?int}[#=].mathEst.transf.begin[\widehat{]
+[#?]else[#=].mathEst.transf.begin[\widetilde{]
+[#+].mathEst.ind[#{int}]
+[#?]end
+[#=].mathEst.transf.end[}]
+[#>]\ensuremath{{#print]self.mathEst[#}\left({@self:dataV@}\right)}
+[@}
+

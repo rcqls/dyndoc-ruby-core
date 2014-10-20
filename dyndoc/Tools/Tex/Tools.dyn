@@ -1,0 +1,37 @@
+########################################################
+# include: false or in web mode helps to provide additional tag info 
+########################################################
+{#def]pdflatex[#,]name[][#,]code[][#,]preamble[][#,]include[][#,]scale[][#,]optTex[][#,]rm[true]
+[#?]#{0?preamble}[#=]preamble[\usepackage{tikz}]
+[#?]end
+[#=]code[\documentclass[varwidth]{standalone}
+#{preamble}
+\begin{document}
+#{code}
+\end{document}
+]
+[#?]{#dyndoc_mode#} == :web [#=]imgName[#{name}][#=]name[{#cqlsweb_rsrc_path]#{name}[#}][#?]end
+[#rb<]
+jobname=#{=name}
+jobname,output=File.basename(jobname),File.dirname(jobname)
+FileUtils.mkdir_p output unless File.directory? output
+#p "PDFLATEX!!! #{name}"
+#p #{=code}
+CqlsDoc::Converter.pdflatex(#{=code},"-jobname="+jobname+" -output-directory="+output)
+[#?]#{rm}[#rb<]#p Dir["#{name}.*"]
+#puts File.readlines("#{name}.log")
+Dir["#{name}.*"].select{|e| File.extname(e)!=".pdf"}.each{|f| File.unlink(f)}
+[#>]{#if]#{=include} != "false"
+[#?]#{+?scale}[#=]optTex[{#if]#{+?optTex}[#>]#{optTex},[#if}#{scale}]
+[#?]#{+?optTex}[#=]optTex[[#{optTex}]][#?]end
+[#>]{#if]{#dyndoc_mode#} == :web[#>]<img src="/rsrc/#{imgName}.pdf" alt="pdflatex :{jobname}" {#if]#{+?include}[#>]#{include}[#if}/>[#else]\includegraphics#{optTex}{#{name}}[#if}
+[#if}
+[#def}
+
+{#def]tikzpicture[#,]name[][#,]code[]
+[#rb<]#p #{=code}
+[#>]{#pdflatex]#{name}[#code]\begin{tikzpicture}
+#{code}
+\end{tikzpicture}
+[#}
+[#def}

@@ -1,0 +1,56 @@
+{#def]Array[#,]ary[#,]parent
+[#?]#{+?parent}[#rb<]@vars.extract_raw(#{=parent})[#{=ary}]=[]
+[#?]else[#rb<]@vars.local[:prev][#{=ary}]=[]
+[#}
+
+{#def]length[#,]ary[#>]#{# #{ary}}[#}
+
+{#meth]add.Array[#,]elt[#,]pos[-1]
+[#rb<]
+@vars.extract_raw("self.content").insert(#{pos},@vars.extract_raw("elt"))
+[#}
+
+{#meth]compact.Array[#rb<]
+@vars.extract_raw("self.content").map!{|e| (e[:val][0].empty? ? nil : e )}.compact!
+[#}
+
+{#meth]join.Array[#,]sep[]
+[#rb>][@vars.extract("self.content").join(#{=sep})]
+[#}
+
+{#hide]OLD!!!{#meth]join.Array[#,]sep[]
+[#rb>][#{=self.content}.join(#{=sep})]
+[#}[#}
+
+{#meth]apply.Array[#,]_elt_[elt]
+[#rb>]_elt_[#{=_elt_}.strip]
+[#rb<]
+@nb={} unless @nb
+@nb[#{=_elt_}]=#{#.content}
+@ind={} unless @ind
+@ind[#{=_elt_}]=-1
+[#>]
+[{#loop][#rb<][@ind[#{=_elt_}]+=1]
+[#=]#{_elt_}[:self.content.:{@ind[#{=_elt_}]}]
+[#=]ind_#{_elt_}[:{@ind[#{=_elt_}]}]
+[#yield]default
+[#break]:{@ind[#{=_elt_}]==@nb[#{=_elt_}]-1}
+[#}]
+[#rb<]@ind[#{=_elt_}]=-1
+[#}
+
+{#meth]map.Array[#,]_elt_[elt]
+[#rb>]_elt_[#{=_elt_}.strip]
+[#rb<]
+@nb={} unless @nb
+@nb[#{=_elt_}]=#{#.content}
+@ind={} unless @ind
+@ind[#{=_elt_}]=-1
+[#>]
+[{#loop][#rb<]@ind[#{=_elt_}]+=1
+[#>]#{_elt_}[#{.content.:{@ind[#{=_elt_}]}}]
+[#>] updated#{_elt_} [.content.:{@ind[#{=_elt_}]}]
+[#>] #{updated#{_elt_}} [{#yield]default[#}]
+[#break]:{@ind[#{=_elt_}]==@nb[#{=_elt_}]-1}
+[#}]
+[#}

@@ -1,0 +1,354 @@
+[#<] {#require4html]JQueryDataTable[#}
+{#meth]new.CSVDataTable[#,].filename[][#,]vars[][#,].tableId[{#objname]self[#}CsvDataTable][#,].csvMode[rsrc][#,].colSep[;][#,].server[]
+[#=].varnames@[][#rb<]puts "CSVVVVVV";p #{=vars}; <.varnames@> = #{=vars}.strip.split(",")
+<.filename:>.strip!
+[#}
+{#meth]css.CSVDataTable[#>]
+<link rel="stylesheet" href="#{.server}/tools/DataTables/css/jquery.dataTables_themeroller.css" type="text/css"/>
+<link rel="stylesheet" href="#{.server}/tools/DataTables/editable/css/themes/smoothness/jquery-ui-1.7.2.custom.css" type="text/css"/>
+<link rel="stylesheet" href="#{.server}/tools/DataTables/extras/ColVis/css/ColVis.css" type="text/css"/>
+[#}
+
+{#meth]js.CSVDataTable[#,]columnDefs[][#,]displayLength[10][#,]lengthMenu[5,10,15][#,]jQueryUI[false][#,]editable[][#,]sorting[[0,'asc']]
+[#?]#{+?editable} and "#{editable}"=="true"
+[#=]editable[{
+    sUpdateURL: "#{.server}/rsrc/datatable/csv_updatecell",
+    oUpdateParameters : {csv: "#{.filename}", csv_mode: "#{.csvMode}", col_sep: "#{.colSep}" }
+}]
+[#?]end
+[#>]
+<script type="text/javascript" charset="utf-8">
+$(document).ready(function() {
+    $("table##{.tableId}").dataTable( {
+        "fnServerData": function ( sUrl, aoData, fnCallback, oSettings ) {
+            oSettings.jqXHR = $.ajax( {
+                "url":  sUrl,
+                "data": aoData,
+                "success": function (json,status) {
+                    if ( json.sError ) {
+                        oSettings.oApi._fnLog( oSettings, 0, json.sError );
+                    }
+                
+                    $(oSettings.oInstance).trigger('xhr', [oSettings, json]);
+                    fnCallback( json );
+                }, 
+                "complete": function(resp){
+                    var header = resp.getAllResponseHeaders();
+                    //console.log(header);  
+                },
+                "async": false,
+                "dataType": "jsonp",
+                "cache": false,
+                "type": oSettings.sServerMethod,
+                //"crossDomain": true,
+                "error": function (xhr, error, thrown) {
+                    console.log(error+":"+xhr);
+                    if ( error == "parsererror" ) {
+                    console.log(error+":"+xhr);
+                        oSettings.oApi._fnLog( oSettings, 0, "DataTables warning: JSON data from "+
+                            "server could not be parsed. This is caused by a JSON formatting error." );
+                    }
+                }
+            } );
+        },
+        "sDom": 'C<"clear"><"H"lr>t<"F"ip>', //no search
+        "bJQueryUI": #{jQueryUI} ,
+        "aLengthMenu": [#{lengthMenu}],
+        "iDisplayLength": #{displayLength},
+        "aaSorting": [#{sorting}],
+        /*"sPaginationType": "full_numbers",*/
+        /*"sScrollY": "400px",
+        "bPaginate": false,*/
+        "bFilter": false,
+        /*"bStateSave": true,*/
+        "bProcessing": true,
+        "bServerSide": true,
+        "sAjaxSource": "#{.server}/rsrc/datatable/csv",
+        "fnServerParams": function ( aoData ) {
+            aoData.push( { "name": "csv" , "value": "#{.filename}"} );
+            aoData.push( { "name": "csv_mode" , "value": "#{.csvMode}"} );
+            aoData.push( { "name": "varnames" , "value": "#{.varnames@}"} );
+            aoData.push( { "name": "col_sep" , "value": "#{.colSep}"} );
+        }{#if]#{+?columnDefs}[#>][,
+        "aoColumnDefs": [
+                         #{columnDefs}
+                    ]
+        ][#if}
+    } ){#if]#{+?editable}[#>].makeEditable(#{editable})[#if};
+} );
+</script>
+[#}
+
+{#meth]html.CSVDataTable[#,]width[][#>]
+<table id="#{.tableId}"{#if]#{+?width}[#>] width="#{width}"[#}>
+    <thead>
+        <tr>
+        [#rb>](0...(<.varnames@>.length)).each {|i| #
+            varname = <.varnames@>[i]
+            {#>]<th>:{varname}</th>[#\n][#}
+        }
+        [#>]
+        </tr>
+    </thead>
+    <tbody>
+    <tr>
+        	<td colspan="5" class="dataTables_empty">Loading data from server</td>
+	</tr>
+    </tbody>
+</table>
+[#}
+
+{#meth]new.CSVAddForm[#,].filename[][#,]vars[][#,].csvdatatableId[]
+[#,].formId[{#objname]self[#}MyForm][#,].relId[{#objname]self[#}Rel]
+[#,].triggerMode[button]
+[#,].overlay[basic]
+[#,].server[]
+[#=].varnames@[][#rb<]<.varnames@> = #{=vars}.strip.split(",");<.filename:>.strip!
+[#?]#{0?.csvdatatableId}
+[#rb<]tmp="{#objname]self[#}"
+    <.csvdatatableId:>=tmp[0...-3]+"CsvDataTable" if tmp =~ /Add$/
+[#}
+
+{#meth]css.CSVAddForm[#,]server[]
+[#>]
+<link rel="stylesheet" href="#{.server}/tools/jqueryTools/css/overlay-#{.overlay}.css" type="text/css"/>
+<style> 
+
+/* the form */
+##{.formId} {
+    background-color:#777;
+    background-color:rgba(0, 0, 0, 0.55);
+    /*padding:15px;
+    padding-bottom:10px;
+    margin:5px 0 0 73px;*/
+}
+
+##{.formId} p {
+    clear:left;
+}
+
+##{.formId} fieldset {
+    float:left;
+    text-align: left;
+    /*margin-left:15px;
+    padding:0;*/
+    border:0;
+    width:80%;
+    clear:left;
+}
+
+.last {
+    margin-right:0;
+}
+
+/* form {
+ width: 500px;
+ overflow:hidden;}*/
+ 
+##{.formId} legend {
+    color:#fff;
+    font-size:20px;
+    text-shadow:0 1px 0 #000;
+    float: center;
+}
+
+
+##{.formId} label {
+    display:block;
+    color:#ddd;
+    font-size:11px;
+    text-shadow:0 1px 0 #000;
+    clear: left;
+    float: left;
+    width: 35%;
+}
+
+##{.formId} label.subtitle {
+    display:block;
+    color:#fff;
+    font-size:15px;
+    text-shadow:0 1px 0 #000;
+    clear: left;
+    float: left;
+    width: 35%;
+}
+
+##{.formId} input {
+    /*border:1px solid;
+    border-color:#ccc #ddd #ddd #ccc;*/
+    padding:0px;
+    background-color:rgba(255, 255, 255, 0.9);
+    font-size:15px;
+    color:#555;
+    text-shadow:0 1px 0 #fff;
+    float:left;
+    width:60%;
+    text-align: left;
+    display: inline;
+}
+
+##{.formId} input:focus {
+    background-color:#fff;
+    color:#000;
+}
+
+##{.formId} input[required] {
+    font-weight:bold;
+}
+
+/* validation error message */
+##{.formId} .error {
+    background-color:#E8FF6D;
+    padding:4px;
+    color:#000;
+    -webkit-box-shadow: #000 0 0 12px;
+    -moz-box-shadow: #000 0 0 12px;
+}
+
+/* ..with a pure CSS arrow */
+##{.formId} .error em {
+    border:10px solid;
+    border-color:#E8FF6D transparent transparent;
+    bottom:-17px;
+    display:block;
+    height:0;
+    left:10px;
+    position:absolute;
+    width:0;
+}
+
+/* field with validation error */
+##{.formId} .invalid {
+    background-color:rgba(221, 233, 255, 0.898) !important;
+}
+
+/* date input */
+##{.formId} .date {
+    width:193px;
+    background:#666 none repeat scroll 0 0;
+    color:#fff;
+    text-shadow:0 0 1px #000;
+}
+
+##{.formId} .date:focus {
+    background-color:#333;
+    color:#fff;
+}
+
+/* make some elements sit over the mask */
+##{.formId} .error, #calroot {
+    z-index:10000;
+}
+
+</style>
+[#meth}
+
+{#meth]trigger.CSVAddForm[#,]content[Add]
+[#=]overlayId[{#case]#{.overlay}[#when]basic[#>]simple_overlay[#case}]
+[#>]<#{.triggerMode} rel="##{.relId}" type="#{.triggerMode}">#{content}</#{.triggerMode}>
+[#meth}
+
+{#meth]html.CSVAddForm[#,]elements[][#,]insert[][#,]title[][#,]submit[Add][#,]form[]
+[#,]required[][#,]labels@[{}][#,]types@[{}][#,]values@[{}]
+[#=]overlayId[{#case]#{.overlay}[#when]basic[#>]simple_overlay[#case}]
+[#%] try to find something easy to build depending on the kind of variables in the csv
+[#>]
+<div id="#{.relId}" class="#{overlayId}">
+    <form class="rounded" id="#{.formId}" method="post" action="#{.server}/rsrc/datatable/csv_addrow">
+    <input type="hidden" value="#{.filename}" name="csv"/>
+[#?]#{+?form}[#>]#{form}
+[#?]else
+[#rb>]
+required =[#{required}]
+elements = #{=elements}.split("|").map{|e| e.strip}
+elements=["title","fieldset","p"]+<.varnames@>+["/p","/fieldset"] if elements.empty?
+unless #{=insert}.empty?
+    #{=insert}.split("|").map{|e| #
+        tmp,*tmp2=e.strip.split(":")
+        tmp2=tmp2.join(":")
+        ok=elements.index{|e| e==tmp[1..-1]}
+        if ok and [">","<"].include? tmp[0,1]
+            ok += 1 if tmp[0,1]==">"
+            elements.insert(ok,tmp2)
+        end
+    }
+end
+
+elements.each do |field| #
+p field
+    case field
+    when /^title/
+        title=field.length>5 ? field[6..-1] : #{=title} 
+        {#>]<legend>:{title}</legend>[#nl][#>}
+    when /^subtitle/
+        title=field[9..-1]
+        {#>]<label class="subtitle">:{title}</label>[#nl][#>}
+    when "fieldset"
+        {#>]<fieldset>[#nl][#>}
+    when "/fieldset"
+        {#>]</fieldset>[#nl][#>}
+    when "p"
+        {#>]<p>[#nl][#>}
+    when "/p"
+        {#>]</p>[#nl][#>}
+    else
+        label=<labels@>[field.to_sym] ? <labels@>[field.to_sym] : field.capitalize
+        type = field
+        if spec_type=(<types@>.find{|k,v|  (v.include? field.to_sym)})
+            type=spec_type[0].to_s 
+            puts "types";p field;p <types@>; p spec_type
+        end
+        value = <values@>[field.to_sym] ? <values@>[field.to_sym] : (type=="checkbox" ? "true" : "")
+        {#>]
+        	  <label>:{label}</label>
+              <input type=":{type}" {#if]required.include? field[#>]required="required"[#if} name=":{field}" value=":{value}"/>
+        [#>}
+    end
+end
+[#?]end[#>]
+	<button type="submit" style="position:absolute; top:90%;left: 90%;">#{submit}</button>
+    </form>
+</div>
+[#meth}
+
+{#meth]js.CSVAddForm[#>]
+<script>
+$(document).ready(function() {
+      // validator. we use custom message layout with a CSS arrow
+    $("##{.formId}").validator({
+    message: '<div><em/></div>',
+    position: 'top left',
+    offset: [3, 40]
+    });
+
+
+    // overlay with masking. when overlay is loaded or closed we hide error messages if needed
+    $("#{.triggerMode}[rel]").overlay().bind("onBeforeClose", function(e) {
+    $(".error").hide();
+    });
+
+
+    // bind 'myForm' and provide a simple callback function 
+    $("##{.formId}").ajaxForm({
+        //async: false,
+        //dataType: "jsonp",
+        success: function(formData, jqForm, options) {
+            var oTable = $('##{.csvdatatableId}').dataTable();
+            // Re-draw the table - you wouldn't want to do it here, but it's an example :-)
+            oTable.fnDraw(); 
+            var overlay=$("#{.triggerMode}[rel]").overlay();
+            overlay.close();
+        },
+        error: function (xhr, error, thrown) {
+            console.log(error+":"+xhr);
+            var oTable = $('##{.csvdatatableId}').dataTable();
+            // Re-draw the table - you wouldn't want to do it here, but it's an example :-)
+            oTable.fnDraw(); 
+            var overlay=$("#{.triggerMode}[rel]").overlay();
+            overlay.close();
+                }
+    });
+     
+});
+</script>
+[#meth}

@@ -1,0 +1,55 @@
+{#def]pwd[#>] [#{_PWD_}] [#}
+
+{#def]filename[#>] [#{_FILENAME_}][#}
+
+{#def]curpath[#,]name[][#rb>]File.join(File.dirname("#{_FILENAME_}"),"#{name}")[#}
+
+{#def]curExpPath[#,]name[][#rb>]require 'dyndoc/common/file';CqlsDoc.expand_path(File.join(File.dirname("#{_FILENAME_CURRENT_}"),"#{name}"))[#}
+
+{#def]home[#rb>][ENV["HOME"]][#}
+
+{#def]modedoc[#rb>]$curDyn.tmpl.fmt[#}
+
+{#def]local_use[#rb>]$dyndoc_web and $dyndoc_web[:local][#def}
+
+
+This doc mode is used to know if it is obtained by web
+{#def]dyndoc_mode[#rb>]$curDyn.tmpl.dyndocMode.inspect[#}
+
+{#def]format_output[#rb>]$curDyn.tmpl.fmtOutput[#}
+
+{#def]cqlsdir[#rb>]File.join(ENV["HOME"],"cqls")[#}
+
+{#def]dyndir[#rb>]File.join(ENV["HOME"],"dyndoc")[#}
+
+{#def]prjpath[#,]prj[][#,]type[rsrc]
+[#>][{#case]#{type}
+[#when]rsrc[#rb>][File.join(ENV["CQLS_PRJ_ROOT"],"share","rsrc","#{prj}")]
+[#when]img[#rb>][File.join(ENV["CQLS_PRJ_ROOT"],"share","rsrc","#{prj}","img")]
+[#when]data[#rb>][File.join(ENV["CQLS_PRJ_ROOT"],"share","rsrc","#{prj}","data")]
+[#case}]
+[#}
+
+{#def]cqlsweb_path[#,]path[][#,]root[/export/cqlsWeb]
+[#rb>]dyndocWeb_path=(File.exists? File.join(ENV["HOME"],"dyndoc","web")) ? File.join(ENV["HOME"],"dyndoc","web") : #{=root}
+File.join(dyndocWeb_path,#{=path})
+[#def}
+
+{#def]cqlsweb_rsrc_path[#,]path[][#>]{#cqlsweb_path]public/rsrc/#{path}[#cqlsweb_path}[#def}
+
+{#def]cqlsweb_auto_img[#,]path[][#,]max[5000]
+[#=]path2[{#cqlsweb_path]public/rsrc/img/#{path}[#}]
+[#rb<]now=Time.now;Dir["#{path2}*"].each {|f| begin p f;FileUtils.rm(f) end if now-File.mtime(f) > 60}
+[#>][#{path2}:{`uuidgen`.strip}]
+[#def}
+
+{#def]cqlsweb_public_imgName[#,]path[]
+[#rb<]root="{#cqlsweb_path]path[][#}"+"public/"
+puts "root";p root
+rbpath=#{=path}
+p rbpath
+tmp=/^#{root}/.match(rbpath)
+p tmp
+res = tmp ? tmp.post_match : "error"
+[#>]:{"/"+res}
+[#def}

@@ -1,0 +1,101 @@
+=================================
+| devtag items-like declaration |
+=================================
+
+{#def]dtagNew[#,]dtag![][#,]items![]
+[#=]do_items[]
+[#rb<]p @vars.local["items"].keys
+items=@vars.local["items"].keys-["_order_"]
+items -= (var_items=items.select{|it| it=~/^var\_/})
+items -= (pre_items=items.select{|it| it=~/^pre\_/})
+items -= (post_items=items.select{|it| it=~/^post\_/})
+[#>]items4rb[:{items.map{|it| ":"+it}.join(",")}]
+[#>]do_items+[
+items=[#{items4rb}]
+blckMngr.next_child_until!(items)
+]
+[#rb<]
+for item in pre_items.sort do
+{#>]do_items+[
+	#{items.:{item}}
+]
+[#>}
+end
+[#>]do_items+[begin
+  case blckMngr.next_tag!]
+[#rb<]
+for item in items do
+{#>]do_items+[
+	when ::{item}
+		blckMngr.next_child!
+		#{items.:{item}}
+]
+[#>}
+end
+[#>]do_items+[
+	else #just in the case where other tags are added but normally this does not make sense!
+    	blckMngr.next_child!
+  	end
+  end until blckMngr.at_end?
+]
+[#rb<]
+for item in post_items.sort do
+{#>]do_items+[
+	#{items.:{item}}
+]
+[#>}
+end
+[#rb<]#puts #{=do_items}
+[#rb<]<CqlsDoc>#CqlsDoc envir!
+DYN[:V3].tmpl.add_dtag({
+	:instr=>[#{=dtag}],
+	:keyword_reg=>{
+		:#{dtag}=> '[%.\w,><?=+:-]+'
+	},
+	:blck=>{
+  		:instr=>[:#{dtag}],
+  		:keyword=>{:#{dtag}=>[#{items4rb}]}
+	}
+})
+
+module V3
+    class TemplateManager
+      	def do_#{dtag}(tex,blck,filter)
+      		##p blck
+      		blckMngr=BlckMngr.new(self,blck,tex,filter)
+      		## the next code is automatically generated!
+      		#{do_items}
+      	end
+    end
+end
+[#}
+
+
+===================================
+| More general devtag declaration |
+===================================
+
+{#def]dtag[#,]dtag![][#,]items![][#,]do_items![]
+[#?]#{+?items}[#rb>]items[#{=items}.split(",").map{|e| ":"+e.strip}.join(",")][#?]end
+[#rb<]<CqlsDoc>#CqlsDoc envir!
+DYN[:V3].tmpl.add_dtag({
+:instr=>[#{=dtag}],
+:keyword_reg=>{
+:#{dtag}=> '[%.\w,><?=+:-]+'
+},
+:blck=>{
+  :instr=>[:#{dtag}],
+  :keyword=>{:#{dtag}=>[#{items}]}
+}
+})
+
+module V3
+    class TemplateManager
+      	def do_#{dtag}(tex,blck,filter)
+      		blckMngr=BlckMngr.new(self,blck,tex,filter)
+      		items=[#{items}]
+      		#{do_items}
+      	end
+    end
+end
+[#}

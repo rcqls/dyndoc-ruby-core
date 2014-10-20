@@ -1,0 +1,39 @@
+
+{#def]csvView[#,]filename[][#,]key[]
+[#,]header[]
+[#,]size[<<width[250px]<<height[250px]]
+[#,]col[<<widths[]<<align[]<<types[]<<sorting[]]
+[#?]#{0?key}[#rb>]key[File.basename(#{=filename},".*")][#?]end
+[#>]
+<button style="border: #707070 1px solid; cursor: pointer;" onclick="saveCSV('#{filename}');">Save</button>
+<div id="#{key}" style="width:#{size.width}; height:#{size.height}; background-color:white;"></div>
+<script>
+mygrid = new dhtmlXGridObject('#{key}');
+[#?]#{+?header}[#>]mygrid.setHeader("#{header}");
+[#?]#{+?col.widths}[#>]mygrid.setInitWidths("#{col.widths}");
+[#?]#{+?col.types}[#>]mygrid.setColTypes("#{col.types}");
+[#?]#{+?col.align}[#>]mygrid.setColAlign("#{col.align}");
+[#?]#{+?col.sorting}[#>]mygrid.setColSorting("#{col.sorting}");
+[#?]end[#>]
+//mygrid.setInitWidths("100,150,*");
+//mygrid.setColAlign("right,left,left,left");
+//mygrid.setColTypes("ro,ed,ed");
+//mygrid.setColSorting("int,str,str");
+mygrid.enableCSVHeader(true);
+mygrid.setCSVDelimiter(';');
+mygrid.init();
+//mygrid.load("#{filename}?state="+Date.now(),"csv");
+mygrid.loadCSVFile("#{filename}?state="+Date.now());
+function saveCSV(filename) {
+  var data=mygrid.serializeToCSV();
+  $.post("/rsrc/save",
+  {content: data, filename: filename},
+  function(res) {
+    if(res=="false") {
+        alert("Error in saving!!!");
+    }
+  },
+  "text")
+}
+</script>
+[#def}

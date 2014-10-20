@@ -1,0 +1,26 @@
+{#def]List[#,]list[#rb<]@vars.local[:prev][#{=list}]={}[#}
+
+{#meth]listkeys.List[#rb>]@vars.extract("self.content").keys[#}
+
+{#meth]apply.List[#,]_key_[key][#,]_elt_[val]
+[#rb>]_key_[#{=_key_}.strip]
+[#rb>]_elt_[#{=_elt_}.strip]
+[#rb<]
+@nb={} unless @nb
+@keysList={} unless @keysList
+@nb[#{=_elt_}]=#{#.content}
+@keysList[#{=_elt_}]=@vars.extract("self.content").keys.sort
+@ind={} unless @ind
+@ind[#{=_elt_}]=-1
+[#>]
+[{#loop][#rb<][@ind[#{=_elt_}]+=1]
+[#=]#{_key_}[:{@keysList[#{=_elt_}][@ind[#{=_elt_}]]}]
+[#=]#{_elt_}[:self.content.#{#{_key_}}]
+[#yield]default
+[#break]:{@ind[#{=_elt_}]==@nb[#{=_elt_}]-1}
+[#}]
+[#rb<]@ind[#{=_elt_}]=-1
+@nb.delete(#{=_elt_})
+@keysList.delete(#{=_elt_})
+[#}
+

@@ -1,0 +1,41 @@
+[#%] Initialization for LJK layout
+[#=]::document.rsrcSrvUrl[http://sagag6.upmf-grenoble.fr]
+[#=]::document.style[ljk]
+[#=]::document.charset[utf-8]
+[#=]::document.head.css_pre[nothing]
+[#=]::document.head.css_post[JQuerySag6]
+[#=]::document.head.css[
+<link rel="stylesheet" type="text/css" media="all" href="http://www-ljk.imag.fr/css/ljk-V3.css">
+  <link rel="stylesheet" type="text/css" media="all"
+ href="http://www-ljk.imag.fr/Publications/Basilic/css/listpubli.css">
+  <link rel="stylesheet" type="text/css" media="all"
+ href="http://www-ljk.imag.fr/Publications/Basilic/css/publi.css">
+  <link rel="icon" href="/icones/ljk-icon.gif" type="image/x-icon">
+  <link rel="shortcut icon" href="http://www-ljk.imag.fr/icones/ljk-icon.gif"
+ type="image/x-icon">
+  <script type="text/javascript" src="http://www-ljk.imag.fr/js/EventHandler.js"></script>
+  <script type="text/javascript" src="http://www-ljk.imag.fr/js/ClearSearch.js"></script>
+<style type="text/css">
+    .thumb {background-image: url('http://www-ljk.imag.fr/Publications/Basilic/Images/thumbImg.png');}
+ 	.movie {background-image: url('http://www-ljk.imag.fr/Publications/Basilic/Images/thumbMovie.png');}
+	.thumb:hover {background-image: url('http://www-ljk.imag.fr/Publications/Basilic/Images/thumbImgHover.png');}
+   </style>
+  <script src="http://www.google-analytics.com/urchin.js"
+ type="text/javascript">
+  </script>
+  <script type="text/javascript">
+     	_uacct = "UA-1475170-1";
+	urchinTracker();
+  </script>
+  <style type="text/css">
+  #header_en h1, #header_en a{
+   display: block;
+   height: 156px;
+   margin: 0;
+   padding: 0;
+   background-image: url(http://www-ljk.imag.fr/icones/band-web_en.gif);
+   background-repeat: no-repeat;
+   background-color: transparent;
+  }
+  </style>
+]

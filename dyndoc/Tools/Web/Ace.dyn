@@ -1,0 +1,54 @@
+{#new]AceEditor[#of]HtmlLoader[#code]
+[<link rel="stylesheet" type="text/css" href="/dHtmlX/dhtmlx.css"/>
+<link rel="stylesheet" type="text/css" href="/dHtmlX/types/ftypes.css"/>
+<link href="/stylesheets/fileuploader.css" rel="stylesheet" type="text/css"/>
+<script  src="/dHtmlX/dhtmlx.js"></script>
+<script src="/dHtmlX/types/ftypes.js"></script>
+<script src="/javascripts/fileuploader.js" type="text/javascript"></script>]
+[#}
+
+{#meth]new.AceEditor[#,]key[][#,].mode[latex,ruby][#,].theme[twilight,chrome,clouds,cobalt,crimson_editor,dawn,dreamweaver,eclipse,idle_fingers,kr_theme,merbivore,merbivore_soft,mono_industrial,monokai,pastel_on_dark,solarized_dark,solarized_light,textmate,tomorrow,tomorrow_night_blue,tomorrow_night_bright,tomorrow_night_eighties,tomorrow_night,tomorrow,vibrant_ink,xcode]
+[#=].key[{#if]#{+?key}[#>]#{key}[#else]{#objname]self[#}[#if}]
+[#}
+ 
+{#meth]init.AceEditor[#,]theme[#{.theme}][#,]mode[#{.mode}][#>] 
+<div id="main" style="position: absolute; top: 80px; width: 97.5%; height: 100%; margin: 0px;overflow: auto"></div>
+<div id="editor" style="width: 100%; height: 100%;overflow: auto"></div>
+<div id="log"></div>
+<div id="html"></div>
+<div id="editor-fileuploader">
+    Before uploading files, select a target directory in the tree beside (no selection means root tree).</br>
+    Click the button below or drag files on it.</br></br>
+    <div id="qqfileuploader">
+        
+        <noscript>
+            <p>Please enable JavaScript to use file uploader.</p>
+            <!-- or put a simple form for upload here -->
+        </noscript>         
+    </div>
+</div>
+
+<script src="/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script src="/ace/keybinding-emacs.js" type="text/javascript" charset="utf-8"></script>
+{#case]th:#{theme}[#else][#>]<script src="/ace/theme-#{th}.js" type="text/javascript" charset="utf-8"></script>[#\n][#case}
+{#case]md:#{mode}[#else][#>]<script src="/ace/mode-#{md}.js" type="text/javascript" charset="utf-8"></script>[#\n][#case}
+{#hide]
+<script src="/ace-mode-rstudio/extern.js" type="text/javascript" charset="utf-8"></script>
+<script src="/ace-mode-rstudio/auto_brace_insert.js" type="text/javascript" charset="utf-8"></script>
+<script src="/ace-mode-rstudio/tex_highlight_rules.js" type="text/javascript" charset="utf-8"></script>
+<script src="/ace-mode-rstudio/r_highlight_rules.js" type="text/javascript" charset="utf-8"></script>
+<script src="/ace-mode-rstudio/r.js" type="text/javascript" charset="utf-8"></script>
+<script src="/ace-mode-rstudio/r_code_model.js" type="text/javascript" charset="utf-8"></script>
+<script src="/ace-mode-rstudio/r_scope_tree.js" type="text/javascript" charset="utf-8"></script>
+[#hide}
+<script src="/javascripts/acEditor-mode-r.js" type="text/javascript" charset="utf-8"></script>
+<script src="/javascripts/acEditor-mode-dyndoc.js" type="text/javascript" charset="utf-8"></script>
+<script src="/javascripts/acEditor_dyndoc.js" type="text/javascript" charset="utf-8"></script>
+<script>
+function dyndoc_editor_init() {
+    var editor=new DyndocACEditor('#{theme}','#{mode}');
+}
+
+window.onload = dyndoc_editor_init;
+</script>
+[#}

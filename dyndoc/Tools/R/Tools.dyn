@@ -1,0 +1,342 @@
+{#def]xtable[#,]rexpr[][#,]_xtable_opt[][#,]_print_opt[]
+[#?]#{+?_xtable_opt}[#>]_xtable_opt[,#{_xtable_opt}][#?]end
+[#?]#{+?_print_opt}[#>]_print_opt[,#{_print_opt}][#?]end
+[#r>]
+[require(xtable)
+print(xtable({#{rexpr}}#{_xtable_opt})#{_print_opt})]
+[#}
+
+{#def]rpart[#,]part[][#,]saved[]
+[#rb<]CqlsDoc.make_dir("part")
+[#>]rdata[part/#{part}.RData]
+[#tag]rpart:#{part}[#yield]default
+[#r<]save(#{saved},file="#{rdata}")
+[#tag]else[#r<]
+[#?]File.exist?(#{=rdata}) [#r<]load("#{rdata}")
+[#?]else[#yield]default 
+[#r<]save(#{saved},file="#{rdata}")
+[#}
+
+{#def]sweave[#,]rcode[]
+[#rb>]rcode[#{=rcode}.strip.gsub("\r\n","\n")]
+[#>]
+[\begin{CodeChunk}<\n>]
+[#rb>]
+  [res=CqlsDoc::RServer.echo_blocks(#{=rcode})
+  i,res2=0,[[],[]]
+  while i<res[:in].length
+    input="R"+res[:in][i]
+    while res[:out][i].empty?
+      i+=1
+      input<<(res[:in][i][0,1]=="+" ? " " : "R") << res[:in][i]
+    end
+    res2[0]<<"\\begin{CodeInput}\n"+input+"\\end{CodeInput}"
+    res2[1]<<"\\begin{CodeOutput}\n"+res[:out][i]+"\\end{CodeOutput}"
+    i+=1
+  end
+  (0...(res2[0].length)).map{|i| res2[0][i]+"\n"+res2[1][i]+"\n"}.join
+  ]
+[#>]
+[\end{CodeChunk}]
+[#}
+
+{#def]supeR[#,]rcode[][#,]_optLst[]
+[#?]!$dyn_supeR[#rb<]$dyn_supeR=0 
+[#<]{#document][#package]
+\RequirePackage{listings}
+\RequirePackage{xcolor} 
+[#}[#?]end
+[#rb<]res=CqlsDoc::RServer.inputsAndOutputs(#{=rcode}.strip,$dyn_supeR+=1)
+header={"keywordstyle"=>'\bf\color{green}',
+"stringstyle"=>'\color{red}',
+"showstringspaces"=>true,
+"numbers"=>"left",
+"numberstyle"=>'\tiny\bf',
+"stepnumber"=>1,
+"frame"=>"l"
+}
+header2=@vars.extract("_optLst")
+header.merge!(header2) if header2 and header2.is_a? Hash
+header=header.map{|k,v| k+"="+v.to_s}.join(",")
+[#>][\begin{lstlisting}[language=R,name=algoR:{$dyn_supeR},:{header}]
+{#for]line in res
+[#rb>][(case line[:prompt];when :normal;">";when :continue;"+";when :none;"";end)]
+[#>][ :{line[:input]}]
+[#?]!line[:output].empty?[#>][:{line[:output]}]
+[#?]line[:img] and !(line[:img][:opt] and line[:img][:opt]["include"] and line[:img][:opt]["include"]=="ok")[#>]\end{lstlisting}
+[#>][\includegraphics{:{line[:img][:name]}}
+\begin{lstlisting}[language=R,firstnumber=auto,name=algoR:{$dyn_supeR},:{header}]<\n>]
+[#}\end{lstlisting}]
+[#}
+
+
+{#def]peteR[#,]rcode[][#,]_optLst[]
+[#?]!$dyn_supeR[#rb<]$dyn_supeR=0 
+[#<]{#document][#package]
+\RequirePackage{fancyvrb}
+\RequirePackage{xcolor} 
+\definecolor{beaubleu}{rgb}{0.26,0.31,0.61}
+[#}[#?]end
+[#rb<]
+res=CqlsDoc::RServer.inputsAndOutputs(#{=rcode}.strip.gsub("\r\n","\n"),$dyn_supeR+=1)
+header={"formatcom"=>'\color{beaubleu}',"fontfamily"=>"courier"
+}
+header2=@vars.extract("_optLst")
+header.merge!(header2) if header2 and header2.is_a? Hash
+header=header.map{|k,v| k+"="+v.to_s}.join(",")
+[#>][\begin{Verbatim}[:{header}]
+{#for]line in res
+[#rb<][(line[:prompt]==:normal ? ">" : "+")]
+[#rb>][(case line[:prompt];when :normal;">";when :continue;"+";when :none;"";end)]
+[#>][ :{line[:input]}]
+[#?]!line[:output].empty?[#>][:{line[:output]}]
+[#?]line[:img] and !(line[:img][:opt] and line[:img][:opt]["include"] and line[:img][:opt]["include"]=="ok")[#>]\end{Verbatim}
+[#>][\includegraphics{:{line[:img][:name]}}
+\begin{Verbatim}[:{header}]<\n>]
+[#}\end{Verbatim}]
+[#}
+
+{#def]peteR[#,]rcode[][#>]{#Rems]#{rcode}[#}[#def}
+
+{#def]Rems_in[#?]!line[:input].empty?[#>] \textcolor{beaubleu}{:{line[:input].chomp.gsub(/\'\\t\'/,"'{\\textbackslash}t'").gsub(/\"\\t\"/,"\"{\\textbackslash}t\"")}}<\n>[#}
+
+{#def]Rems_out[#rb>]line[:output].split("\n").map{|l| '\textit{\textcolor{beauvert}{'+l+"}}"}.join("\n")+"\n"[#}
+
+
+{#def]Rems_content[#rb<][(line[:prompt]==:normal ? ">" : "+")]
+[#rb>][(case line[:prompt];when :normal;">";when :continue;"+";when :none;"";end)][#rb<]#p line[:img] if line[:img]
+[#>][{#Rems_in#}]
+[#?]!line[:output].empty?[#>][{#Rems_out#}]
+[#}
+
+{#def]Rems[#,]rcode[][#,]_optLst[][#,]RDevice[<<type[pdf]<<opt[width=5,height=5,onefile=FALSE]]
+[#,]graph[<<before[]<<after[]]
+[#?]!$dyn_supeR[#rb<]$dyn_supeR=0 
+[#<]{#document][#package]
+%\RequirePackage{fancyvrb}
+\usepackage{xcolor}
+[#preamble]
+\definecolor{beaubleu}{rgb}{0.26,0.31,0.61}
+\definecolor{beauvert}{rgb}{0.27,0.52,0.42}
+[#}[#?]end
+[#rb<]
+RServer.device(#{=RDevice.type})
+##Dyndoc.warn #{=rcode}.encoding
+res=CqlsDoc::RServer.inputsAndOutputs(#{=rcode}.strip.gsub("\r\n","\n"),$dyn_supeR+=1,#{=RDevice.opt})
+#Dyndoc.warn "res_in_Rems",res
+header={"fontfamily"=>"courier","fontseries"=>"b","fontsize"=>"\\small"}
+header2=@vars.extract("_optLst")
+header.merge!(header2) if header2 and header2.is_a? Hash
+header=header.map{|k,v| k+"="+v.to_s}.join(",")
+[#>]\begin{Verbatim}[commandchars=\\\{\},:{header}]<\n>[#rb<]openVerb=true
+[#>]{#for]i in 0...(res.length)[#rb<]line=res[i]
+[#>][{#Rems_content#}]
+[#?]line[:img] and !(line[:img][:opt] and line[:img][:opt]["include"] and line[:img][:opt]["include"].downcase=="no")[#>]\end{Verbatim}<\n>[#rb<]openVerb=false
+[#>][#{graph.before}\begin{center}\includegraphics{#if]line[:img][:opt] and line[:img][:opt]["opt"][#>][[:{line[:img][:opt]["opt"]}]][#if}{:{line[:img][:name]}}\end{center}#{graph.after}<\n>]
+[#?] & (i < (res.length-1))[#>][\begin{Verbatim}[commandchars=\\\{\},:{header}]<\n>][#rb<]openVerb=true
+[#}[#?]openVerb[#>]\end{Verbatim}
+[#}
+
+{#def]verbR_init[#,]optIn[][#,]optOut[]
+[#,]verbIn[Verbatim][#,]verbOut[Verbatim]
+[#?]!$dyn_verbR[#rb<]$dyn_verbR=0[#?]end
+[#=]::verbR.verbIn[#{verbIn}][#=]::verbR.verbOut[#{verbOut}]
+[#<]{#case]#{verbIn}
+[#when]listings,lst[#>]packageIn[\RequirePackage{listings}
+\usepackage{xcolor}]
+[#rb<]
+headerIn={"language"=>"R",
+"keywordstyle"=>'\bf\color{green}',
+"stringstyle"=>'\color{red}',
+"showstringspaces"=>true,
+"numbers"=>"left",
+"numberstyle"=>'\tiny\bf',
+"stepnumber"=>1,
+"frame"=>"l"
+}
+[#when]Verbatim[#>]packageIn[\RequirePackage{fancyvrb}\RequirePackage{xcolor}]
+[#rb<]
+headerIn={"formatcom"=>'\color{green}',"fontfamily"=>"courier","fontseries"=>"b"
+}
+[#case}
+{#case]#{verbOut}
+[#when]listings,lst[#>]packageOut[\RequirePackage{listings}
+\RequirePackage{xcolor}]
+[#rb<]
+headerOut={"language"=>"R",
+"keywordstyle"=>'\bf\color{green}',
+"stringstyle"=>'\color{red}',
+"showstringspaces"=>true,
+"numbers"=>"right",
+"numberstyle"=>'\tiny\bf',
+"stepnumber"=>1,
+"frame"=>"l"
+}
+[#when]Verbatim[#>]packageOut[\RequirePackage{fancyvrb}\RequirePackage{xcolor}]
+[#rb<]
+headerOut={"formatcom"=>'\color{red}',"fontfamily"=>"courier","fontseries"=>"b"
+}
+[#case}
+[#<]{#document][#package]
+#{packageIn}
+#{packageOut}
+[#}
+[#rb<]
+header2=@vars.extract("optIn")
+headerIn.merge!(header2) if header2 and header2.is_a? Hash
+headerIn=headerIn.map{|k,v| k+"="+v.to_s}.join(",")
+header2=@vars.extract("optOut")
+headerOut.merge!(header2) if header2 and header2.is_a? Hash
+headerOut=headerOut.map{|k,v| k+"="+v.to_s}.join(",")
+[#def}
+
+
+{#def]verbR_init[#,]optIn[][#,]optOut[]
+[#,]verbIn[Verbatim][#,]verbOut[Verbatim]
+[#?]!$dyn_verbR[#rb<]$dyn_verbR=0[#?]end
+[#=]::verbR.verbIn[#{verbIn}][#=]::verbR.verbOut[#{verbOut}]
+[#<]{#case]#{verbIn}
+[#when]listings,lst[#>]packageIn[\RequirePackage{listings}
+\usepackage{xcolor}]
+[#rb<]
+headerIn={"language"=>"R",
+"keywordstyle"=>'\bf\color{green}',
+"stringstyle"=>'\color{red}',
+"showstringspaces"=>true,
+"numbers"=>"left",
+"numberstyle"=>'\tiny\bf',
+"stepnumber"=>1,
+"frame"=>"l"
+}
+[#when]Verbatim[#>]packageIn[\RequirePackage{fancyvrb}\RequirePackage{xcolor}]
+[#rb<]
+headerIn={"formatcom"=>'\color{green}',"fontfamily"=>"courier","fontseries"=>"b"
+}
+[#case}
+{#case]#{verbOut}
+[#when]listings,lst[#>]packageOut[\RequirePackage{listings}
+\RequirePackage{xcolor}]
+[#rb<]
+headerOut={"language"=>"R",
+"keywordstyle"=>'\bf\color{green}',
+"stringstyle"=>'\color{red}',
+"showstringspaces"=>true,
+"numbers"=>"right",
+"numberstyle"=>'\tiny\bf',
+"stepnumber"=>1,
+"frame"=>"l"
+}
+[#when]Verbatim[#>]packageOut[\RequirePackage{fancyvrb}\RequirePackage{xcolor}]
+[#rb<]
+headerOut={"formatcom"=>'\color{red}',"fontfamily"=>"courier","fontseries"=>"b"
+}
+[#case}
+[#<]{#document][#package]
+#{packageIn}
+#{packageOut}
+[#}
+[#rb<]
+header2=@vars.extract("optIn")
+headerIn.merge!(header2) if header2 and header2.is_a? Hash
+headerIn=headerIn.map{|k,v| k+"="+v.to_s}.join(",")
+header2=@vars.extract("optOut")
+headerOut.merge!(header2) if header2 and header2.is_a? Hash
+headerOut=headerOut.map{|k,v| k+"="+v.to_s}.join(",")
+[#def}
+
+{#def]verbR_header[#<]
+{#case]#{verbR.verbIn}
+[#when]listings,lst[#=]::verbR.beginIn[\begin{lstlisting}[name=algoR:{$dyn_verbR},:{headerIn}]]
+[#=]::verbR.endIn[\end{lstlisting}]
+[#when]fancy,Verbatim[#=]::verbR.beginIn[\begin{Verbatim}[:{headerIn}]]
+[#=]::verbR.endIn[\end{Verbatim}]
+[#case}
+{#case]#{verbR.verbOut}
+[#when]listings,lst[#=]::verbR.beginOut[\begin{lstlisting}[name=algoR:{$dyn_verbR},:{headerOut}]]
+[#=]::verbR.endOut[\end{lstlisting}]
+[#when]fancy,Verbatim[#=]::verbR.beginOut[\vspace*{-.5cm}\begin{Verbatim}[:{headerOut}]]
+[#=]::verbR.endOut[\end{Verbatim}]
+[#case}
+[#def}
+
+{#def]verbR[#,]rcode[]
+[#<]{#verbR_header#}
+[#rb<]res=CqlsDoc::RServer.inputsAndOutputs(#{=rcode}.strip,$dyn_verbR+=1)
+contIn=nil
+[#>]{#for]line in res[#?]!contIn[#>]#{verbR.beginIn}<\n>[#?]end
+[#rb<][(line[:prompt]==:normal ? ">" : "+")]
+[#rb>][(case line[:prompt];when :normal;">";when :continue;"+";when :none;"";end)]
+[#>][ :{line[:input]}]
+[#?]!(contIn=(line[:output].empty?))[#>]#{verbR.endIn}
+#{verbR.beginOut}
+:{line[:output]}
+#{verbR.endOut}
+[#?]line[:img] and !(line[:img][:opt] and line[:img][:opt]["include"] and line[:img][:opt]["include"]=="ok")[#>]#{verbR.endIn}
+[#>][\includegraphics{:{line[:img][:name]}}<\n>#{verbR.beginIn}]
+[#for}
+[#def}
+
+{#def]initScriptLstLang[#,]langs[R,C++,Fortran][#<]{#document][#package]
+\usepackage[formats]{listings}
+\usepackage{textcomp}
+\usepackage{xcolor}
+[#preamble]\lstloadlanguages{#{langs}}
+[#}[#def}
+
+
+{#hide] CECI est rendu possible grace au escapeinside!
+plot(x,y) {#lstEsc]\label{comment}[#} #toto
+#comment
+[#hide}
+{#def]scriptR[#,]rcode[][#,]exec[true][#>]
+\lstset{framexleftmargin=5mm, frame=shadowbox, rulesepcolor=\color{gray}, escapeinside={\#(*}{*)}, numberstyle=\small, stepnumber=1, numbersep=5pt, keepspaces=true,language=R,name=R, showstringspaces=false,upquote=true,basicstyle=\ttfamily}
+\begin{lstlisting}[numbers=left]
+#{rcode}
+\end{lstlisting}
+[#?]#{exec}[#r<]#{rcode}
+[#def}
+
+{#def]scriptCpp[#,]code[][][#>]
+\lstset{framexleftmargin=5mm, frame=shadowbox, rulesepcolor=\color{gray}, escapeinside={\#(*}{*)}, numberstyle=\small, stepnumber=1, numbersep=5pt, keepspaces=true,language=C++,name=Cpp,showstringspaces=false}
+\begin{lstlisting}[numbers=left]
+#{code}
+\end{lstlisting}
+[#def}
+
+{#def]scriptFortran[#,]code[][][#>]
+\lstset{framexleftmargin=5mm, frame=shadowbox, rulesepcolor=\color{gray}, escapeinside={\#(*}{*)}, numberstyle=\small, stepnumber=1, numbersep=5pt, keepspaces=true,language=Fortran,name=Fortran, showstringspaces=false}
+\begin{lstlisting}[numbers=left]
+#{code}
+\end{lstlisting}
+[#def}
+
+{#def]lstEsc[#,]latex[][#>]#(*#{latex}*)[#}
+
+{#def]RWeb_in[#>] \textcolor{beaubleu}{:{line[:input].chomp.gsub(/\'\\t\'/,"'{\\textbackslash}t'").gsub(/\"\\t\"/,"\"{\\textbackslash}t\"")}}<\n>[#}
+
+{#def]RWeb_out[#rb>]line[:output].split("\n").map{|l| '\textit{\textcolor{beauvert}{'+l+"}}"}.join("\n")+"\n"[#}
+
+
+{#def]RWeb_content[#rb<][(line[:prompt]==:normal ? ">" : "+")]
+[#rb>][(case line[:prompt];when :normal;">";when :continue;"+";when :none;"";end)][#rb<]#p line[:img] if line[:img]
+[#>][{#RWeb_in#}]
+[#?]!line[:output].empty?[#>][{#RWeb_out#}]
+[#}
+
+{#def]RWeb[#,]rcode[][#,]_optLst[][#,]RDevice[<<type[pdf]<<opt[width=5,height=5,onefile=FALSE]]
+[#,]graph[<<before[]<<after[]]
+[#?]!$dyn_supeR[#rb<]$dyn_supeR=0 
+[#?]end
+[#rb<]
+RServer.device(#{=RDevice.type})
+#p #{=rcode}
+res=CqlsDoc::RServer.inputsAndOutputs(#{=rcode}.strip.gsub("\r\n","\n"),$dyn_supeR+=1,#{=RDevice.opt})
+#puts "res";p res
+[#>]\begin{Verbatim}[commandchars=\\\{\},:{header}]<\n>[#rb<]openVerb=true
+[#>]{#for]i in 0...(res.length)[#rb<]line=res[i]
+[#>][{#RWeb_content#}]
+[#?]line[:img] and !(line[:img][:opt] and line[:img][:opt]["include"] and line[:img][:opt]["include"].downcase=="no")[#>]\end{Verbatim}<\n>[#rb<]openVerb=false
+[#>][#{graph.before}\begin{center}\includegraphics{#if]line[:img][:opt] and line[:img][:opt]["opt"][#>][[:{line[:img][:opt]["opt"]}]][#if}{:{line[:img][:name]}}\end{center}#{graph.after}<\n>]
+[#?] & (i < (res.length-1))[#>][\begin{Verbatim}[commandchars=\\\{\},:{header}]<\n>][#rb<]openVerb=true
+[#}[#?]openVerb[#>]\end{Verbatim}
+[#}

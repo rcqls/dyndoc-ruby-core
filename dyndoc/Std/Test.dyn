@@ -1,0 +1,282 @@
+[#package]\usepackage{xcolor}
+[#preamble]\newcommand{\ok}{ \textcolor{green}{\large$\surd$}}
+\newcommand{\nok}{ \textcolor{red}{\large X}}
+[#main][#<]
+
+New Mode: since #test exists and allows
+
+-> In some directory, place all the result files!
+-> The first time, (i.e. if the file does not exist) the file is created.
+-> In the mode of documentation: the code is output and the result too.
+-> When asking for the result, it is extracted from the result file.
+-> In the testing mode: the code is executed and compred with the result file.
+Rmk: the weird  thing is that code is in the dyn file when the resukt is not!!!!
+I guess that the two modes need to be consistent! The result has to be embedded in the dyn file when the code is too.
+
+
+ 
+# OLD STUFF!
+{#def]openTag[#,]tag[blck][#,]verb![false]
+[#?]#{verb}[#>][\verb!][#?]end
+[#>]
+  [_{_#|
+  |#{tag}]]
+[#?]#{verb}[#>][!]
+[#}
+
+{#def]closeTag[#,]tag[][#,]verb![false]
+[#?]#{verb}[#>][\verb!][#?]end
+[#>] 
+  [[#|
+  |#{tag}_}_] 
+[#?]#{verb}[#>][!]
+[#}
+
+{#def]instrTag[#,]tag[][#,]verb![false]
+[#?]#{verb}[#>][\verb!][#?]end
+[#>] 
+  [[#|
+  |#{tag}]] 
+[#?]#{verb}[#>][!]
+[#}
+
+{#def]checkCode[#,]key[][#,]result[]
+[#r<] p #{=result}
+[#?]#{=result}=='{#dyn]test|#{key}[#}'[#>]\ok[#?]else[#>]\nok[#>][\hrulefill]
+[#}
+
+## OLD STUFF
+
+{#def]dynverb[#,]code[][#,]file[]
+[#rb>]code[(#{=file}.empty?) ? @protected_txt : (Utils.protect_txt_block(CqlsDoc.input_from_file(#{=file})))]
+[#>][{#verb]#{code}[#}]
+[#}
+
+
+{#def]runTestCode[#,]code[][#,]verbatim[true]
+[#>]result[{#dyn]#{code}[#}]
+[#>] [\noindent \fbox{\textbf{Code}} \hrulefill
+{#beginVerb#}
+:{@protected_txt}
+{#endVerb#}
+\noindent \fbox{\textbf{Result}} \hrulefill<\n>] 
+[#?]#{verbatim}[#>][{#beginVerb#}<\n>]
+[#?]true[#>]#{result}
+[#?]#{verbatim}[#>]{#endVerb#}
+[#?]true[#>]\hrule
+\vspace*{.5cm}
+[#}
+
+{#def]testCodeAndCheck[#,]file[test][#,]code[]
+[#>]result[{#dyn]#{code}[#}]
+[#>>]#{file}.output?[#{result}]
+[#>] [\noindent \fbox{\textbf{Code}: :{CqlsDoc::Utils.escape(#{=file},["\_","\\\_"])}}\hrulefill\\
+{#beginVerb#} 
+:{@protected_txt}
+{#endVerb#}
+\noindent \fbox{\textbf{Result}: :{CqlsDoc::Utils.escape(#{=file},["\_","\\\_"])}}\hrulefill\\ #{result}\\
+\noindent \fbox{\textbf{Checked}: :{CqlsDoc::Utils.escape(#{=file},["\_","\\\_"])}    {#if]#{=result}=='#F{#{file}.output}'[#>]\ok[#else]\nok[#}}\hrulefill
+]
+[#}
+
+
+
+{#def]testFile[#,]file[test.dyn][#,]verbatim[true]
+[#>] code [#F{!:{CqlsDoc.doc_filename(#{=file})}}]
+[#rb<]code=Utils.protect_txt_block(CqlsDoc.input_from_file("#{file}"))
+[#>] [\noindent \fbox{\textbf{Code (from file \texttt{:{CqlsDoc::Utils.escape(#{=file},["\_","\\\_"])}})}}  \hrulefill
+{#beginVerb#}
+:{code}
+{#endVerb#}
+]
+[#>]result[{#dyn]#{code}[#}]
+[#>] [\noindent \fbox{\textbf{Result}} \hrulefill] 
+[#?]#{verbatim}[#rb>]result[#{=result}.gsub("\\begin{verbatim}","\\begin{__VERBATIM__}").gsub("\\end{verbatim}","\\end{__VERBATIM__}")][#>][{#beginVerb#}
+][#?]end
+[#>][#{result}]
+[#?]#{verbatim}[#>][
+{#endVerb#}
+]
+[#?]true[#>]\hrule
+\vspace*{.5cm}
+[#}
+
+{#def]testFileAndCheck[#,]file[test]
+[#>] code [#F{#{file}.dyn}]
+[#rb<]code=Utils.protect_txt_block(File.read("#{file}.dyn"))
+[#>]result[{#dyn]#{code}[#}]
+[#>>]#{file}.output?[#{result}]
+[#>] [\noindent \fbox{\textbf{Code}: :{CqlsDoc::Utils.escape(#{=file},["\_","\\\_"])}}\hrulefill
+{#beginVerb#}
+#rb{code}
+{#endVerb#}
+\noindent \fbox{\textbf{Result}: :{CqlsDoc::Utils.escape(#{=file},["\_","\\\_"])}}\hrulefill\\ #{result}\\
+\noindent \fbox{\textbf{Checked}: :{CqlsDoc::Utils.escape(#{=file},["\_","\\\_"])}    {#if]#{=result}=='#F{#{file}.output}'[#>]\ok[#else]\nok[#}}\hrulefill
+]
+[#}
+
+{#def]protxt[#rb>]@protected_txt[#}
+
+ 
+
+{#hide]
+NEW SPIRIT!!!!
+
+===========================
+Object for testing dyn code
+===========================
+
+[#<]
+
+{#meth]new.Tester[#,].dir[output/][#=].report@[{}][#=].tests@[[]][#}
+
+{#meth]testCode.Tester[#,]key[][#,]code[][#,]file[][#,]expected[][#,]descr[][#,]view[false]
+[#?]#{=key}[-1,1]=="!"[#rb>]key[#{=key}[0...-1]][#=]view[true][#rb<]p "key #{key} registered!" [#?]else[#rb<]p "too bad!"
+[#?]#{+?file}
+  [#=]code[#F{#{file}.dyn}]
+  [#rb<]code=Utils.protect_txt_block(File.read("#{file}.dyn"))
+[#?]else
+  [#rb<]code=@protected_txt;#p code;p #{=code}
+[#?]end
+[#=]result[{#dyn]#{code}[#}]
+[#rb<]
+expectedFile=File.join(#{=.dir},<key:>)
+
+<expected:> = File.read(expectedFile) if <expected:>.empty? and File.exists?(expectedFile)
+
+unless File.exists?(expectedFile)
+  File.open(expectedFile,"w") do |f| 
+    #puts "result"; p #{=result}
+    f << <result:>
+  end 
+end
+
+<.tests@> << <key:>
+#p <.codes@>
+<.report@>[<key:>]={:type=>:code,:code=>code,:expected=> <expected:> ,:result=> <result:>,:file=> <file:>,:descr => <descr:>}
+[#?]#{view}[#>]{#theCode]self[#,]#{key}[#}
+[#meth-test}
+
+{#meth]testRCode.Tester[#,]key[][#,]code[][#,]file[][#,]expected[][#,]seed[10][#,]descr[]
+[#?]#{+?file}[#=]code[#F{#{file}.dyn}][#?]end
+[#rb<]code=#{=code}.strip
+[#r<]set.seed(#{seed})
+[#=]result[{#rverb]:{code}[#}]
+[#rb<]
+expectedFile=File.join(#{=.dir},<key:>)
+
+<expected:> = File.read(expectedFile) if <expected:>.empty? and File.exists?(expectedFile)
+
+unless File.exists?(expectedFile)
+  File.open(expectedFile,"w") do |f| #do not remove!!!!!
+    #puts "result"; p #{=result}
+    f << <result:>
+  end 
+end
+
+<.tests@> << <key:>
+#p <.codes@>
+<.report@>[<key:>]={:type=>:codeR,:code=> code,:expected=> <expected:> ,:result=> <result:>,:file=> <file:>,:descr => <descr:>}
+[#meth-test}
+
+{#meth]testRImg.Tester[#,]key[][#,]code[][#,]file[][#,]expected[][#,]seed[10][#,]descr[]
+[#?]#{+?file}[#=]code[#F{#{file}.dyn}][#?]end
+[#rb<]
+code=#{=code}.strip
+result=File.join(#{=.dir},<key:>+".png")
+[#r<]set.seed(#{seed})
+[#<]{#rpng]:{code}[#img]:{result}[#newR]TRUE[#}
+[#rb<]
+unless <expected:>.empty?
+  tmpExpected=File.join(#{=.dir},<expected:>)
+  <expected:> = tmpExpected if !File.exists?(<expected:>) and File.exists?(tmpExpected)
+else 
+  tmpExpected = File.join(#{=.dir},<key:>+"-expected.png")
+  if File.exists? tmpExpected
+    <expected:> = tmpExpected
+  elsif File.exists?(result)
+    <expected:> = tmpExpected
+    require 'fileutils'
+    FileUtils.cp(result,<expected:>)
+  end
+end
+raise "Boom! expected image file "+<expected:>+" does not exists!" unless File.exists?(<expected:>)
+<.tests@> << <key:>
+#p <.codes@>
+<.report@>[<key:>]={:type=>:imgR,:code=>code,:expected=> <expected:> ,:result=> result,:file=> <file:>,:descr => <descr:>}
+[#meth-test}
+
+{#meth]check.Tester[#>]
+\begin{tabular}{|c|c|} \hline
+[#rb>]
+<.tests@>.each{|key| #
+  {#>]:{key} & [#>} 
+  if {#<<]{#isValid]self[#key]:{key}[#}[#<<}
+    {#>]\ok[#>}  
+  else
+     {#>]\nok[#>} 
+  end
+  {#>]\\\hline[#nl][#>}
+}
+[#>]\end{tabular}
+[#meth-report}
+
+{#meth]theCode.Tester[#,]key[][#,]verbSep[!][#rb>]
+case <.report@>[<key:>][:type]
+when :code 
+  {#>]{@verbatim]:{<.report@>[<key:>][:code]}[@}[#} #make a comment in the doc! This works since <.report@>[<key:>] is converted befaore the code execution in ruby object!!!!
+when :codeR, :imgR
+  {#>]{@verbatim]:{<.report@>[<key:>][:code]}[@}[#}
+end
+[#meth}
+
+{#meth]result.Tester[#,]key[][#,]verbSep[!][#rb>]
+case <.report@>[<key:>][:type]
+when :code
+  {#>]{@verbatim]:{<.report@>[<key:>][:result]}[@}[#}
+when :codeR
+  {#>][#rb>][<.report@>[<key:>][:result]][#}
+when :imgR
+  {#>]\includegraphics[scale=.5]{:{<.report@>[<key:>][:result]}}[#}
+end
+[#}
+
+{#meth]expected.Tester[#,]key[][#,]verbSep[!][#rb>]
+case <.report@>[<key:>][:type]
+when :code
+  {#>]{@verbatim]:{<.report@>[<key:>][:expected]}[@}[#}
+when :codeR
+  {#>][#rb>][<.report@>[<key:>][:expected]][#}
+when :imgR
+  {#>]\includegraphics[scale=.5]{:{<.report@>[<key:>][:expected]}}[#}
+end
+[#meth}
+
+{#meth]isValid.Tester[#,]key[]
+[#rb>]
+require 'digest'
+case <.report@>[<key:>][:type]
+when :code, :codeR
+  Digest::SHA1.hexdigest(<.report@>[<key:>][:result])==Digest::SHA1.hexdigest(<.report@>[<key:>][:expected])
+when :imgR
+  Digest::SHA1.hexdigest(File.read(<.report@>[<key:>][:result]))==Digest::SHA1.hexdigest(File.read(<.report@>[<key:>][:expected]))
+end
+[#meth}
+
+CREATION OF THE GLOBAL TESTER: {#new]::Test[#of]Tester[#}
+
+IN THE STYLE MODE: 
+{@Tester:new@}
+
+{@Tester:testCode][@,]key[][@,]code[][@,]file[][@,]expected[][@,]descr[][@,]view[false][@>]{#testCode]Test[#}[@}
+
+{@Tester:testRCode][@,]key[][@,]code[][@,]file[][@,]expected[][@,]seed[10][@,]descr[][@>]{#testRCode]Test[#}[@}
+
+{@Tester:theCode][@,]key[][@,]verbSep[!][@>]{#theCode]Test[#}[@}
+
+{@Tester:theResult][@,]key[][@,]verbSep[!][@>]{#result]Test[#}[@}
+
+{@Tester:expectedResult][@,]key[][@,]verbSep[!][@>]{#expected]Test[#}[@}
+
+[#hide}
+

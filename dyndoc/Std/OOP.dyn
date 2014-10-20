@@ -1,0 +1,32 @@
+
+{#meth]class.Object[#>]#{self.Class}[#}
+
+{#meth]objname.Object[#>]#{self.ObjectName}[#}
+
+{#meth]self.Object[#>]:#{self.ObjectName}[#}
+
+{#meth]link.Object[#,]to[][#<]{#if]@vars.extract("self").respond_to? "keys" and @vars.extract(#{=to}).respond_to? "keys"
+[#rb<]p #{=to};p @vars.extract("self").keys; p @vars.extract(#{=to}).keys;p #{=to}
+vset=@vars.extract(#{=to}).keys - @vars.extract("self").keys
+i=-1
+[#<]{#loop][#rb<]v=vset[i+=1]
+p v;p [#{=.ObjectName},#{=to}]
+[#=].:{v}[:#{to}.:{v}]
+[#break]vset.length==i
+[#loop}
+[#if}
+[#meth}
+
+{#meth]inspect.Object[#,]verbatim[true]
+[#?]#{verbatim}[#>]\begin{verbatim}
+[#>] [Class: [#{self.Class}]]
+[#?]#{=self.ObjectName}[#>][
+  |ObjectName: [#{self.ObjectName}]
+  |True variable content: 
+  |:{@vars.extract_list(#{=self.ObjectName})}]
+[#?]#{=self.content}[#>][
+  |self variable content:
+  |:{@vars.extract_list("self.content")}]
+[#?]#{verbatim}[#>][<\n>\end][#>][{verbatim}]
+[#}
+

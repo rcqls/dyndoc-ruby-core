@@ -1,0 +1,35 @@
+[#main]{#set] _DOCUMENTCLASS_![#>]beamer[#}
+[#package][#>]beamertheme?[JuanLesPins]
+[#>]\usepackage{pgf,pgfarrows,pgfnodes}
+[#preamble]
+\mode<article>{\usepackage{fullpage}}
+%\usetheme{Darmstadt}
+%\usepackage{times}
+%\usefonttheme{structurebold}
+\usetheme{Antibes}
+%\usecolortheme{lily}
+
+\definecolor{VertFonce}{rgb}{0,.4,.0}
+
+\mode<presentation>
+{
+  %\usetheme{Warsaw}
+  % or ...
+\usetheme{#{beamertheme}}
+
+  \setbeamercovered{transparent=5}
+  % or whatever (possibly just delete it)
+}
+%\setbeamercovered{dynamic}
+
+
+\subject{Talks}
+
+\AtBeginSection[]
+{
+  \begin{frame}<beamer>
+    \frametitle{Plan}
+    \tableofcontents[currentsection,currentsubsection]
+  \end{frame}
+}
+[#main][#tag]beamer:handout[#rb<] _optclass_<< "handout"

@@ -1,0 +1,5 @@
+{#def]beginVerb[#,]mode[{#modedoc#}][#rb>] [CqlsDoc::VERB[:#{mode}][:begin]] [#}
+
+{#def]endVerb[#,]mode[{#modedoc#}][#rb>][CqlsDoc::VERB[:#{mode}][:end]][#}
+
+{#def]verb[#,]mode[tex][#rb>] [CqlsDoc::VERB[:#{mode}][:begin]][#yield]default[#rb>][CqlsDoc::VERB[:#{mode}][:end]][#}

@@ -1,0 +1,20 @@
+{#def]txtl[#,]code[]
+[#>]\begin{rawhtml}<\n>
+[#rb>]RedCloth.new(#{=code}).to_html
+[#>]\end{rawhtml}
+[#def}
+
+{#def]uvTtm[#,]code[][#,]syntax[dyndoc][#,]render[amy]
+[#>]\begin{rawhtml}<\n>
+[#rb>]require "uv"
+uv_code= #{=code}.strip
+#puts "uv code:";p uv_code;p  #{=syntax}
+Uv.parse(uv_code, "xhtml", #{=syntax}.downcase, true, #{=render})
+[#>]<\n>\end{rawhtml}<\n>
+[#=]::header.css_uv?[amy]
+[#=]::header.css_uv[{#rb>](#{=header.css_uv}.split(",")+[#{=render}]).join(",")[#}]
+[#def}
+
+{#def]rverbUVTtm[#,]code[][#,]render[amy]
+[#>]{#uvTtm]{#rverb]#{code}[#mode]raw[#rverb}
+[#syntax]r[#}

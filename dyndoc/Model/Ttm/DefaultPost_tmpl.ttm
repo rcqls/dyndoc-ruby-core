@@ -1,0 +1,3 @@
+##{_ENDDOC_}
+\end{document}
+{#set]_OPTCLASS_![#>][[:{_optclass_.uniq.join(",")}]][#}

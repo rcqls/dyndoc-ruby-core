@@ -1,0 +1,17 @@
+{@StdTex:new@}
+
+{@StdTex:b]code[][@>]\textbf{#{code}}[@}
+
+{@StdTex:i]code[][@>]\textit{#{code}}[@}
+
+{@StdTex:u]code[][@>]\underline{#{code}}[@}
+
+{@StdTex:verbatim]code[][@,]verbSep[!][@rb>]
+	mode=@cfg[:mode_doc]
+	mode=:tex unless mode
+	if #{=code}.split("\n").length>1 
+	  CqlsDoc::VERB[mode][:begin]+'<\n>'+#{=code}.strip+'<\n>'+CqlsDoc::VERB[mode][:end]+'<\n>'
+	else
+	  '\verb#{verbSep}'+#{=code}.strip+'#{verbSep}'
+	end
+[@}

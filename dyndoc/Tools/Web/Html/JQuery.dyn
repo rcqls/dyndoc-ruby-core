@@ -1,0 +1,123 @@
+{#new]JQueryAll[#of]HtmlLoader[#code]
+[<script type="text/javascript" src="/javascripts/jquery-1.6.2.min.js"></script>
+   <script type="text/javascript" src="/javascripts/jquery-ui-1.8.16.custom.min.js"></script>
+   <script type="text/javascript" src="/javascripts/jquery.editinplace.js"></script>
+   <script type="text/javascript" src="/javascripts/jquery.taconite.js"></script>
+   <script type="text/javascript" src="/javascripts/jquery.easing.js"></script>
+   <script type="text/javascript" src="/javascripts/jquery.jkey.js"></script>
+   <script type="text/javascript" src="/javascripts/jquery.easyui.min.js"></script>
+   <script type="text/javascript" src="/javascripts/jquery.cookie.js"></script>
+   <link rel="stylesheet" href="/stylesheets/jqueryFileTree.css" type="text/css"/>
+  <script type="text/javascript" src="/javascripts/jqueryFileTree.js"></script>
+  <script type="text/javascript" src="/javascripts/jquery-tools-min-1.2.6.js"></script>
+  {#hide]<script src="http://cdn.jquerytools.org/1.2.6/all/jquery.tools.min.js"></script>[#hide}
+  <script src="/tools/DataTables/js/jquery.dataTables.min.js"></script>]
+[#}
+
+{#new]JQuerySag6[#of]HtmlLoader[#code]
+[<script type="text/javascript" src="http://sagag6.upmf-grenoble.fr/javascripts/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="http://sagag6.upmf-grenoble.fr/javascripts/jquery.cookie.js"></script>]
+[#}
+
+{#new]JQuery16[#of]HtmlLoader[#code]
+[<script type="text/javascript" src="/javascripts/jquery-1.6.2.min.js"></script>]
+[#}
+
+{#new]JQueryUI[#of]HtmlLoader[#code]
+[<script type="text/javascript" src="/javascripts/jquery-ui-1.8.16.custom.min.js"></script>]
+[#}
+
+
+{#new]JQueryEditInPlace[#of]HtmlLoader[#code]
+[<script type="text/javascript" src="/javascripts/jquery.editinplace.js"></script>]
+[#}
+
+{#new]JQueryTaconite[#of]HtmlLoader[#code]
+[<script type="text/javascript" src="/javascripts/jquery.taconite.js"></script>]
+[#}
+
+{#new]JQueryEasing[#of]HtmlLoader[#code]
+[<script type="text/javascript" src="/javascripts/jquery.easing.js"></script>]
+[#}
+
+{#new]JQueryJKey[#of]HtmlLoader[#code]
+[<script type="text/javascript" src="/javascripts/jquery.jkey.js"></script>]
+[#}
+
+{#new]JQueryEasyUI[#of]HtmlLoader[#code]
+[<script type="text/javascript" src="/javascripts/jquery.easyui.min.js"></script>]
+[#}
+
+{#new]JQueryFileTree[#of]HtmlLoader[#code]
+[<link rel="stylesheet" href="/stylesheets/jqueryFileTree.css" type="text/css"/>
+  <script type="text/javascript" src="/javascripts/jqueryFileTree.js"></script>]
+[#}
+
+{#new]JQueryTools[#of]HtmlLoader[#code] [<script type="text/javascript" src="/javascripts/jquery-tools-min-1.2.6.js"></script>
+{#hide]<script src="http://cdn.jquerytools.org/1.2.6/all/jquery.tools.min.js"></script>[#hide}
+]
+[#}
+
+{#new]JQueryCookie[#of]HtmlLoader[#code] [<script src="/javascripts/jquery.cookie.js"></script>]
+[#}
+
+{#new]JQueryDataTable[#of]HtmlLoader[#code] [<script src="/tools/DataTables/js/jquery.dataTables.min.js"></script>
+<script src="/tools/DataTables/extras/ColVis/js/ColVis.min.js"></script>
+<script src="/javascripts/jquery.form.js"></script>
+]
+[#}
+
+{#new]JQueryDataTableEditable[#of]HtmlLoader[#code] [<script src="/tools/DataTables/editable/js/jquery.jeditable.js"></script>
+<script src="/tools/DataTables/editable/js/jquery.dataTables.editable.js"></script>
+]
+[#}
+
+
+### For SAGAG6 ###
+
+{#new]Sag6JQueryUI[#of]HtmlLoader[#code]
+[<script type="text/javascript" src="http://sagag6.upmf-grenoble.fr/javascripts/jquery-ui-1.8.16.custom.min.js"></script>]
+[#}
+
+
+{#new]Sag6JQueryEditInPlace[#of]HtmlLoader[#code]
+[<script type="text/javascript" src="http://sagag6.upmf-grenoble.fr/javascripts/jquery.editinplace.js"></script>]
+[#}
+
+{#new]Sag6JQueryTaconite[#of]HtmlLoader[#code]
+[<script type="text/javascript" src="http://sagag6.upmf-grenoble.fr/javascripts/jquery.taconite.js"></script>]
+[#}
+
+{#new]Sag6JQueryEasing[#of]HtmlLoader[#code]
+[<script type="text/javascript" src="http://sagag6.upmf-grenoble.fr/javascripts/jquery.easing.js"></script>]
+[#}
+
+{#new]Sag6JQueryJKey[#of]HtmlLoader[#code]
+[<script type="text/javascript" src="http://sagag6.upmf-grenoble.fr/javascripts/jquery.jkey.js"></script>]
+[#}
+
+{#new]Sag6JQueryEasyUI[#of]HtmlLoader[#code]
+[<script type="text/javascript" src="http://sagag6.upmf-grenoble.fr/javascripts/jquery.easyui.min.js"></script>]
+[#}
+
+{#new]Sag6JQueryFileTree[#of]HtmlLoader[#code]
+[<link rel="stylesheet" href="http://sagag6.upmf-grenoble.fr/stylesheets/jqueryFileTree.css" type="text/css"/>
+  <script type="text/javascript" src="http://sagag6.upmf-grenoble.fr/javascripts/jqueryFileTree.js"></script>]
+[#}
+
+{#new]Sag6JQueryTools[#of]HtmlLoader[#code] [<script src="http://sagag6.upmf-grenoble.fr/javascripts/jquery-tools-min.js"></script>]
+[#}
+
+{#new]Sag6JQueryCookie[#of]HtmlLoader[#code] [<script src="http://sagag6.upmf-grenoble.fr/javascripts/jquery.cookie.js"></script>]
+[#}
+
+{#new]Sag6JQueryDataTable[#of]HtmlLoader[#code] [<script src="http://sagag6.upmf-grenoble.fr/tools/DataTables/js/jquery.dataTables.min.js"></script>
+<script src="http://sagag6.upmf-grenoble.fr/tools/DataTables/extras/ColVis/js/ColVis.min.js"></script>
+<script src="http://sagag6.upmf-grenoble.fr/javascripts/jquery.form.js"></script>
+]
+[#}
+
+{#new]Sag6JQueryDataTableEditable[#of]HtmlLoader[#code] [<script src="http://sagag6.upmf-grenoble.fr/tools/DataTables/editable/js/jquery.jeditable.js"></script>
+<script src="http://sagag6.upmf-grenoble.fr/tools/DataTables/editable/js/jquery.dataTables.editable.js"></script>
+]
+[#}

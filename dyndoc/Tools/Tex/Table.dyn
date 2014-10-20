@@ -1,0 +1,278 @@
+[#package]\usepackage{multirow}
+[#main]
+[#%]double indexed elements
+On définit les cellules comme des éléments #code (enregistrés dans des variables dyn) dépendant (ou pas) de 2 indices i et j (en ruby)!
+Les infos sont attachés dans un environnement R sous forme d'une matrice R avec pour élements les noms des cellules #code
+[#<]{#meth]new.Tabular[#,].tabR[.#{.ObjectName}TabR][#,].hlines[][#,].vlines[]
+[#rb<]@vars.extract_raw("self")[:cells]={}
+[#}
+
+
+LES IDEES 
+A) sur le contenu des cellules
+  1) créer une fonction dyn qui gère le contenu en fonction des indices i,j
+  2) l'appeler dans les blocs représentant les cellules!
+  3) les cellules contenant du texte sont simplement recopiées tandis que les blocs sont executés
+    un bloc finit par "!" 
+B) la méthode d'initialisation peut être générique et non seulement applicable au tableau!
+C) gestion des multicol et multirow??? PLUS TARD!
+
+{#meth]make.Tabular[#,]mat[][#,]transpose[false]
+[#rb<]
+curRow=nil
+mat=[]
+cells={}
+matxt=#{=mat}.strip
+#Dyndoc.warn "matxt",matxt
+
+#create the matrix
+rows=matxt.split("\\\\").map{|r| r.strip}
+rows.each{|r| #
+#p r
+  row=r.strip.split("&",-1).map{|e| e.strip}
+#p [:row,row]
+  #first column -> maybe a preliminary variable to initialize! 
+  while row[0] =~ /^(?:\#|\:)(var|row|col|rb|r)/
+    cmd=$1
+    pos=cmd.length+1
+    row[0]=row[0][pos..-1]
+    #separator
+    sep="|"
+    if ["var","col","row"].include? cmd and row[0][0,1]=="[" and row[0][2,1]=="]"
+      sep=row[0][1,1]
+      row[0]=row[0][3..-1]
+    end
+    #code
+    o=row[0][0,1]
+    c={"{"=>"}","("=>")","<"=>">","["=>"]"}[o]
+    c=o unless c
+    row[0] =~ /^#{Regexp.escape(o)}([^#{Regexp.escape(c)}]*)#{Regexp.escape(c)}/m #the rule is clear: the closing character does not exists inside!
+#p /^#{Regexp.escape(o)}([^#{Regexp.escape(c)}]*)#{Regexp.escape(c)}/m
+#puts "ICI";p row[0];p $1
+    code=$1
+    row[0]=row[0][(code.length+2)..-1].strip
+#p row[0]    
+    code.strip!
+    cells[mat.length+1]=[] unless cells[mat.length+1]
+    if ["row","col"].include? cmd
+      code= cmd + "=" + code
+      cmd="var"
+    end
+    cmd2=[cmd.to_sym,code]
+    cmd2 << sep if cmd=="var"
+    cells[mat.length+1] << cmd2
+  end
+#puts "after";p row
+  # and now the normal treatment!
+  if row[0][0,1]=="%"
+    #nothing to do
+  elsif row.length==1 and row[0][0,4]=="row*"
+    # repeat curRow the number of times!
+#p "row*";p row[0][4..-1].strip.to_i
+    1.upto(row[0][4..-1].strip.to_i) { mat << curRow }
+  elsif row.length==1 and row[0][0,4]=="row(" and row[0][-1,1]==")"
+    mat << (curRow=mat[row[0][4...-1].strip.to_i-1])
+  else
+    curCol=""
+    resRow=[]  
+#p row
+    row.each{|col| #
+      if col[0,4]=="col*"
+        1.upto(col[4..-1].strip.to_i) { resRow << curCol }
+      elsif col[0,4]=="col(" and col[-1,1]==")"
+        resRow << (curCol=resRow[col[4...-1].strip.to_i-1])
+      elsif col =~ /^mcol\{([^\{]*)\}(.*)$/m
+        nbCol=$1.strip.to_i-1
+        resRow << "__MCOL__{"+$1+"}"+$2
+        1.upto(nbCol) {resRow << (curCol="__MCOL__") }
+        resRow[-1]+="&"
+      elsif col =~ /^mrow(\{[^\{]*\})(\{[^\{]*\})(.*)$/m
+        rowCnt=$1+( $3.empty? ? "{*}"+$2 : $2+$3 ) 
+        resRow << (curCol="\\multirow"+rowCnt)
+      else
+        resRow << col 
+      end
+      curCol=resRow[-1]
+    }
+#puts "resRow";p resRow
+    mat << resRow
+    curRow=mat[-1]
+  end
+}
+# dim(mat)
+nrow,ncol=mat.length,mat.map{|row| row.length}.max
+# same column number! complete otherwise
+#mat.map!{|row| ( row.length<ncol ? row+[""]*(ncol-row.length) : (row[-1]=="__MCOL__&" ? row[0...-1]+["__MCOL__"] : row ) ) }
+mat.map!{|row| 
+  if row.length<ncol
+    row+[""]*(ncol-row.length) 
+  elsif row[-1]=="__MCOL__&"
+    #no __MCOL__& at the last position!
+    row[0...-1]+["__MCOL__"] 
+  else 
+    row
+  end
+}
+#p mat
+#Dyndoc.warn "make:cells",cells
+@vars.extract_raw("self")[:cells]=cells
+#p @vars.extract_raw("self")
+#@vars["self"][:cells]=cells
+[#%]put it in R! Là, c'est magic! Le job est fait sans itération!
+[#r<]#{.tabR}<-matrix(:{=mat.flatten},nr=:{nrow},nc=:{ncol},byrow=TRUE)
+[#yield]default
+[#?]#{transpose}[#r<]#{tabR}<-t(#{.tabR})[#?]end
+[#<]{#init]self[#}
+[#}
+
+
+
+Once the tabular is created! initialize it by specifying .vlines and .hlines!
+
+{#meth]init.Tabular[#,]hlines[auto][#,]vlines[auto]
+[#=].imax[:r{nrow(#{.tabR})}][#=].jmax[:r{ncol(#{.tabR})}]
+[#?]#{=vlines}=="auto"[#=].vlines[|:{"c|"*#{.jmax}}][#?]else[#=].vlines[#{vlines}][#?]end
+[#?]#{=hlines}=="auto"[#=].hlines[1-#{.jmax}][#?]else[#=].hlines[#{hlines}][#?]end
+[#rb<]#p #{=.hlines}
+hlines=#{=.hlines}.split(",",-1).map{|e| e.strip}
+[#r<]
+hlines=rbind(:{=hlines},0:#{.imax})[1,]
+[#rb<]hlines=[]
+curHL=""
+:r{=hlines}.each{|hline|  #
+    hl=hline.strip
+#puts "hl";p hl
+    if hl.empty? 
+      hlines << curHL=("")
+    elsif hl[0,1]=="*"
+      hlines += [curHL]*(hl[1..-1].to_i)
+    elsif hl[0,1]=="(" and hl[-1,1]==")"
+      hlines << (curHL=res[hl[1...-1].strip.to_i-1])
+    else 
+      hlines << (curHL=hl.strip.split(" ").map{|e| 
+        e2=e.strip
+        e2=(e2[-1,1]=="-" ? e2+#{=.jmax} : e2 )
+        "\\cline{"+e2.strip+"}" 
+      }.join(""))
+    end 
+}
+  
+#p hlines
+[#}
+
+{#hide]OLD! Just to compare with the beautiful one below!
+{#meth]print.Tabular[#,]vlines[][#,]hlines[]
+[#rb<]imax=:r{nrow(#{.tabR})};jmax=:r{ncol(#{.tabR})}
+##p imax;p jmax
+[#?]#{0?vlines}[#=]vlines[|:{"c|"*jmax}]
+[#?]#{0?hlines}[#=]hlines[['\hline']*(:{imax}+1)]
+[#?]end
+[#rb<]hlines=#{hlines}
+[#>]\begin{tabular}{#{vlines}}:{hlines[0]}
+[#rb<]i=0[#>]{#loop][#rb<]i+=1;j=0
+[#>]{#loop][#rb<]j+=1
+[#=]cell[:r{#{.tabR}[:{i},:{j}]}]
+[#?]#{=cell}[-1,1]=="!"[#>]cell[::{#{=cell}[0...-1]}][#>][#{cell!}]
+[#?]else[#>][#{cell}][#?]end
+[#?]j<jmax[#>][ & ][#?]else[#>]\\ :{hlines[i]}[#?]end
+[#break]j==jmax[#loop-j}
+[#break]i==imax[#loop-i}
+\end{tabular}
+[#meth}[#hide}
+
+{#meth]print.Tabular[#,]imax[#{.imax}][#,]jmax[#{.jmax}]
+[#=]hlines?[1-#{jmax}][#=]vlines?[|:{"c|"*#{jmax}}:{"c"*(#{.jmax}-#{jmax})}]
+[#<]{#init]self[#hlines]#{hlines}[#vlines]#{vlines}[#}
+[#>]\begin{tabular}{#{.vlines}}[#rb>][hlines[0]]
+[#rb<]
+
+cells=@vars.extract_raw("self")[:cells]
+#Dyndoc.warn "print:cells",cells
+
+
+## Introduce because of Ruby >= 1.9.3 change of behavior about binding
+## childBinding used inside filter_mngr.rb to fetch variables defined inside
+childBinding,res=binding,nil
+
+## DEBUG: Dyndoc.warn 'tabR';R4rb < "print(#{.tabR})"
+
+varnames=[] # to save the predefined names used in Table
+
+(1..#{.imax}).each do |i| # 
+
+  if cells[i]
+    cells[i].each{|cmd,code,sep| #
+      case cmd
+        when :var
+          code =~ /^([^=]*)=(.*)/
+#Dyndoc.warn [$1,$2]
+          varnames << $1
+          res=$2.strip.to_aRy(sep)
+          res.unshift(nil) #to have the counter in the R spirit
+#Dyndoc.warn "res",res
+#Dyndoc.warn "#{$1}=res"
+          childBinding.eval("#{$1}=res")
+#Dyndoc.warn "print.Tableau",["#{$1}",eval("#{$1}",childBinding),childBinding]
+      end
+    }
+  end
+end
+
+[#rb>] ## VERY IMPORTANT: DO NOT REMOVE this #rb> tag this was added to use dyndoc to call newly created variables inside the previous block
+if RUBY_VERSION >= "1.9.3" # not necessary with other ruby engine and previous version
+## DO NOT REMOVE this apparently useless line, otherwise there is a bug in Ruby >= 1.9.3!
+    ## DEBUG: Dyndoc.warn "Table: vars => "+varnames.join(",")+":",[:{varnames}] unless varnames.empty?
+    [:{varnames}]
+    ## My explanation: creation of variables in binding as in the previous #rb< block is delayed and are not directly synchronized inside the environment.
+    ## this leads to a bug when calling as in the next block these variables.
+    ## Thanks of dyndoc, the line [:{varnames}] simply call these variables 
+    ## to get them ready to be used in the next block. 
+end
+
+(1..#{.imax}).each do |i| # 
+  #for j in 1..#{.jmax} do
+  (1..#{.jmax}).each do |j| #
+
+    {#>][#=]cell[:r{#{.tabR}[:{i},:{j}]}]
+    [#>]{#if]#{=cell}[0,8]=="__MCOL__"[#=]cell[:{#{=cell}[8..-1]}]
+        [#?]#{=cell}[0,1]=="&"[#>][ & ]
+        [#?]#{=cell}[0,1]=="{"[#>!][\multicolumn#{cell}]
+        [#else]
+        [#?]j>#{jmax} or i>#{imax}[#>]\phantom{[#?]end
+        [#>!]#{cell}
+        [#?]j>#{jmax} or i>#{imax}[#>]}[#?]end
+        [#?]j<#{.jmax}[#>][ & ][#if}
+    [#?]j==#{.jmax}[#>]\\ {#if]!hlines[i].empty?[#rb>][hlines[i]][#}[#nl]
+    [#>}
+
+  end 
+end
+
+##### ruby 2.0 trouble about binding!
+#Dyndoc.warn "HERE!!!!",[childBinding,$curDyn.tmpl.rbenvir_ls(childBinding),$curDyn.tmpl.rbEnvirs]
+#Dyndoc.warn "TOTO",(tmp=$curDyn.tmpl.rbEnvirs.values.map{|v| $curDyn.tmpl.rbenvir_ls(v)})
+#Dyndoc.warn "TOTOA",[:a,($curDyn.tmpl.rbEnvirs.values.map{|v| $curDyn.tmpl.rbenvir_ls(v)}.flatten.include? :childBinding)]
+#if $curDyn.tmpl.rbEnvirs.values.map{|v| $curDyn.tmpl.rbenvir_ls(v)}.flatten.include? :childBinding
+#  tmp=[];
+#  $curDyn.tmpl.rbEnvirs.each_key{|k| 
+#    Dyndoc.warn "TOTOB",$curDyn.tmpl.rbenvir_ls($curDyn.tmpl.rbEnvirs[k])
+#    if $curDyn.tmpl.rbenvir_ls($curDyn.tmpl.rbEnvirs[k]).include? :childBinding
+#      if $curDyn.tmpl.rbenvir_ls(($curDyn.tmpl.rbEnvirs[k]).eval("childBinding")).include? :toto
+#        tmp << ($curDyn.tmpl.rbEnvirs[k]).eval("childBinding").eval("toto[i]")
+#      end
+#    end
+#  }
+#  Dyndoc.warn "TOTO2", tmp
+#end
+
+#=end
+[#>]\end{tabular}
+[#meth}
+
+{#meth]header.Tabular
+[#rb<]hlines=#{=.hlines}.split(",",-1).map{|e| e.strip}
+[#>]\begin{tabular}{#{.vlines}}:{hlines[0]}
+[#}
+
+{#meth]rows.Tabular[#,]what[]
+[#}

@@ -1,0 +1,6 @@
+[#%]  Initialization for CQLS layout
+[#=]::document.style[cqls]
+[#=]::document.head.css[]
+[#=]::document.head.css_pre[CssCqls,FileUploader,TabBar,AceEditor,JQueryToolsNavStyle]
+[#=]::document.head.css_post[JQueryAll]
+[#=]::document.mainMenu[]

@@ -1,0 +1,286 @@
+{#def]require4html[#,]libs[]
+[#rb<]
+	res=""
+	#{=libs}.split(",").each{|lib| #
+		res+={#<]{#load]:{lib}[#}[#<}+"\n"
+	}
+	res=res.strip.split("\n").uniq.join("\n") #remove duplicated lines!
+    #puts "require4html";p #{=libs};p res
+[#>][:{res}]
+[#}
+
+{#meth]new.HtmlLoader[#,]code[][#=].code[#{code}][#}
+
+{#meth]load.HtmlLoader[#>]#{.code}[#}
+
+
+{#def]require4js[#,]libs[]
+[#>]<script type="text/javascript">
+[#rb<]
+    res=""
+    #{=libs}.split(",").uniq.each{|lib| #
+        res+={#<]{#load]:{lib}[#}[#<}+"\n"
+    }
+[#>][:{res}<\n></script>]
+[#}
+
+{#meth]new.JsLoader[#,]code[][#=].code[#{code}][#}
+
+{#meth]load.JsLoader[#>]#{.code}[#}
+
+
+## General method for Html
+
+{#def]defaultFormat[#rb>]defaultFmtContainer[#}
+
+To test the different format! (see method format for TemplateManager in parse_do)
+{#def]testFormat[#rb<]p format[#}
+
+{#def]uv[#,]code[][#,]key[][#,]file[][#,]syntax[dyndoc][#,]render[amy][#,]lines[true]
+[#%]in a html blck to be protected!
+[#rb<]#require "uv"
+syntax,render=#{=syntax}.strip.downcase,#{=render}.strip
+## Dyndoc.warn "syntax",syntax
+#if File.exists? File.join(ENV["HOME"],"dyndoc","share","uv")
+#require File.join(ENV["HOME"],"dyndoc","share","uv","uv")
+require 'dyndoc/common/uv'
+syntax=File.join(Uv.syntax_path,syntax+".syntax")
+#end
+uv_code = (#{=file}.empty? ? nil : File.read(#{=file}))
+uv_code=((!(#{=code}.empty?) or #{=key}.empty?) ? #{=code} : CqlsDoc::Utils.dyndoc_raw_text(#{=key})).strip unless uv_code
+#Dyndoc.warn "CODE",uv_code,#{lines}
+#Uv.parse(uv_code, "xhtml", syntax , #{lines}, render,true)
+#OLD: uv_res=CqlsDoc::AS_IS+Uv.parse(uv_code, "xhtml", #{=syntax}.downcase, true, #{=render})+CqlsDoc::AS_IS
+#Dyndoc.warn "titi"
+uv_res=Uv.parse(uv_code, "xhtml", syntax , #{lines}, render,false)
+uv_res = CqlsDoc::AS_IS+uv_res+CqlsDoc::AS_IS unless CqlsDoc::V3::TemplateManager.interactive
+#Dyndoc.warn "titi"
+#Dyndoc.warn "uv_res:", uv_res
+[#>][:{uv_res}<\n>]
+[#=]::header.css_uv?[amy]
+[#=]::header.css_uv[{#rb>](#{=header.css_uv}.split(",")+[#{=render}]).join(",")[#}]
+[#def}
+
+{#def]rverbUV[#,]code[][#,]render[amy][#,]lines[false]
+[#?]CqlsDoc::V3::TemplateManager.interactive
+[#>]{#rverb]#{code}[#mode]raw[#rverb}
+[#?]else
+[#>]{#uv]{#rverb]#{code}[#mode]raw[#rverb}
+[#syntax]r[#lines]#{lines}[#}
+[#def}
+
+{#meth]new.MenuSwitcher[#,].choices[][#,]first[js]
+[#>]{#case]#{first}
+[#when]init[#>]{#init]self[#}
+[#when]js[#>]{#js]self[#}
+[#case}
+[#}
+
+{#meth]init.MenuSwitcher[#,]choice[][#rb>]
+choices=#{=.choices}.split(",")
+[#>]<div choice=":{lang[i]}"></div>
+[#meth}
+
+
+{#meth]js.MenuSwitcher[#>]
+<script type="text/javascript">
+function update_#{.ObjectName}_Switcher(choice) {
+    var choices="#{.choices}".split(",");
+        for(i in  choices) {
+        //alert("lang="+langs[l]);
+                if(choices[i]==choice) { 
+                        $("[choice="+choices[i]+"]").show();
+                } else {
+                        $("[choice="+choices[i]+"]").hide();
+                }       
+        }
+};
+</script>
+[#meth}
+
+
+{#meth]new.LangSwitcher[#,].lang[fr,en][#,]first[init,js,header]
+[#=]::document.header.lang[]
+[#>]{#case]#{first}
+[#when]init[#>]{#init]self[#}
+[#when]js[#>]{#js]self[#}
+[#when]header[#=]::document.header.lang[{#init]self[#}<\n>{#js]self[#}]
+[#case}
+[#}
+
+{#meth]init.LangSwitcher[#rb>]
+lang=#{=.lang}.split(",")
+lang2=lang.reverse
+[0,1].each {|i| #
+    {#>]<div lang=":{lang[i]}"><img alt=":{lang2[i]}" src="#{document.rsrcSrvUrl?}/images/common/:{lang2[i]}.gif" langSwitcher=":{lang2[i]}"/></div>[#>} 
+}
+[#meth}
+
+
+{#meth]js.LangSwitcher[#>]
+<script type="text/javascript">
+function updateLanguage(lang) {
+    if(lang==null) {
+        lang="fr";
+    }
+    var langs="#{.lang}".split(",");
+        for(l in  langs) {
+        //alert("lang="+langs[l]);
+                if(langs[l]==lang) { 
+                        $("[lang="+langs[l]+"]").show();
+                } else {
+                        $("[lang="+langs[l]+"]").hide();
+                }       
+        }
+    $.cookie("langSwitcher",lang)
+};
+$("img[langSwitcher]").bind("click", function() {
+    var lang=$(this).attr("langSwitcher");
+    updateLanguage(lang);
+});
+$(document).ready(function() {
+    updateLanguage($.cookie("langSwitcher"));
+});
+</script>
+[#meth}
+
+{#def]fr[#,]code[][#,]en[][#,]sp[][#>]
+[#?]#{+?code}[#>][<div lang="fr">#{code}</div>]
+[#?]#{+?en}[#>][<div lang="en">#{en}</div>]
+[#?]#{+?sp}[#>][<div lang="sp">#{sp}</div>]
+[#def}
+
+{#def]en[#,]code[][#,]fr[][#,]sp[][#>]
+[#?]#{+?code}[#>][<div lang="en">#{code}</div>]
+[#?]#{+?fr}[#>][<div lang="fr">#{fr}</div>]
+[#?]#{+?sp}[#>][<div lang="sp">#{sp}</div>]
+[#def}
+
+{#new]JQuerySwitchable[#of]JsLoader[#code]
+function showSwitched(type,key) { 
+    $('.switchable[id="'+type+'"][switch="'+key+'"]').show();
+    $('.switchable[id="'+type+'"][switch!="'+key+'"]').hide();
+};
+
+function activateSwitchedLink(type,key) { 
+    $('a[id="'+type+'"][switch="'+key+'"]').toggleClass("active",true);
+    $('a[id="'+type+'"][switch!="'+key+'"]').toggleClass("active",false);
+
+};
+
+function selectSwitchedPage(type,key) {
+    if(key=="lastPage") {
+        key=$.cookie(type);
+    } else {
+        $.cookie(type,key);
+    }
+    showSwitched(type,key);
+    activateSwitchedLink(type,key);
+};
+[#}
+
+{#newBlck]mainMenu[#aggregate]title,link,page
+[#blck]:pre[#rb<]@vars[blckName[-1]]={:mainMenu=>[]}
+[#blck]active[#do_code]@vars[blckName[-1]][:active]=blckMngr.parse.strip.to_i
+[#blck]title[#do_code]@vars[blckName[-1]][:mainMenu] << {:title => blckMngr.parse.strip, :link => ""};
+[#blck]link[#do_code]@vars[blckName[-1]][:mainMenu][-1][:link]=blckMngr.parse.strip
+[#blck]page[#do_code]@vars[blckName[-1]][:mainMenu][-1][:page]=blckMngr.parse
+[#blck]:post
+[#=]mainMenu[]
+[#=]mainPages[]
+[#rb<]mainMenu=@vars[blckName[-1]][:mainMenu]
+    Dyndoc.warn "blckName[-1]",@vars[blckName[-1]]
+	mainMenu.each_with_index do |menu,i| #
+	#Dyndoc.warn "INSIDE",menu[:title];p i #TO DEBUG: WHY DO I NEED [>] after {>]
+	{#<][#+]mainMenu[#{menuItem.pre?}<a id="mainPage" switch=":{menu[:link]}" {#if]!menu[:page][#>]href=":{menu[:link]}"[#}{#if]i==@vars[blckName[-1]][:active][#>] class="active"[#if} {#if]menu[:page][#>]onclick='selectSwitchedPage("mainPage",":{menu[:link]}");'[#}>:{menu[:title]}<span class="desc"></span> </a> #{menuItem.post?} <\n>][#<}
+
+    if menu[:page]
+    ##Dyndoc.warn "PAGE ",menu[:link]
+    ##Dyndoc.warn "menu-page",menu[:page]
+        {#<][#+]mainPages[<div class="switchable" id="mainPage" switch=":{menu[:link]}"><\n>:{menu[:page]}<\n></div>][#<}
+    end
+end
+[#rb<]Dyndoc.warn "AAAA: mainMenu" "mainMenu",#{=mainMenu};Dyndoc.warn "ZZZZZ: mainPages",#{=mainPages}
+[#=]::document.mainMenu[<div id="mainMenu"> 
+<span class="lastMenuItem"></span><\n>#{mainMenu}<\n></div>]
+[#=]::document.mainPages[<div id="mainPages"><\n>#{mainPages}<\n></div>]
+[#}
+
+{#newBlck]subMenuPage[#aggregate]title,link,subpage
+[#blck]:pre[#=][#rb<]@vars[blckName[-1]]={:subMenu=>[]}
+[#blck]active[#do_code]@vars[blckName[-1]][:active]=blckMngr.parse.strip.to_i
+[#blck]title[#do_code]@vars[blckName[-1]][:subMenu] << {:title => blckMngr.parse.strip, :link => ""};
+[#blck]link[#do_code]@vars[blckName[-1]][:subMenu][-1][:link]=blckMngr.parse.strip
+[#blck]subpage[#do_code]@vars[blckName[-1]][:subMenu][-1][:subpage]=blckMngr.parse
+[#blck]:post
+[#=]subMenu[]
+[#=]subPages[]
+[#rb<]subMenu=@vars[blckName[-1]][:subMenu] 
+    Dyndoc.warn "blckName[-1]", @vars[blckName[-1]]
+    subMenu.each_with_index do |menu,i| #
+    {#<][#+]subMenu[<li class="here"><a id="subPage" switch=":{menu[:link]}" {#if]!menu[:subpage][#>]href=":{menu[:link]}"[#}{#if]i==@vars[blckName[-1]][:active][#>] class="select"[#if} {#if]menu[:subpage][#>]onclick='selectSwitchedPage("subPage",":{menu[:link]}");'[#}>:{menu[:title]}</a></li> <\n>][#<}
+
+    if menu[:subpage]
+    ##puts "SUBPAGE "+menu[:link]
+    ##p menu[:subpage]
+        {#<][#+]subPages[<div class="switchable" id="subPage" switch=":{menu[:link]}"><\n>:{menu[:subpage]}<\n></div>][#<}
+    end
+end
+[#rb<]Dyndoc.warn "subMenu",#{=subMenu}
+[#>]<div id="contentLeft">
+<ul class="subMenu">
+#{subMenu}
+</ul>
+</div>
+<div id="contentRight">
+<div id="subPages">
+#{subPages}
+</div>
+</div>
+[#}
+
+
+{#newBlck]multiPages4WebSite[#aggregate]menu,link,page
+[#blck]:pre[#=][#rb<]@vars[blckName[-1]]={:mainPages=>[]}
+[#blck]menu[#do_code]@vars[blckName[-1]][:mainMenu]=blckMngr.parse
+[#blck]link[#do_code]@vars[blckName[-1]][:mainPages] << {:link => blckMngr.parse.strip};
+[#blck]page[#do_code]@vars[blckName[-1]][:mainPages][-1][:page]=blckMngr.parse
+[#blck]:post
+[#=]mainPages[]
+[#=]mainMenu[]
+[#rb<]
+mainMenu=@vars[blckName[-1]][:mainMenu]
+##puts "ruby mainMenu";p mainMenu
+{#<][#+]mainMenu[:{mainMenu}][#<}
+mainPages=@vars[blckName[-1]][:mainPages]##;p @vars[blckName[-1]]
+mainPages.each_with_index do |page,i| #
+    if page[:page]
+        ##Dyndoc.warn "PAGE "+page[:link],page[:page]
+            {#<][#+]mainPages[<div class="switchable" id="mainPage" switch=":{page[:link]}"><\n>:{page[:page]}<\n></div>][#<}
+    end
+end
+[#rb<]Dyndoc.warn "mainPages",#{=mainPages}
+Dyndoc.warn "mainMenu",#{=mainMenu}
+[#=]::document.mainMenu[#{mainMenu}]
+[#=]::document.mainPages[<div id="mainPages"><\n>#{mainPages}<\n></div>]
+[#newBlck}
+
+{#def]mainPages4WebSite[#>]#{document.mainPages}[#}
+
+{#def]activePage4WebSite[#,]link[lastPage][#,]default[][#>]
+<script>
+$(document).ready(function() {
+    var link="#{link}";
+    if(link=="lastPage" && ($.cookie("mainPage")==null)) {
+        link="#{default}";
+    }
+    selectSwitchedPage("mainPage", link);
+})
+</script>
+[#}
+
+{#def]linkPage4WebSite[#,]link[][#,]fr[][#,]en[]
+    [#?]#{0?en}[#=]en[#{fr}][#?]end
+    [#>]
+    [<a id="mainPage" switch="#{link}"  onclick='selectSwitchedPage("mainPage","#{link}");'>{#fr]#{fr}[#en]#{en}[#}</a>]
+[#}

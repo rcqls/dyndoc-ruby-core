@@ -1,0 +1,18 @@
+[#first][#rb<]$dyn_signal={}
+[#main]
+{#def]connect[#,]signal[][#,]object[][#,]method[][#,]priority[100]
+[#rb<]
+$dyn_signal[#{=signal}]=[] unless $dyn_signal[#{=signal}]
+$dyn_signal[#{=signal}] << [#{priority},#{=object},#{=method}]
+$dyn_signal[#{=signal}].sort!{|e,e2| ((e[0]<e2[0] or (e[0]==e2[0] and e[1]<e2[1])) ? -1 : 1)}
+[#}
+ 
+{#def]emit[#,]signal[][#,]args[]
+  [#rb<]
+  signal=$dyn_signal[#{=signal}]
+  ind=-1
+  [#>]{#loop][#break]ind==signal.length-1
+	[#rb<][priority,object,method=signal[ind+=1]]
+	[#>][{#call]:{method}[#,]:{object}[#,]_args_[:args][#}]
+      [#}
+[#}

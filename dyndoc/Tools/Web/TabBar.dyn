@@ -1,0 +1,37 @@
+To initialize!!!
+
+{#new]TabBar[#of]HtmlLoader[#code]
+[<link rel="stylesheet" type="text/css" href="/dHtmlX/dhtmlx.css">
+<script  src="/dHtmlX/dhtmlx.js"></script>
+<!-- link rel="stylesheet" type="text/css" href="/dhtmlx/TabBar/codebase/dhtmlxtabbar.css">
+<script  src="/dhtmlx/dhtmlxcommon.js"></script>
+<script  src="/dhtmlx/TabBar/codebase/dhtmlxtabbar.js"></script -->]
+[#}
+
+TabBar defined as a block!!!
+ 
+{#newBlck]tabbar
+[#blck]:pre[#=]tabbar[:{blckName[-1]}]
+[#rb<]page_cpt=0[#>]
+[<div id="tabbar_#{tabbar}" style="width:#{style.width}; height:#{style.height};">
+
+<script>
+tabbar_#{tabbar}=new dhtmlXTabBar("tabbar_#{tabbar}","top");
+tabbar_#{tabbar}.setImagePath("/dhtmlx/TabBar/codebase/imgs/");
+tabbar_#{tabbar}.setHrefMode("iframes-on-demand");
+tabbar_#{tabbar}.setSkinColors("#FCFBFC","#F4F3EE");]
+[#blck]bar
+	[#post][#>]
+	|tabbar_#{tabbar}.addTab("#{tabbar}:{page_cpt+=1}","#{page.title}","#{style.title}");
+    |tabbar_#{tabbar}.setContentHref("#{tabbar}:{page_cpt}","http://docs.google.com/gview?url=#{url}/#{page.pdf}&embedded=true");
+    [#do_code][blckMngr.next_tag;puts "ICI BAR!"]
+[#blck]bar2
+	[#post][#>]
+	[tabbar_#{tabbar}.addTab("#{tabbar}:{page_cpt+=1}","#{page.title}","#{style.title}");
+    |tabbar_#{tabbar}.setContentHref("#{tabbar}:{page_cpt}","http://docs.google.com/gview?url=#{url}/#{page.pdf}&embedded=true");]
+    [#do_code][blckMngr.next_tag;puts "ICI"]
+[#blck]:post[#>]
+	tabbar_#{tabbar}.setTabActive("#{tabbar}1");
+</script>
+</div>
+[#}

@@ -1,0 +1,23 @@
+{#meth]set.DynVar[#,]field[:out][#,]content[][#rb<]@vars.extract_raw(#{=.ObjectName})[#{field}]=#{=content}[#}
+
+{#meth]delete.DynVar[#,]field[:out][#?]#{=field}[0,1]!=":"[#=]field[:#{field}]
+[#?]#{field} != :val[#rb<]@vars.extract_raw(#{=.ObjectName}).delete(#{field})
+[#}
+
+{#meth]rep.DynVar[#>]{#rep]#{#{.ObjectName}}[#}[#}
+
+{#meth]split.DynVar[#,]field[:split][#,]sep[&][#rb<] @vars.extract_raw(#{=.ObjectName})[#{field}]=#{=.content}.split(#{=sep})[#}
+
+{#meth]replicate.DynVar[#,]along[][#,]field[:out]
+[#?]#{=field}[0,1]!=":"[#=]field[:#{field}]
+[#?]#{field} != :val
+[#rb<]var,indices=#{=along}.split(" in ").map{|e| e.strip}
+#p indices
+[#rb<]indices=:r{c(:{indices})} #rb< is required!
+#p indices
+res=[][#rb<] 
+for :{var} in indices do 
+  res << {#<]#{.content!}[#}
+end
+@vars.extract_raw(#{=.ObjectName})[#{field}]=res
+[#}

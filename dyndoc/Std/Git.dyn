@@ -1,0 +1,34 @@
+[#%] Git for dyn: accessing file in some git directory
+require grit or maybe simply import the used functions
+[#first][#rb<]$dyn_git=[]
+[#main][#<]
+{#def]git[#,]from[.git][#,]branch[HEAD][#,]path[][#,]as[][#%]as is UNUSED from now
+[#?]#{0?as}[#>]as[#{path}][#?]end
+[#rb<]
+from_pathname=File.expand_path(#{=from})
+if File.exist? from_pathname
+  if !(from_pathname =~ /\.git$/) and File.exist?(File.join(from_pathname,".git"))
+    from_pathname=File.join(from_pathname,".git")
+  else
+    puts "WARNING! #{from_pathname} does not contain a git repository!"
+  end 
+elsif File.exist? from_pathname+".git"
+  from_pathname=from_pathname+".git"
+end
+#p from_pathname
+pathname=File.expand_path(#{=path})
+if File.exist? pathname
+  FileUtils.cp(pathname,pathname+".__DYN_ORIG__")
+end
+[#rb<]
+`git --git-dir=:{from_pathname} checkout #{branch} :{pathname}`
+[#rb<]
+as_pathname=pathname+".__DYN_GIT__"
+FileUtils.mv(pathname,as_pathname)
+$dyn_git << as_pathname
+FileUtils.mv(pathname+".__DYN_ORIG__",pathname) if File.exist? pathname+".__DYN_ORIG__"
+[#rb>]as_pathname
+[#def}
+[#last][#rb<]$dyn_git.uniq.each{|pathname| 
+  FileUtils.rm_f(pathname)
+} 

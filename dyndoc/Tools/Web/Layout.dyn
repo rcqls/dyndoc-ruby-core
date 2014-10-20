@@ -1,0 +1,86 @@
+{#def]layout[#,]style[cqls][#,]code[][#rb<]p "LAYOUT!!!"[#>]{#call]layout.#{style}[#,]#{code}[#}[#def}
+
+{#def]layout.cqls[#,]code[][#rb<]p "LAYOUT.CQLS";
+[#=]::document.team?[Cqls]
+[#=]::document.activity?[Statistics]
+[#=]::document.body.header[
+<!-- HEADER: Holds title, subtitle and header images -->
+  <div id="header">
+    <!-- top rounded corner -->
+    <img src="/images/reflection/corner_tl.gif" alt="corner" style="float:left;" />
+
+
+    <!-- Site title and subTitle -->
+    <span class="title">#{document.logo?}
+      <span class="white">#{document.team?}</span> team
+      <span class="subTitle">
+        #{document.activity?}
+      </span>
+      <span>#{document.header.lang?}</span>
+    </span>
+
+
+    #{document.mainMenu?}
+  </div>
+  ]
+[#=]::document.body.footer[<div id="footer">
+    <div id="footerLeft">
+    <a href="http://fullahead.org" title="based on a design by fullahead.org" class="fullAhead"></a>{#lastmodified#}
+  </div></div>]
+[#rb<]#p #{=document.body.header}
+[#>]
+#{document.body.header}
+<div id="content">
+#{code}
+</div>
+#{document.body.footer}
+[#def}
+
+
+{#def]layout.ljk[#,]code[][#rb<]p "LAYOUT.LJK";
+[#>]
+<div id="container">
+    <div id="header" lang="fr">
+        <h1><a href="http://www-ljk.imag.fr/ljk.html"></a></h1>
+    </div>
+    <div id="header_en" lang="en">
+        <h1><a href="http://www-ljk.imag.fr/ljk.html"></a></h1>
+    </div>
+
+    <table margin="0" cellpading="0" border="0" cellspacing="0" height="100%" width="740">
+    <tbody>
+        <tr>
+            <td colspan="2" rowspan="1" align="right">
+                <div id="primary"> {#new]lang[#of]LangSwitcher[#}</div>
+            </td>
+        </tr>
+        <tr>
+            <td halign="right" style="border-right: 1px solid rgb(102, 102, 102);" valign="top" width="145">
+                <div id="nav">
+                    #{document.mainMenu}
+                    <b> <b> <img src="http://www-ljk.imag.fr/Images/logos.jpg" usemap="#logosOnModel" border="0"> 
+                            <map name="logosOnModel">
+                                <area shape="rect" coords="42,10,112,20" href="http://ljk.imag.fr/">
+                                <area shape="rect" coords="0,26,72,69" href="http://www.cnrs.fr/">
+                                <area shape="rect" coords="72,26,139,69" href="http://www.inpg.fr/">
+                                <area shape="rect" coords="0,69,72,117" href="http://www.inria.fr/">
+                                <area shape="rect" coords="72,69,139,117" href="http://www.ujf-grenoble.fr/">
+                                <area shape="rect" coords="43,117,100,150" href="http://www.upmf-grenoble.fr/">
+                            </map>
+                    </b></b>
+                </div>
+                <b> <b> </b></b>
+            </td>
+            <td halign="left" valign="top">
+                <div style="text-align: center;"> </div>
+                <div id="primary" style="text-align: justify;">
+                #{code}
+                </div>
+            </td>
+        </tr>
+    </tbody>
+    </table>
+</div>
+[#def}
+
+

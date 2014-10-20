@@ -1,0 +1,87 @@
+{#new]JQueryToolsNavStyle[#of]HtmlLoader[#code]
+[<link rel="stylesheet" href="/tools/jqueryTools/css/scrollable-navigator.css" type="text/css"/>
+<link rel="stylesheet" href="/stylesheets/common/jqueryTools/nav_class.css" type="text/css"/>]
+
+[#}
+
+{#def]navigatorNumber[#,]number[2][#rb<]$navigatorNumber=#{number}[#def}
+
+{#newBlck]navigator[#aggregate]title,page
+[#blck]:pre[#rb<]$navPages=[];$navPageActive=[0,0]; #p $navPages
+[#blck]title[#do_code]$navPages << {:title => blckMngr.parse, :pages => []}
+[#blck]page[#do_code]$navPages[-1][:pages] << blckMngr.parse
+[#blck]active[#do_code]$navPageActive=[$navPages.length-1,$navPages[-1][:pages].length-1]
+puts "ACTIVE";p $navPageActive
+[#blck]:post[#rb<]#puts "navPages";p $navPages
+[#>]
+<!-- main navigator -->
+<ul class="main_navi">
+[#rb>]$navPages.each_with_index do |topic,i| #
+	#puts "INSIDE";p topic[:title];p i #TO DEBUG: WHY DO I NEED [>] after {>]
+	{#>][#>]<li[#?]i==$navPageActive[0][#>] class="active"[#?]end[#>]>
+    :{topic[:title]}
+  	</li>
+	[#>}
+end
+{#>][#>]</ul><\n>[#}
+{#>][#>] <!-- root element for the main scrollable -->
+ <div class="main">
+  <!-- root element for pages -->
+  <div id="pages">
+
+[#>}
+$navPages.each do |topic| #
+	{#>][#>] <div class="page">
+      <!-- sub navigator -->
+      <div class="navi"></div>
+      <!-- inner scrollable -->
+      <div class="scrollable">
+    <!-- root element for scrollable items -->
+        <div class="items">
+        <!-- items  -->
+     [#>}
+	topic[:pages].each do |page| #
+		{#>][#>]<div class="item"><\n>
+		:{page}
+		</div><\n>[#>}
+	end
+	{#>][#>]</div></div></div><\n>[#}
+end
+{#>][#>]</div></div>
+[#?]$navigatorNumber[#rb<]
+$navigatorNumber -= 1
+$navigatorNumber=nil if $navigatorNumber==0
+[#?]$navigatorNumber.nil?[#>]  <!-- navigatorNumber :{$navigatorNumber.nil? ? "no" : $navigatorNumber} -->
+<script>
+  $(document).ready(function() {
+        // main vertical scroll
+      $(".main").scrollable({
+
+        // basic settings
+        vertical: true,
+
+        circular: true,
+
+        // up/down keys will always control this scrollable
+        keyboard: 'static',
+
+        // assign left/right keys to the actively viewed scrollable
+        onSeek: function(event, i) {
+          horizontal.eq(i).data("scrollable").focus();
+        }
+
+        // main navigator
+      }).navigator(".main_navi");
+
+      // horizontal scrollables. each one is circular and has its own navigator instance
+      var horizontal = $(".scrollable").scrollable({ circular: true,keyboard: 'static',}).navigator(".navi");
+
+
+      // when page loads setup keyboard focus on the first horzontal scrollable
+      horizontal.eq(:{$navPageActive[0]}).data("scrollable").seekTo(:{$navPageActive[1]});
+      $(".main").data("scrollable").seekTo(:{$navPageActive[0]});
+
+    });
+</script>
+[#>}
+[#}

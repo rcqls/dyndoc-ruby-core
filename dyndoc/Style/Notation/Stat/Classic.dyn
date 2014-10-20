@@ -1,0 +1,8 @@
+{@StatClassicTex:new].pb[][@}
+
+{@StatClassicTex:est]param[][#,]data[#{.data}][#,]int[]
+[#?]#{=data}!=#{=.data}[#>].data[#{data}][#?]end
+[#>][\ensuremath{]
+[#?]#{0?int}[#>]\widehat[#?]else[#>]\widetilde[#?]end
+[#>]{#{param}}_{[#?]#{=data}[0,1]==#{=data}[0,1].downcase[#>]obs[#?]#{+?int}[#?]&#{=data}==#{=data}.downcase[#>],[#?]prev[#>]#{int}[#?]end[#>][}}]
+[@}

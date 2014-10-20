@@ -1,0 +1,42 @@
+{#def]var.apply[#,] var [] [#,] meth [strip] 
+[#<] {#hide] {#rb][p "#{var}";p @vars["#{var}"]][#} [#}
+[#>] [:{@vars["#{var}"].#{meth}}] [#} 
+
+{#def]cfg[#,]elt[][#>]#Rb{@cfg[#{elt}]}[#}
+
+{#def]output[#>]#Rb{@cfg[:output].to_s}[#}
+
+{#def]output?[#,]elt[][#>]#Rb{@cfg[:output] == #{elt}}[#}
+
+{#def]num?[#,]elt[] [#>]#Rb{"#{elt}" == ("#{elt}".to_i.to_s)}[#}
+
+
+{#def]empty[#,]elt[] [#>]#Rb{"#{elt}"==""}[#}
+
+{#def]varEmpty[#,]v[][#>]#Rb{vars["#{v}"].empty?}[#}
+
+{#def]ifEmpty[#,]v[][#,]true[][#,]false[][#>] 
+[{#if]@{varEmpty(#{v})}[#>]#{true}[#else]#{false}[#}] 
+[#}
+
+
+{#def]equal[#,]elt[][#,]elt2[][#>]#Rb{"#{elt}"=="#{elt2}"}][#}
+
+{#def]varEqual[#,]v[][#,]elt[][#>]#Rb{@vars["#{v}"]=="#{elt}"}[#}
+
+{#def]ifEqual[#,]v[][#,]elt[][#,]true[][#,]false[] [#>]
+[{#if]@{varEqual(#{v}|#{elt})}[#>]#{true}[#else]#{false}[#}] 
+[#}
+
+{#def]include|[#,]set[][#,]elt[][#,]sep[] [#rb<]res="#{set}".split("#{sep}").map{|e|  e.strip}.include? "#{elt}"[#>]#Rb{res}[#}
+
+{#def]varInclude[#,]v[][#,]elt[][#,]sep)[] [#rb<]res=vars["#{v}"].split("#{sep}").map{|e| e.strip}.include? "#{elt}"[#>]#Rb{res}[#}
+
+
+{#def]ifInclude[#,]v[][#,]elt[][#,]true[][#,]false[][#>]
+[{#if]@{varInclude(#{v}|#{elt})}[#>]#{true}[#else]#{false}[#}]
+[#}
+
+{#def]ifElse[#,]cond[][#,]true[][#,]false[][#>]
+[{#if]#{cond}[#>]#{true}[#else]#{false}[#}] 
+[#}

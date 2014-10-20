@@ -1,0 +1,16 @@
+{#var] [::_USEPACKAGE_[+],::_PREAMBLE_[+], ::_POSTAMBLE_[+],::_BEGINDOC_[+],::_ENDDOC_[+],::_TITLE_[+]]
+[#,] [::_DOCUMENTCLASS_[+] => article]
+[#,] [::_STYLEDOC_[+]=>] 
+[#,] [::_OPTCLASS_[+]=>]
+[#}{#rb][_optclass_=[]][#}
+\documentclass##{_OPTCLASS_}{##{_DOCUMENTCLASS_}}
+%Packages
+##{_USEPACKAGE_}
+%Preamble
+##{_PREAMBLE_}
+%Styles
+##{_STYLEDOC_}
+%Title
+##{_TITLE_}
+\begin{document}
+##{_BEGINDOC_}

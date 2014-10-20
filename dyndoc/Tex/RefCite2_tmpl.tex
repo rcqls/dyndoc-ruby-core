@@ -1,0 +1,16 @@
+{#rb] _texRefs_={}; _texRefCpt_={} [#}
+{#def]ref[#,] key[] [#,] type[:I] [#<]
+{#rb]
+_texRefCpt_[#{type}]=0 unless _texRefCpt_[#{type}]
+key=(_texRefCpt_[#{type}]+=1)
+_texRefs_["#{key}"]=#{type}.to_s+key.to_s
+[#}
+[#>] [{#cite]#{key}[#}]
+[#}
+
+{#def]cite[#,] key[] [#,] append[] [#<]
+{#rb]
+res=(_texRefs_["#{key}"] ? _texRefs_["#{key}"] : "??")
+[#}
+[#>] [\textbf{[#Rb{res}#{append}]}]
+[#}

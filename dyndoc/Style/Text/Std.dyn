@@ -1,0 +1,5 @@
+{#tags][#when]tex[#<]{@require]Style/Text/StdTex[@}
+[#when]txtl[#<]{@require]Style/Text/StdTxtl[@}
+[#when]txt[#<]{@require]Style/Text/Txt[@}
+[#}
+{@require]Style/Text/StdAlias[@}

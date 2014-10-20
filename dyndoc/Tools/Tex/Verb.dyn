@@ -1,0 +1,77 @@
+Pour package latex réfléchir comment faire?
+
+{#def]uvTex[#,]code[][#,]key[][#,]file[][#,]syntax[dyndoc][#,]render[amy][#,]lines[true]
+[#rb<]
+syntax,render=#{=syntax}.strip.downcase,#{=render}.strip
+#Dyndoc.warn "Syntax", syntax,render
+#if File.exists? File.join(ENV["HOME"],"dyndoc","share","uv")
+#require File.join(ENV["HOME"],"dyndoc","share","uv","uv")
+require 'dyndoc/common/uv'
+syntax=File.join(Uv.syntax_path,syntax+".syntax")
+#end
+#Dyndoc.warn "test",(!(#{=code}.empty?) or #{=key}.empty?)
+uv_code = (#{=file}.empty? ? nil : File.read(#{=file}))
+uv_code=((!(#{=code}.empty?) or #{=key}.empty?) ? #{=code} : CqlsDoc::Utils.dyndoc_raw_text(#{=key})).strip unless uv_code
+#Dyndoc.warn "CODE", #{=key},uv_code,syntax
+warn_level = $VERBOSE
+$VERBOSE = nil
+uv_res=Uv.parse(uv_code, "latex", syntax , #{lines}, render)
+$VERBOSE = warn_level
+#Dyndoc.warn "RESULT", uv_res
+[#rb>]uv_res
+[#>]<\n>
+[#def}
+
+{#def]rverbTexUV[#,]code[][#,]render[amy]
+[#>]{#uvTex]{#rverb]#{code}
+[#mode]raw[#rverb}[#syntax]r[#uvTex}
+[#def}
+
+{#def]testDynCode[#,]key[][#,]render[amy][#,]raw[false][#,]result[Result][#>]
+	|{#uvTex][#key]#{key}[#render]#{render}[#uvTex}
+ 	|\textbf{#{result}}:[#=]res[{#dyn]test|#{key}[#}][#>]
+ 	|[#?]!(#{=res} =~ /includegraphics/) and !#{raw}[#>]\begin{verbatim}[#?]end[#>]
+ 	|#{res} 
+	|[#?]!(#{=res} =~ /includegraphics/ ) and !#{raw}[#>]\end{verbatim}[#?]end[#>]
+[#def}
+
+{#def]dynCode[#,]key[][#rb>]CqlsDoc::Utils.dyndoc_raw_text(#{=key})[#}
+
+
+{#def]knitr_init[#r<]require(knitr)
+opts_knit$set(progress = FALSE, verbose = FALSE)
+if(!exists(".knitr4dyndoc")) .knitr4dyndoc<-list(init=TRUE)
+[#?]#r{.knitr4dyndoc$init}[#<]{#document]
+[#package]\usepackage{color}
+\usepackage{alltt}
+[#preamble]{#blck][#r<].knitr4dyndoc$init <- FALSE
+[#R>]cat(knitr:::make_header_latex(),knitr:::.header.hi.tex,knitr:::.header.framed,sep="\n")[#blck}
+[#document}
+[#def}
+
+{#def]knitr[#,]code[]
+[#<]{#knitr_init#}
+[#rb<]code4knitr=#{=code}.gsub(/\\/,'\\\\\\\\')
+[#r<].knitr4dyndoc$res <- knit(text=":{code4knitr}")
+[#R>]cat(.knitr4dyndoc$res)
+[#def}
+
+{#def]Sweave[#,]code[]
+[#<]{#knitr_init#}
+[#rb<]code4knitr=#{=code}.gsub(/\\/,'\\\\\\\\')
+[#r<].knitr4dyndoc$res <- Sweave2knitr(text=readLines(textConnection(":{code4knitr}")))
+.knitr4dyndoc$res <- paste(.knitr4dyndoc$res,collapse="\n")
+.knitr4dyndoc$res <- knit(text=.knitr4dyndoc$res)
+[#R>]cat(.knitr4dyndoc$res)
+[#def}
+
+## for latex dyndoc documentation
+{#def]seqTag[#,]instr[][#,]bold[false][#>]\texttt{{#if]#{bold}[#>]\bf[#if}\char 91\char 35#{instr}\char 93}[#def}
+{#def]openTag[#,]instr[][#,]bold[false][#>]\texttt{{#if]#{bold}[#>]\bf[#if}\char 123\char 35#{instr}\char 93}[#def}
+{#def]closeTag[#,]instr[][#,]bold[false][#>]\texttt{{#if]#{bold}[#>]\bf[#if}\char 91\char 35#{instr}\char 125}[#def}
+
+{#def]OpenTag[#,]instr[][#>]{#openTag]#{instr}[#bold]true[#}[#def}
+{#def]CloseTag[#,]instr[][#>]{#closeTag]#{instr}[#bold]true[#}[#def}
+{#def]SeqTag[#,]instr[][#>]{#seqTag]#{instr}[#bold]true[#}[#def}
+
+

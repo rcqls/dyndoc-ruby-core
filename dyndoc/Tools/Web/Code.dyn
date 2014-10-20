@@ -1,0 +1,129 @@
+{#meth]new.CodeEdit[#,]lang[dyn][#,]key[][#,]rows[15][#,]cols[90][#,]first[init,js]
+[#=].key[{#if]#{+?key}[#>]#{key}[#else]{#objname]self[#}[#if}]
+[#=].textarea[<<rows[#{rows}]<<cols[#{cols}]]
+[#=].lang[{#case]#{lang}[#when]r,R[#>]R[#when]dyn,dyndoc[#>]dyndoc[#case}]
+[#>]{#case]#{first}
+[#when]init[#>]{#init]self[#}
+[#when]js[#>]{#js]self[#}
+[#when]result[#>]{#result]self[#}
+[#case}
+[#}
+
+{#meth]init.CodeEdit[#,]initial[Dyndoc code!][#,]style[float:center]
+[#>]<div id="#{.key}-input" style="#{style}">#{initial}</div> 
+	<div id="#{.key}-rawcode"></div>
+	<div id="#{.key}-uvcode"></div>
+[#meth}
+
+{#meth]result.CodeEdit[#>]<div id="#{.key}-result">Dyndoc code!</div>[#meth}
+
+{#meth]js.CodeEdit[#>]
+<script type="text/javascript">
+//these divs are  used to fetch different contents with taconite!
+$('##{.key}-rawcode').hide();
+$('##{.key}-uvcode').hide();
+//the delegate function!
+var mydeleg= {
+	willOpenEditInPlace: function(dom,b) {
+		return $('##{.key}-rawcode').text();
+	}
+};
+//In place editor for code!
+$("##{.key}-input").editInPlace({
+		//callback: function(unused, enteredText) { },
+		success: function(html) {
+			$.taconite(html); 
+			$('##{.key}-result').html($('##{.key}-result').text());
+			$('##{.key}-input').html($('##{.key}-uvcode').html());
+		},
+		url: "/play/#{.lang}",
+		params: "id=#{.key}",
+		bg_over: "#cff",
+		field_type: "textarea",
+		textarea_rows: "#{.textarea.rows}",
+		textarea_cols: "#{.textarea.cols}",
+		// saving_image: "./images/ajax-loader.gif"
+		save_if_nothing_changed: true,
+		delegate: mydeleg
+	});
+</script>
+[#meth}
+
+{#meth]new.CodeDemoChooser[#,]edit[][#,]key[][#,]first[init]
+[#=].key[{#if]#{+?key}[#>]#{key}[#else]{#objname]self[#}[#if}]
+[#=].edit[:edit]
+[#rb<]puts "titoto";p #{=.edit.lang}
+[#>]{#case]#{first}
+[#when]init[#>]{#init]self[#}
+[#when]js[#>]{#js]self[#}
+[#case}
+[#}
+
+{#meth]init.CodeDemoChooser[#>]<select id="#{.key}-chooser">
+[#rb>]$demo_dyndoc_codes_for_site[#{=.edit.lang}].keys.sort.map{|k| "<option>"+k+"</option>"}.join("\n")[#>]
+</select>
+[#meth}
+
+{#meth]js.CodeDemoChooser[#>]
+<script type="text/javascript">
+//function to select example!
+function #{.key}_selectChoice() {
+	//alert(value);
+	var choice=$("##{.key}-chooser").val()
+	$.post(	"/demo/#{.edit.lang}_choices",
+			"update_value="+choice+"&style=amy&id=#{.edit.key}",
+			function(html){
+				//alert("taco:"+html);
+				$.taconite(html);
+				$('##{.edit.key}-result').html($('##{.edit.key}-result').text());
+				$('##{.edit.key}-input').html($('##{.edit.key}-uvcode').html());
+			}
+	);
+};
+//First initialization!!!
+#{.key}_selectChoice();
+//bind selection!
+$("##{.key}-chooser").change(#{.key}_selectChoice);
+</script>
+[#meth}
+
+
+{#new]FileUploader[#of]HtmlLoader[#code]
+[<link href="/stylesheets/fileuploader.css" rel="stylesheet" type="text/css"/>
+<script src="/javascripts/fileuploader.js" type="text/javascript"></script>]
+[#new}
+
+
+{#meth]new.FileUploader[#,]id[][#,].action[/upload][#,]first[init,js]
+[#=].id[{#if]#{+?id}[#>]#{id}[#else]{#objname]self[#}[#if}]
+[#>]{#case]#{first}
+[#when]init[#>]{#init]self[#}
+[#when]js[#>]{#js]self[#}
+[#case}
+[#meth}
+
+
+{#meth]init.FileUploader[#>]
+<div id="file-uploader-#{.id}">
+    <noscript>
+        <p>Please enable JavaScript to use file uploader.</p>
+        <!-- or put a simple form for upload here -->
+    </noscript>         
+</div>
+[#meth}
+
+{#meth]js.FileUploader[#>]
+<script>        
+    function createUploader_#{.id}(){            
+        var uploader = new qq.FileUploader({
+            element: document.getElementById('file-uploader-#{.id}'),
+            action: '#{.action}',
+            debug: false
+        });           
+    }
+    
+    // in your app create uploader as soon as the DOM is ready
+    // don't wait for the window to load  
+    window.onload = createUploader_#{.id};     
+</script>
+[#meth}
