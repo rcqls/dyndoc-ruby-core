@@ -1,18 +1,7 @@
 {#def]atomInit[#>]
-{$,ScrollView,EditorView} = require "atom"
+{$,ScrollView,TextEditorView} = require "atom"
 fs = require 'fs-plus'
 DyndocViewer = require fs.absolute "~/.atom/packages/dyndoc-viewer/lib/dyndoc-viewer"
-
-class MiniEditorView extends EditorView
-  constructor: (options={}) ->
-    options.mini = true
-    super(options)
-
-  setFontSize: (fontSize) ->
-    fontSize = parseInt(fontSize) or 0
-    fontSize = Math.min(32, fontSize)
-    fontSize = Math.max(10, fontSize)
-    super(fontSize)
 [#def}
 
 {#def]atomClass[#,]class[][#,]extends[]
@@ -24,7 +13,7 @@ code << "\n"
 if #{+?view}
 	code << tab << "@content: ->"
 	content = #{=view}.split("\n",-1).map{|l| #
-		l2=l.gsub(/@miniEditor\(([^\)]*)\)\s*\"(.*)\"\s*$/,'@subview "\1",new MiniEditorView(placeholderText: "\2")')
+		l2=l.gsub(/@miniEditor\(([^\)]*)\)\s*\"(.*)\"\s*$/,'@subview "\1",new TextEditorView(mini: true,placeholderText: "\2")')
 		l2.gsub!(/@dyndoc\(([^\)]*)\)/,'@subview "\1",new DyndocViewer(editorId: "\1") ')
 		tab*2 + l2.gsub(/(\@[a-zA-Z0-9\-_\.]*)(\()([^\)]*)(\))/,'\1 outlet: "\3",')
 	}
