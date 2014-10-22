@@ -1,3 +1,4 @@
+require "dyndoc/common/utils"
 require "dyndoc/base/utils"
 require "dyndoc/base/tmpl"
 require "dyndoc/base/tags"
@@ -7,7 +8,6 @@ require "dyndoc/base/scanner"
 require "dyndoc/plugins/tex"
 require "dyndoc/base/utils/convert"
 require "dyndoc/base/helpers"
-require "dyndoc/common/utils"
 require "configliere"
 
 Settings.use :env_var, :config_block
