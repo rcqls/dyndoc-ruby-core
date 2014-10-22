@@ -22,7 +22,7 @@ spec = Gem::Specification.new do |s|
     s.licenses = ['MIT', 'GPL-2']
     s.requirements << 'none'
     s.add_dependency("configliere","~>0.4",">=0.4.18")
-    s.add_dependency("specific_install","~>0.2",">=0.2.10")
+    #s.add_dependency("specific_install","~>0.2",">=0.2.10")
     s.require_path = 'lib'
     s.files = PKG_FILES.to_a
     s.description = <<-EOF
