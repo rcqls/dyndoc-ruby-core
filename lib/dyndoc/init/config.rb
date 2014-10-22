@@ -46,6 +46,23 @@ module Dyndoc
 
   EXTS={:txt => ".txt",:rb => ".rb",:c=>".c",:html=>".html",:txtl=>".rhtml",:tm=>".tm",:tex=>".tex",:odt_content=>"_content.xml",:odt_styles=>"_styles.xml",:dyn=>".dynout",:ttm=>"_ttm.xml"}
 
+  def Dyndoc.mode
+    @@mode
+  end
+
+  def Dyndoc.mode=(mode)
+    @@mode=mode
+  end
+
+  def Dyndoc.docExt(mode=@@mode)
+    @@docExt[mode]
+  end
+
+  def Dyndoc.tmplExt
+    @@tmplExt
+  end
+
+
   def Dyndoc.init_dyndoc_library_path
 
     [File.join(FileUtils.pwd,".dyndoc_library_path"),File.join(FileUtils.pwd,"dyndoc_library_path.txt"),File.join(@@cfg_dir[:etc],"dyndoc_library_path")].each do |dyndoc_library_path|
@@ -87,7 +104,7 @@ module Dyndoc
 
   def Dyndoc.init_rootDoc
     rootDoc=""
-    if File.directory?(path=File.join(@@cfg_dir[:etc],'path'))
+    if File.directory?(path=File.join(@@cfg_dir[:etc],Dyndoc.cfg_dyn['etc_path_subdir']))
       Dir[File.join(path,"*")].sort.each do |pa|
         rootDoc += (rootDoc.empty? ? "" : ":") + File.read(pa).chomp 
       end

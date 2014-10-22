@@ -4,6 +4,7 @@ module Dyndoc
 
   @@tmpl_mngr=nil
 
+  ##need to point to the current TemplateManager
   def Dyndoc.tmpl_mngr
     @@tmpl_mngr
   end
@@ -93,6 +94,12 @@ module Dyndoc
         puts "DYNDOC SEARCH PATH:"
         puts Dyndoc.get_pathenv(Dyndoc.cfg_dyn[:root_doc]).join(":")
       end
+    end
+
+    ## to set the current tmpl_mngr as the default one accessed via Dyndoc.tmpl_mngr
+    ## and used in #R> #rb> block
+    def as_default_tmpl_mngr!
+      Dyndoc.tmpl_mngr=self unless Dyndoc.tmpl_mngr == self
     end
 
     def init_doc(doc_cfg)

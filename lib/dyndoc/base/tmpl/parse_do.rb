@@ -1875,6 +1875,7 @@ p call
     end
 
     def evalRbBlock(id,cpt,tag,lang=:rb)
+      as_default_tmpl_mngr!
 ## Dyndoc.warn "@doLangBlock[#{id.to_s}][:code][#{cpt.to_s}]",@doLangBlock[id][:code][cpt]#,@doLangBlock[id][:filter]
       ## this deals with the problem of newBlcks!
       ##puts "block_normal";p blckMode_normal?
@@ -1988,6 +1989,7 @@ p call
 
 
     def evalRBlock(id,cpt,tag,lang=:R)
+      as_default_tmpl_mngr!
       ## this deals with the problem of newBlcks!
       ## Dyndoc.warn "block_normal",blckMode_normal?
       code=(blckMode_normal? ? @doLangBlock[id][:code][cpt] : "{#blckAnyTag]"+@doLangBlock[id][:code][cpt]+"[#blckAnyTag}" )
@@ -2048,6 +2050,7 @@ p call
     end
 
     def evalJlBlock(id,cpt,tag,lang=:jl)
+      as_default_tmpl_mngr!
       ## Dyndoc.warn "evalJlBlock!!!"
       ## this deals with the problem of newBlcks!
       ## Dyndoc.warn "block_normal",blckMode_normal?

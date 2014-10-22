@@ -11,10 +11,8 @@ module Dyndoc
     def TagManager.global_alias(aliases)
       ## global aliases
       @@alias=""
-      @@sys_alias=File.join(Dyndoc.cfg_dir[:sys],"alias")
-      @@alias << File.read(@@sys_alias).chomp << "\n"  if File.exists? @@sys_alias
-      @@home_alias=File.join(Dyndoc.cfg_dir[:home],'alias')
-      @@alias << File.read(@@home_alias).chomp << "\n"  if File.exists? @@home_alias
+      @@etc_alias=File.join(Dyndoc.cfg_dir[:etc],"alias")
+      @@alias << File.read(@@etc_alias).chomp << "\n"  if File.exists? @@etc_alias
       if Dyndoc.cfg_dir[:file]
         @@file_alias=File.join(Dyndoc.cfg_dir[:file],'.dyn_alias') 
         @@alias << File.read(@@file_alias).chomp << "\n"  if File.exists? @@file_alias

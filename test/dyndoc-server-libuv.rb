@@ -9,21 +9,22 @@ module Dyndoc
   class InteractiveServer
 
     def initialize
+      @tmpl_mngr=nil
       init_dyndoc
       init_uv_server
     end
 
     def init_dyndoc
-      unless Dyndoc.tmpl_mngr
-        Dyndoc.tmpl_mngr = Dyndoc::Ruby::TemplateManager.new({})
-        Dyndoc.tmpl_mngr.init_doc({})
+      unless @tmpl_mngr
+        @tmpl_mngr = Dyndoc::Ruby::TemplateManager.new({})
+        @tmpl_mngr.init_doc({})
         puts "InteractiveServer initialized!\n"
       end
     end
 
     def process_dyndoc(content)
       ##p [:process_dyndoc_content,content]
-      Dyndoc.tmpl_mngr.parse(content)
+      @tmpl_mngr.parse(content)
     end
 
     def init_uv_server

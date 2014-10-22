@@ -14,6 +14,9 @@ Settings.use :env_var, :config_block
 
 ## TODO: arrange this!
 Settings.define 'path.dyn_home', :env_var => 'DYN_HOME', :description => "dyndoc home path", :default => File.join(ENV['HOME'],'dyndoc')
+
+Settings.define 'cfg_dyn.etc_path_subdir', :type => Array, :default => ["path","core"]
+
 Settings.define 'cfg_dyn.pre_tmpl', :type => Array, :default => []
 Settings.define 'cfg_dyn.post_tmpl', :type => Array, :default => []
 Settings.define 'cfg_dyn.part_tag', :type => Array, :default => []

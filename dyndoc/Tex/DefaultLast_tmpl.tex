@@ -1,5 +1,5 @@
 {#if]!@{varEqual(_DOCUMENTCLASS_|beamer)}[#>]
-  {#if]#Rb{$dyn[:cmd] and $dyn[:cmd]==:png}[#>]
+  {#if]false {#hide]:{$dyn[:cmd] and $dyn[:cmd]==:png}[#hide}[#>]
     {#set]_USEPACKAGE_!+[#>] [\usepackage[noheadfoot,top=0in,bottom=0in,left=0in,right=0in,mag=1200]{geometry}<\n>][#}
     {#set]_PREAMBLE_!+[#>] [\pagestyle{empty}][#}
   [#else]
