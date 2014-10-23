@@ -1875,7 +1875,6 @@ p call
     end
 
     def evalRbBlock(id,cpt,tag,lang=:rb)
-      as_default_tmpl_mngr!
 ## Dyndoc.warn "@doLangBlock[#{id.to_s}][:code][#{cpt.to_s}]",@doLangBlock[id][:code][cpt]#,@doLangBlock[id][:filter]
       ## this deals with the problem of newBlcks!
       ##puts "block_normal";p blckMode_normal?
@@ -1964,6 +1963,7 @@ p call
       ## Dyndoc.warn "rb code="+code
       process_rb(code) if Utils.raw_code_to_process
       ## Dyndoc.warn "rb CODE="+code
+      as_default_tmpl_mngr! if blck[0]==:"rb>"
       res=eval_RbCODE(code,filter)
 
       if blck[0]==:"rb>"
@@ -1989,7 +1989,6 @@ p call
 
 
     def evalRBlock(id,cpt,tag,lang=:R)
-      as_default_tmpl_mngr!
       ## this deals with the problem of newBlcks!
       ## Dyndoc.warn "block_normal",blckMode_normal?
       code=(blckMode_normal? ? @doLangBlock[id][:code][cpt] : "{#blckAnyTag]"+@doLangBlock[id][:code][cpt]+"[#blckAnyTag}" )
@@ -2033,6 +2032,7 @@ p call
 
       if blck[0]==:"R>"
         ## Dyndoc.warn "R>",code
+        as_default_tmpl_mngr!
         tex2=eval_RCODE(code,filter,:blockR => true)
         ## Dyndoc.warn "RRRRRRRRRRRRRRRR: tex2",tex2
         tex << tex2 
@@ -2050,7 +2050,6 @@ p call
     end
 
     def evalJlBlock(id,cpt,tag,lang=:jl)
-      as_default_tmpl_mngr!
       ## Dyndoc.warn "evalJlBlock!!!"
       ## this deals with the problem of newBlcks!
       ## Dyndoc.warn "block_normal",blckMode_normal?
@@ -2076,7 +2075,8 @@ p call
 
     def do_jl(tex,blck,filter)
       return unless Dyndoc.cfg_dyn[:langs].include? :jl
-      ## rbBlock stuff
+      ## jlBlock stuff
+      as_default_tmpl_mngr! if 
       dynBlock=dynBlock_in_doLangBlock?(blck)
       if dynBlock 
         @doLangBlock=[] unless @doLangBlock
@@ -2096,6 +2096,7 @@ p call
       process_jl(code)
       ## Dyndoc.warn "code_jl",code
       if [:"jl>"].include? blck[0]
+        as_default_tmpl_mngr!
         tex << JLServer.outputs(code,:block => true)
       else
         JLServer.eval(code)
