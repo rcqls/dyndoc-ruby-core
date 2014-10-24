@@ -104,7 +104,7 @@ module Dyndoc
       outputFormat=outputFormat.to_s unless outputFormat.is_a? String
       res=""
       input.split("__PROTECTED__FORMAT__").each_with_index do |code,i|
-        ## Dyndoc.warn "code",[i,code,format+">"+outputFormat]
+        ## Dyndoc.warn "code",[i,code,format,outputFormat]
         if i%2==0
           res << case format+outputFormat
           when "md>html"
@@ -138,7 +138,10 @@ module Dyndoc
             Dyndoc::Converter.pandoc(code,"--mathjax -f latex -t html")             
           when "ttm>tex", "html>html",'tex>tex'
             code
-          ## the rest returns nothing!
+          else
+            ## the rest returns nothing!
+            Dyndoc.warn "Warning: unknown conversion!"
+            ""
           end
         else
           res << code

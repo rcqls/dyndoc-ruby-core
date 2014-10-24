@@ -17,7 +17,7 @@ module Dyndoc
     def init_dyndoc
       unless @tmpl_mngr
         @tmpl_mngr = Dyndoc::Ruby::TemplateManager.new({})
-        @tmpl_mngr.init_doc({})
+        @tmpl_mngr.init_doc({:format_output=> "html"})
         puts "InteractiveServer initialized!\n"
       end
     end
