@@ -1,0 +1,87 @@
+[#md>]# dyndoc project
+
+TODO: DESCRIPTION
+
+## Install
+
+__EXIT__
+
+[#txtl>]h1. test
+
+"dyndoc":http://dyndoc.upmf-grenoble.fr
+
+[#rb<]p Dyndoc.cfg_dyn[:root_doc]
+
+
+[#rb<]nn=15;n2=3
+(1..10).map do |i| #
+	i*2
+end
+
+[#R>>]rnorm(:{nn})
+log(-1)
+a<-c(1,3,2)
+
+[#>]
+
+titi
+
+{#rverb]rnorm(20)[#rverb}
+
+[#rb>]
+(1..10).each do |i| #
+	{#>]elt:{i}\\[#>}
+	a=1
+end
+
+[#R>]
+for(i in 1:5) {
+	{#>]eltR:r{i}\\[#>}
+	a<-1
+}
+
+[#=]toto%[jl: [1,3,2]]
+
+[#rb>>]
+Dyndoc.Vec[:toto]
+a=1
+a
+3*a
+[1,3,2].map do |e| #
+	2*e
+end
+[#R>>]rnorm(10)
+<toto%>
+<toto%>[2]
+Dyndoc.Vec[~toto]
+rnorm(10)
+[#jl>>]a=1
+<toto%>
+<toto%>={3,2,1,0}
+Dyndoc.Vec[:toto]
+Dyndoc.Vec[:toto]={1,3,5}
+Dyndoc.Vec[:toto][1]=6
+#
+[#R>>]
+<toto%>
+<toto%>[1:3]
+<toto%>=c(9L,8L,7L)
+[#jl>>]
+<toto%>
+#
+[#R>>]
+<toto%>
+[#rb>>]
+Dyndoc.Vec[:toto]
+Dyndoc.Vec[:toto]=[true,false,true,true]
+#
+[#R>>]
+<toto%>
+<toto%>[1:3]
+#
+[#jl>>]
+<toto%>
+<toto%>={"titi","tutu","toto"}
+[#R>>]
+<toto%>[1]
+#

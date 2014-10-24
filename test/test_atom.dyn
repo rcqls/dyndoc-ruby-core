@@ -1,0 +1,67 @@
+{#atomClass]SpaceCraft[#extends]ScrollView
+[#view]
+@div tabindex: -1, style: "background-color: blue;color: white;overflow: scroll", =>
+  @button(go) class: 'btn btn-primary inline-block-tight', "go"
+  @button(go2)  "go2"
+  @button(go3)  "go3"
+  @select(sel) =>
+    @option value: "10", "n=10"
+    @option value: "20","n=20"
+    @option value: "100","n=100"
+  @miniEditor(edi) "rnorm(10)"
+  @h1 "Spacecraft"
+  @ol(list) =>
+    @li "Apollo"
+    @li "Soyuz"
+    @li "Space Shuttle"
+  @div class: "panel bordered",=>
+    @div class: "panel-heading",  "dyndoc1"
+    @div class: "panel-body padded", =>
+      @dyndoc(dyn)
+  @div =>
+    @h1 "dyndoc2"
+    @dyndoc(dyn2)
+[#init]
+@list.append('<li>Star Destroyer</li>')
+
+@edi.getEditor().setGrammar(atom.syntax.grammarForScopeName("source.r"))
+@edi.setFontSize(22)
+
+@edi.on 'core:confirm', =>
+  alert @edi.getText().trim()
+
+@go.click =>
+  #alert "go button pushed"
+  @dyn.render {#dyn>]
+    |[#md>] toto
+    |[#R>>]rnorm(#{@sel.val()})
+    |log(-1)
+    |a<-c(1,3,2)
+  [#dyn>}
+
+@go2.click =>
+  #alert "go button pushed"
+  @dyn2.render {#dyn>]
+    |[#md>] toto2
+    |[#R>>]rnorm(#{@sel.val()})
+    |log(-1)
+    |a<-c(1,3,2)
+    |[#>]{#rsvg]plot(rnorm(10))[#}
+  [#dyn>}
+
+@go3.click =>
+  #alert "go button pushed"
+  @dyn.eval {#dyn>]
+    |[#r>]rnorm(1)
+  [#dyn>}, (content) =>
+    console.log "tmp="+content
+    @list.append('<li>content='+content+'</li>')
+
+@sel.change =>
+  #alert "#{@sel.val()} changed"
+
+@on 'click', 'li', ->
+  alert "They clicked on #{$(this).text()}"
+[#atomClass}
+
+{#atomNew]craft[#of]SpaceCraft[#}
