@@ -1,11 +1,11 @@
 # encoding: UTF-8
 
 require "open3"
-begin
-  require 'redcloth'
-rescue LoadError
-  Dyndoc.warn "Warning: RedCloth not installed or supported!"
-end
+# begin
+#   require 'redcloth'
+# rescue LoadError
+#   Dyndoc.warn "Warning: RedCloth not installed or supported!"
+# end
 #require 'pandoc-ruby'
 
 module Dyndoc
@@ -121,11 +121,13 @@ module Dyndoc
             ##PandocRuby.new(code, :from => :markdown, :to => :opendocument).convert
             Dyndoc::Converter.pandoc(code,"-t opendocument")
           when "txtl>html"
-            (rc=RedCloth.new(code))
-            rc.hard_breaks=false
-            rc.to_html
+            # (rc=RedCloth.new(code))
+            # rc.hard_breaks=false
+            # rc.to_html
+            Dyndoc::Converter.pandoc(code,"-f textile -t html")
           when "txtl>tex"
-            RedCloth.new(code).to_latex   
+            # RedCloth.new(code).to_latex 
+            Dyndoc::Converter.pandoc(code,"-f textile -t latex")  
           when "ttm>html"
             Dyndoc::Converter.ttm(code,"-e2 -r -y1 -L").gsub(/<mtable[^>]*>/,"<mtable>").gsub("\\ngtr","<mtext>&ngtr;</mtext>").gsub("\\nless","<mtext>&nless;</mtext>").gsub("&#232;","<mtext>&egrave;</mtext>")
           when "tex>odt"
