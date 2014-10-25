@@ -16,6 +16,7 @@ module Dyndoc
 
     def init_dyndoc
       unless @tmpl_mngr
+        Dyndoc.cfg_dyn['dyndoc_session']=:interactive
         @tmpl_mngr = Dyndoc::Ruby::TemplateManager.new({})
         @tmpl_mngr.init_doc({:format_output=> "html"})
         puts "InteractiveServer initialized!\n"
