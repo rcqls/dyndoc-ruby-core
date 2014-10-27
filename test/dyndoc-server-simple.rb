@@ -34,29 +34,29 @@ module Dyndoc
 
     def run
     	trap("SIGINT") { @server.close;exit! }
-		loop {
-			socket = @server.accept
+  		loop {
+  			socket = @server.accept
 
-			b=socket.recv(100000)
-			##p [:b,b]
-			data=b.to_s.strip
-			##p [:data,data]
-			if data =~ /^__send_cmd__\[\[([a-z]*)\]\]__(.*)__\[\[END_TOKEN\]\]__$/m
-			cmd,content = $1,$2
-			##p [:cmd,cmd,:content,content]
-			if content.strip == "__EXIT__" 
-				socket.close
-				@server.close
-				break
-			end
-			if cmd == "dyndoc"
-			  res = process_dyndoc(content)
-			  ## p [:dyndoc_server,content,res]
-			  socket.write "__send_cmd__[[dyndoc]]__"+res+"__[[END_TOKEN]]__"
-			end
-			end
-			socket.close
-		}
+  			b=socket.recv(100000)
+  			##p [:b,b]
+  			data=b.to_s.strip
+  			##p [:data,data]
+  			if data =~ /^__send_cmd__\[\[([a-z]*)\]\]__(.*)__\[\[END_TOKEN\]\]__$/m
+    			cmd,content = $1,$2
+    			##p [:cmd,cmd,:content,content]
+    			if content.strip == "__EXIT_DYNDOC_SERVER__" 
+    				socket.close
+    				@server.close
+    				break
+    			end
+    			if cmd == "dyndoc"
+    			  res = process_dyndoc(content)
+    			  ## p [:dyndoc_server,content,res]
+    			  socket.write "__send_cmd__[[dyndoc]]__"+res+"__[[END_TOKEN]]__"
+    			end
+  			end
+  			socket.close
+  		}
     end
 
   end
