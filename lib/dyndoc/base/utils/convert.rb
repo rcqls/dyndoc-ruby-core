@@ -69,7 +69,11 @@ module Dyndoc
           system(SOFTWARE[:pandoc]+" #{opt}")
         end
       else
-        $dyn_logger.write("ERROR pandoc: software not installed!\n")
+        if $dyn_logger
+          $dyn_logger.write("ERROR pandoc: software not installed!\n")
+        else
+          Dyndoc.warn "ERROR pandoc: software not installed!\n"
+        end
         ""
       end
     end

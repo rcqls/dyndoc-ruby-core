@@ -784,11 +784,13 @@ module Dyndoc
 
     def RServer.init_filter
     	dyndocTools="~/dyndoc" #Same as DYNDOCROOT as default
-    	# DYNDOCTOOLS is defined inside the launcher of DyndocStudio (Mac and linux).
+    	# DYNDOCTOOLS is possibly defined inside the launcher of DyndocStudio (Mac and linux).
     	dyndocTools=ENV["DYNDOCTOOLS"] if ENV["DYNDOCTOOLS"] and File.exists? ENV["DYNDOCTOOLS"]
     	## if RUBY_ENGINE (ruby,jruby,rbx) defined (actually, not defined for 1.8.7)
     	if Object.constants.map{|e| e.to_s}.include? "RUBY_ENGINE"
-    		R4rb << ".libPaths('"+dyndocTools+"/R/library/"+RUBY_ENGINE+"/"+RUBY_VERSION+"')"
+    		version = RbConfig::CONFIG["exec_prefix"].split(File::Separator)[-1]
+    		R4rb << ".libPaths('"+dyndocTools+"/R/library/"+RUBY_ENGINE+"/"+version+"')"
+    		R4rb << "print(.libPaths())"
     	end
       	R4rb << "require(dyndoc)"
       	R4rb << "require(rb4R)"
