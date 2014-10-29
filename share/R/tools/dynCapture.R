@@ -78,3 +78,7 @@ filter.capture.output<-function (...,filter=.filter.capture) {
           return(paste(strsplit(paste(tmp,collapse=" "), " \\[LiNe\\]" )[[1]],collapse="\n"))
         } else return(res.val)
 }
+
+local({
+    if(!exists(".filter.capture")) .filter.capture <-list(NULL,function(x) paste("\\textcolor{blue}{",x,"}",sep=""))
+},.GlobalEnv)

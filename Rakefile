@@ -9,7 +9,7 @@ PKG_FILES=FileList[
     'lib/dyndoc/**/*.rb',
     'dyndoc/**/*',
     'share/julia/**/*',
-    'share/R/dynArray.R',
+    'share/R/**/*',
     'share/syntax/**/*',
     'dyndoc/**/.*' #IMPORTANT file starting with . are by default ignored!
 ]
