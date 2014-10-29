@@ -792,6 +792,7 @@ module Dyndoc
     		R4rb << ".libPaths('"+dyndocTools+"/R/library/"+RUBY_ENGINE+"/"+version+"')"
     		R4rb << "print(.libPaths())"
     	end
+    	R4rb << "if(!(Sys.getenv('R_LIBS_USER') %in% .libPaths())) .libPaths(Sys.getenv('R_LIBS_USER'))"
       	## R4rb << "require(dyndoc)" => put in TemplateManager.initR dyndocTools.R
       	R4rb << "require(rb4R)"
     end
