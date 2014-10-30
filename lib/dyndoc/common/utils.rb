@@ -50,7 +50,7 @@ module Dyndoc
 	end
 
 	def Utils.is_windows?
-		RUBY_PLATFORM =~ /(win|w)32$/
+		RUBY_PLATFORM =~ /(win|msys|mingw)/
 	end
 
 end

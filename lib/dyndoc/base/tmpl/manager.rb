@@ -44,7 +44,9 @@ module Dyndoc
       RServer.init_filter
       ## ruby and R init for dynArray stuff
       require "dyndoc/common/dynArray"
-      R4rb << "source('"+File.join(Dyndoc.cfg_dir[:gem_path],"share","R","dyndocTools.R").gsub('\\','/')+"',chdir=TRUE)"
+      dyndocToolsR = File.join(Dyndoc.cfg_dir[:gem_path],"share","R","dyndocTools.R").gsub('\\','/')
+      dyndocToolsR = ENV["WD"].split("\\")[0,2].join(File::Separator) + dyndocToolsR  if RUBY_PLATFORM =~ /msys/
+      R4rb << "source('"+dyndocToolsR+"',chdir=TRUE)"
     end
 
     def TemplateManager.initJulia
