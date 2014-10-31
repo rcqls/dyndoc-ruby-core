@@ -45,7 +45,8 @@ module Dyndoc
       ## ruby and R init for dynArray stuff
       require "dyndoc/common/dynArray"
       dyndocToolsR = File.join(Dyndoc.cfg_dir[:gem_path],"share","R","dyndocTools.R").gsub('\\','/')
-      dyndocToolsR =  ENV['WD'].split('\\')[0...-2].join(File::Separator) + dyndocToolsR  if RUBY_PLATFORM =~ /msys/
+      ## WD is introduced by Msys and ConEmuDir by ConEmu
+      dyndocToolsR =  (ENV['WD'] || ENV['ConEmuDir']).split('\\')[0...-2].join(File::Separator) + dyndocToolsR  if RUBY_PLATFORM =~ /msys/
       R4rb << "source('"+dyndocToolsR+"',chdir=TRUE)"
     end
 
