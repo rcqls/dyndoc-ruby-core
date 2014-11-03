@@ -8,15 +8,15 @@
 
 {#def]home[#rb>][ENV["HOME"]][#}
 
-{#def]modedoc[#rb>]$curDyn.tmpl.fmt[#}
+{#def]modedoc[#rb>]Dyndoc.tmpl_mngr.fmt[#}
 
 {#def]local_use[#rb>]$dyndoc_web and $dyndoc_web[:local][#def}
 
 
 This doc mode is used to know if it is obtained by web
-{#def]dyndoc_mode[#rb>]$curDyn.tmpl.dyndocMode.inspect[#}
+{#def]dyndoc_mode[#rb>]Dyndoc.tmpl_mngr.dyndocMode.inspect[#}
 
-{#def]format_output[#rb>]$curDyn.tmpl.fmtOutput[#}
+{#def]format_output[#rb>]Dyndoc.tmpl_mngr.fmtOutput[#}
 
 {#def]cqlsdir[#rb>]File.join(ENV["HOME"],"cqls")[#}
 

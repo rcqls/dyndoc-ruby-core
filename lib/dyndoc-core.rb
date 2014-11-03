@@ -12,8 +12,8 @@ require "configliere"
 
 Settings.use :env_var, :config_block
 
-## TODO: arrange this!
-Settings.define 'path.dyn_home', :env_var => 'DYN_HOME', :description => "dyndoc home path", :default => File.join(ENV['HOME'],'dyndoc')
+require 'dyndoc/init/home'
+Settings.define 'path.dyn_home', :env_var => 'DYN_HOME', :description => "dyndoc home path", :default => Dyndoc.home
 
 Settings.define 'cfg_dyn.etc_path_subdir', :type => Array, :default => ["path","core"]
 
@@ -44,4 +44,7 @@ end
 
 Settings.resolve!
 require 'dyndoc/init/config'
+Dyndoc.init_dyndoc_library_path
 Dyndoc.init_rootDoc
+
+CqlsDoc=Dyndoc #for compatibity

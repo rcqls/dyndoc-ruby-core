@@ -40,12 +40,12 @@ module Dyndoc
     def Utils.dyndoc_globvar(key,value=nil)
 		if value
             if [:remove,:rm,:del,:delete].include?  value
-                $curDyn.tmpl.filterGlobal.envir.remove(key)
+                Dyndoc.tmpl_mngr.filterGlobal.envir.remove(key)
             else
-			     $curDyn.tmpl.filterGlobal.envir[key]= value
+			     Dyndoc.tmpl_mngr.filterGlobal.envir[key]= value
             end
 		else
-			$curDyn.tmpl.filterGlobal.envir[key]
+			Dyndoc.tmpl_mngr.filterGlobal.envir[key]
 		end
 	end
 

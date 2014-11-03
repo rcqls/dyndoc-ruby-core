@@ -34,7 +34,9 @@ code << tab << "getUri: ->\n" << tab*2 << '"dyndoc-atom://' << #{=class}.strip <
 
 {#def]atomNew[#,]id[][#,]of[][#,]side[right]
 [#rb<]code,tab="","  "
-code << #{=id} << " = new " << #{=of} << "\n" 
+code << #{=id} << " = new " << #{=of} << "\n"
+code << "console.log(\"ID:\")" << "\n"
+code << "console.log(" + #{=id}+")" << "\n"
 code << "atom.workspaceView.getActivePaneView().splitRight(" << #{=id} << ")\n"
 [#rb>]code
 [#def}

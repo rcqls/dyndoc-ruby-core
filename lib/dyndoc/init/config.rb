@@ -207,7 +207,7 @@ module Dyndoc
     pathenv += PATH_SEP + File.join(@@dyn_gem_path,"dyndoc") + PATH_SEP + File.join(@@dyn_gem_path,"dyndoc","Std") if File.exists? File.join(@@dyn_gem_path,"dyndoc")
     # high level of priority since provided by user
     pathenv += PATH_SEP + ENV["DYNDOC_LIBRARY_PATH"] if ENV["DYNDOC_LIBRARY_PATH"] and !ENV["DYNDOC_LIBRARY_PATH"].empty?
-    pathenv += PATH_SEP + File.join(@@cfg_dir[:root_path],"library") if File.exists? File.join(@@cfg_dir[:root_path],"library")
+    pathenv += PATH_SEP + File.join(Dyndoc.cfg_dir[:root_path],"library") if File.exists? File.join(@@cfg_dir[:root_path],"library")
     pathenv += PATH_SEP + @@cfg_dir[:current_doc_path] if with_currentRoot and !@@cfg_dir[:current_doc_path].empty?
     pathenv += PATH_SEP + rootDoc  if rootDoc and !rootDoc.empty?
     pathenv += PATH_SEP + Dyndoc.cfg_dyn[:root_doc]  unless Dyndoc.cfg_dyn[:root_doc].empty?
@@ -234,7 +234,7 @@ module Dyndoc
     names=exts.map{|ext| Dyndoc.absolute_path(filename+ext,pathenv)}.compact
     name=(names.length>0 ? names[0] : nil)
     if warn
-      print "WARNING: #{filename}  with extension #{exts.join(',')} not reachable in:\n #{pathenv.join('\n')}\n" unless name
+      print "WARNING: #{filename}  with extension #{exts.join(',')} not reachable in:\n #{pathenv.join(':')}\n" unless name
       #puts "tmpl:";p name
     end
     return name
