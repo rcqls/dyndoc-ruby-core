@@ -99,7 +99,7 @@ module Dyndoc
 	        	$dyn_logger.write("\nERROR Ruby Syntax:\n"+code+"\n")
 	        end
 	        out=":{"+code+"}"
-	    end
+	     end
 #p out
       	out
     end

@@ -2,6 +2,8 @@ require 'fileutils'
 
 module Dyndoc
 
+  FORMATS=["Tex","Txtl","Txt","Tm","Ttm"]
+
 # first declaration of the config directory
   @@dyn_root_path=Settings['path.dyn_home']
   @@dyn_gem_path=File.expand_path(File.join(__FILE__,[".."]*4))
