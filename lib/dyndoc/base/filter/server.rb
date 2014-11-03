@@ -401,7 +401,7 @@ module Dyndoc
       Utils.clean_eol(block)
       envLoc=env
       optRDevice=(@@device=="png" ? "width=10,height=10,units=\"cm\",res=128" : "width=5,height=5,onefile=FALSE") if optRDevice.empty?
-      R4rb << "require(dyndoc)" if @@mode==:capture_cqls
+      ##R4rb << "require(dyndoc)" if @@mode==:capture_cqls
       results=[]
       input,output="",""
       optout,optpasse=nil,nil #options for the output
