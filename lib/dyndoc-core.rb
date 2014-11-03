@@ -25,6 +25,7 @@ Settings.define 'cfg_dyn.doc_list', :type => Array, :default => []
 Settings.define 'cfg_dyn.tag_tmpl', :type => Array, :default => []
 Settings.define 'cfg_dyn.keys_tmpl', :type => Array, :default => []
 Settings.define 'cfg_dyn.user_input', :type => Array, :default => []
+Settings.define 'cfg_dyn.cmd_doc', :type => Array, :default => []
 Settings.define 'cfg_dyn.cmd_pandoc_options', :type => Array, :default => []
 
 Settings.define 'cfg_dyn.dyndoc_session', :type => Symbol, :default => :normal #or :interactive
