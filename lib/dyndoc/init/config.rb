@@ -10,6 +10,7 @@ module Dyndoc
   @@cfg_dir={
     :root_path=> @@dyn_root_path,
     :gem_path=> @@dyn_gem_path,
+    :log_file => File.join(@@dyn_root_path,".dyn_log"),
     :etc => File.join(@@dyn_root_path,"etc"),
     :tmpl_path=>{:tex=>"Tex",:odt=>"Odt",:ttm=>"Ttm"},
     :model_default=>"Model",
@@ -17,6 +18,8 @@ module Dyndoc
     :current_doc_path => "" #completed each time a file is parsed in parse_do 
   }
 
+  require 'logger'
+  @@dyn_logger = Logger.new @@cfg_dir[:log_file], 7, 1048576
 
   def Dyndoc.cfg_dir
     @@cfg_dir
@@ -24,6 +27,10 @@ module Dyndoc
 
   def Dyndoc.cfg_dyn
     Settings[:cfg_dyn]
+  end
+
+  def Dyndoc.logger
+    @@dyn_logger
   end
 
   @@dyn_block={}

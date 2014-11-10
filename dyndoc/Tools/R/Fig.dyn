@@ -112,5 +112,6 @@
     :{rcode}
     dev.off()
   [#in]#{Renvir}[#}
+  [#rb<]p [:rsvg,img,File.readlines(img).join("\n")]
   [#rb>]File.readlines(img)[1..-1].join("\n") #everything except first line
   [#def}

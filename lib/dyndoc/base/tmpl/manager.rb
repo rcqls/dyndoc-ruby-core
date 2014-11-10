@@ -99,6 +99,16 @@ module Dyndoc
       end
     end
 
+    ## equivalent to :pre_doc for not interactive document
+    def require_first
+      require_dyndoc_libs("Dyn/Base")
+    end
+
+    def require_dyndoc_libs(libs)
+      libs="{#require]\n"+libs.split("\n").map{|lib| lib.split(",")}.flatten.uniq.join("\n")+"\n[#}\n"
+      parse(libs,@filterGlobal)
+    end
+
     ## to set the current tmpl_mngr as the default one accessed via Dyndoc.tmpl_mngr
     ## and used in #R> #rb> block
     def as_default_tmpl_mngr!
@@ -123,6 +133,7 @@ module Dyndoc
       @keys={}
       @alias={}
       @savedBlocks={}
+      require_first if @@interactive
     end
 
     def format_output=(format)
