@@ -186,12 +186,12 @@ module Dyndoc
       end
 
       ## sort with respect to priority number and filter
-      @cfg[:pre_doc] += input.scan(/\[\#(?:plugin|preload)\]([^\[]*)/m).flatten.map{|e| e.strip.map{|e2| e2.split("\n").map{|e3| e3.strip}}}.flatten
+      @cfg[:pre_doc] += input.scan(/\[\#(?:plugin|preload)\]([^\[]*)/m).flatten.map{|e| e.strip.split("\n").map{|e2| e2.strip}}.flatten
 #p @cfg[:pre_doc]
       input.gsub!(/\[\#(?:plugin|preload)\][^\[]*/m,"")
       @cfg[:pre_doc].sort!.map!{|e| e.scan(/^\d*(.*)/)}.flatten!
       ## sort with respect to priority number and filter
-      @cfg[:post_doc] += input.scan(/\[\#(?:postload)\]([^\[]*)/m).flatten.map{|e| e.strip.map{|e2| e2.split("\n").map{|e3| e3.strip}}}.flatten
+      @cfg[:post_doc] += input.scan(/\[\#(?:postload)\]([^\[]*)/m).flatten.map{|e| e.strip.split("\n").map{|e2| e2.strip}}.flatten
       input.gsub!(/\[\#(?:postload)\][^\[]*/m,"")
       @cfg[:post_doc].sort!.map!{|e| e.scan(/^\d*(.*)/)}.flatten!
 

@@ -27,6 +27,8 @@ Settings.define 'cfg_dyn.keys_tmpl', :type => Array, :default => []
 Settings.define 'cfg_dyn.user_input', :type => Array, :default => []
 Settings.define 'cfg_dyn.cmd_doc', :type => Array, :default => [:make_content,:save,:pdf]
 Settings.define 'cfg_dyn.cmd_pandoc_options', :type => Array, :default => []
+Settings.define 'cfg_dyn.options.pdflatex_nb_pass', :type => Integer, :default => 1
+Settings.define 'cfg_dyn.options.pdflatex_echo', :type => :boolean, :default => false
 
 Settings.define 'cfg_dyn.dyndoc_session', :type => Symbol, :default => :normal #or :interactive
 

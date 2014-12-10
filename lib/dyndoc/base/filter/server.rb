@@ -273,10 +273,10 @@ module Dyndoc
 		      short[0]=short[0].to_i
 		      short[2]=short[2].to_i
 		      ## Dyndoc.warn "short",[short,txt]
-		      (0...short[0]).each{|i| txtout << txt[i] << "\n"}
+		      (0...short[0]).each{|i| txtout << txt[i].force_encoding("utf-8") << "\n"}
 		      txtout << short[1] << "\n"
 		      le = txt.length
-		      ((le-short[2])...le).each{|i| txtout << txt[i] << "\n"}
+		      ((le-short[2])...le).each{|i| txtout << txt[i].force_encoding("utf-8") << "\n"}
 		    else
 		    	txt=txt.map{|e| e.force_encoding("utf-8")}
 		      txtout << txt.join("\n")
