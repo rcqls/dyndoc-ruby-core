@@ -1,0 +1,15 @@
+[#=]::_DOCUMENTCLASS_+[]
+[#=]::_PREAMBLE_+[] [#=]::_POSTAMBLE_+[]
+[#=]::_BEGINDOC_+[] [#=]::_ENDDOC_+[]
+[#=]::_HEADER_+[]   [#=]::_FOOTER_+[]
+[#=]::_STYLEDOC_+[] [#=]::_JSDOC_+[]
+[#>]##{_DOCUMENTCLASS_}
+##{_HEADER_}
+<!-- Preamble -->
+##{_PREAMBLE_}
+<!-- Styles -->
+##{_STYLEDOC_}
+<!-- Javascript -->
+##{_JSDOC_}
+<body>
+##{_BEGINDOC_}

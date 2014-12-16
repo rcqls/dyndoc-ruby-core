@@ -277,45 +277,14 @@ module Dyndoc
 
     @@tagblck_set=[:<<,:<,:do,:>>,:>,:">!",:out,:nl,:"\\n",:"r<",:"R<",:"rb<",:"m<",:"M<",:"jl<",:"r>>",:"R>>",:rverb,:"rb>>",:rbverb,:"jl>>",:jlverb,:rout,:"r>",:"R>",:"rb>",:"m>",:"M>",:"jl>",:"_<",:"_>",:"__>",:"html>",:"tex>",:"txtl>",:"ttm>",:"md>",:tag,:"??",:"?",:yield,:"=",:"-",:+,:"%"]
     #Rmk: when a symbol is included in another one, you have to place it before! Ex: :>> before :> and also :<< before :<
-    @@tag_blck=[] #to cancel soon!!
+    
+    @@tagblck_dyndoc_set = [:main,:content,:before,:after,:require,:helpers,:preamble,:postamble,:style,:title,:path,:first,:last]
+    @@tagblck_tex_set=[:class,:optclass,:package,:texinputs]
+    @@tagblck_html_set=[:js,:css,:header,:footer]
 
     TXT_DTAG=[:txt,:code,:>,:<,:<<]
 
     @@dtag={
-=begin TO_REMOVE
-      :dtag => {
-        :instr=>["input","require","hide","if","unless","loop","case","var","set","def","func","do","out","call","r","rverb","rb"],
-        :alias=>{
-          :vars=>:var
-        },
-        :empty_keyword=>[""],
-        :keyword=>{
-          :if=> [:else,:elsif,:if,:unless]+@@tagblck_set,
-          :unless=> [:else,:elsif,:if,:unless]+@@tagblck_set,
-          :loop=>[:break]+@@tagblck_set,
-          :case=>[:when,:else]+@@tagblck_set,
-          :var=>[:","],
-          :def=>[:","]+@@tagblck_set,
-          :do=>@@tagblck_set,
-          :out=>@@tagblck_set,
-          :call=>[:","],
-          :input=>[:","]
-        },
-	:named_tag=>{}, #for compatibility with dtag2 but empty!
-        :mode_arg=>:find,
-        :arg=>[:if,:unless,:elsif,:case,:def,:func,:call,:input,:when,:break,:set],
-        :blck=>{
-          :instr=>[:if,:unless,:case,:loop],
-          :keyword=>{
-            :if=>[:if,:unless,:elsif,:else],
-            :unless=>[:if,:unless,:elsif,:else],
-            :case=>[:when,:else],
-            :loop=>[:loop,:break]
-          }
-        },
-	:style=>"@@@" #to avoid to be parsed!
-      },
-=end
       :dtag => {
         :instr=>["newBlck","input","require","hide","format","txt",">","<","<<",">>","code","verb","if","unless","for","loop","case","var","set","def","func","meth","new","super","do","out","blck","blckAnyTag","saved","b>","call","R","r","m","M","jl","renv","rverb","rbverb","jlverb","rout","rb","eval","ifndef","tags","keys","opt","document","yield","get","part"],
         :alias=>{
@@ -346,35 +315,35 @@ module Dyndoc
         },
         :empty_keyword=>["?","empty"],
         :keyword=>{
-	        :document => [:main,:content,:class,:optclass,:require,:helpers,:preamble,:postamble,:style,:package,:title,:path,:first,:last,:texinputs]+@@tag_blck,
-          :if=> [:else,:elsif,:if,:unless]+@@tag_blck,
-          :unless=> [:else,:elsif,:if,:unless]+@@tag_blck,
-	        :for=>@@tag_blck,
-          :loop=>[:break]+@@tag_blck,
-          :case=>[:when,:else]+@@tag_blck,
+	        :document => @@tagblck_dyndoc_set + @@tagblck_tex_set + @@tagblck_html_set,
+          :if=> [:else,:elsif,:if,:unless],
+          :unless=> [:else,:elsif,:if,:unless], 
+	        :for=>[], 
+          :loop=>[:break], 
+          :case=>[:when,:else], 
           :var=>[:","],
-          :set=>@@tag_blck,
-          :def=>[:",",:binding]+@@tag_blck,
-          :meth=>[:","]+@@tag_blck,
-          :new=>[:",",:of,:in,:blck]+@@tag_blck,
-          :super=>[:",",:parent,:blck]+@@tag_blck,
-          :do=>@@tag_blck,
-          :out=>@@tag_blck,
-          :blck=>@@tag_blck,
-          :saved=>@@tag_blck,
-          :call=>  [:",",:blck]+@@tag_blck,
-	        :style=> [:of,:",",:blck,:default]+@@tag_blck,
+          :set=>[], 
+          :def=>[:",",:binding], 
+          :meth=>[:","], 
+          :new=>[:",",:of,:in,:blck], 
+          :super=>[:",",:parent,:blck], 
+          :do=>[],
+          :out=>[], 
+          :blck=>[], 
+          :saved=>[],
+          :call=>  [:",",:blck],
+	        :style=> [:of,:",",:blck,:default],
           :input=>[:","],
           :r=>[:in],
-          :rverb=>[:in,:mode]+@@tag_blck,
-          :rbverb=>[:mode]+@@tag_blck,
-          :jlverb=>[:mode]+@@tag_blck,
-	        :rout=>[:in,:mode]+@@tag_blck,
+          :rverb=>[:in,:mode], 
+          :rbverb=>[:mode], 
+          :jlverb=>[:mode], 
+	        :rout=>[:in,:mode], 
           :eval=>[:to],
           :ifndef=>[:<<],
-          :tags=>[:when]+@@tag_blck,
-      	  :keys=> @@tag_blck,
-      	  :part=>@@tag_blck,
+          :tags=>[:when], 
+      	  :keys=> [], 
+      	  :part=>[], 
       	  :get=>[:blck]
         },
       	:keyword_reg=>{ #to overpass :keyword
@@ -400,7 +369,7 @@ module Dyndoc
         :blck=>{
           :instr=>[:document,:if,:unless,:case,:loop,:set,:tag,:keys,:rverb,:rbverb,:jlverb,:for],
           :keyword=>{
-            :document=>[:content,:main,:class,:optclass,:preamble,:postamble,:style,:package,:title,:require,:helpers,:path,:texinputs,:first,:last],
+            :document=>@@tagblck_dyndoc_set + @@tagblck_tex_set + @@tagblck_html_set,
             :set=>[:set],
             :if=>[:if,:unless,:elsif,:else],
             :unless=>[:if,:unless,:elsif,:else],
@@ -448,6 +417,12 @@ module Dyndoc
       	  @tag_blck[:keyword].merge!(dtag[:blck][:keyword]) if dtag[:blck][:keyword]
       	end
       end
+    end
+
+    ## update an existing tag keywork (ex: document for html structure by adding #css #js #menu or anything needed in the model)
+    def update_tag_keyword(keyword,tags_set=[],args={})
+      @tag_keyword[keyword] += tags_set
+      @tag_blck[:keyword][keyword] += new_tags_set if args[:mode] && args[:mode] == :blck 
     end
 
 ## Types of result block:

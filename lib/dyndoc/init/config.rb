@@ -2,7 +2,7 @@ require 'fileutils'
 
 module Dyndoc
 
-  FORMATS=["Tex","Txtl","Txt","Tm","Ttm"]
+  FORMATS=["Tex","Txtl","Txt","Tm","Ttm","Html"]
 
 # first declaration of the config directory
   @@dyn_root_path=Settings['path.dyn_home']
@@ -12,7 +12,7 @@ module Dyndoc
     :gem_path=> @@dyn_gem_path,
     :log_file => File.join(@@dyn_root_path,".dyn_log"),
     :etc => File.join(@@dyn_root_path,"etc"),
-    :tmpl_path=>{:tex=>"Tex",:odt=>"Odt",:ttm=>"Ttm"},
+    :tmpl_path=>{:tex=>"Tex",:odt=>"Odt",:ttm=>"Ttm",:html => "Html"},
     :model_default=>"Model",
     :file => "", #to complete when dyndoc applied to a file
     :current_doc_path => "" #completed each time a file is parsed in parse_do 
@@ -41,11 +41,11 @@ module Dyndoc
 
   ## default mode and extension
   @@mode=:txt
-  @@tmplExt={:txt => [".dyn_txt","_tmpl.txt",".dyn"], :rb =>[".dyn_rb","_tmpl.rb",".dyn"], :c=>[".dyn_c","_tmpl.c",".dyn"], :html => [".dyn_html","_tmpl.html","_tmpl.rhtml",".dyn"],:txtl=>[".dyn_txtl","_tmpl.txtl","_tmpl.rhtml",".dyn"],
-  :tm=>[".dyn_tm","_tmpl.tm",".dyn"],
-  :tex=>[".dyn_tex","_tmpl.tex",".dyn",".rtex"],
+  @@tmplExt={:txt => ["_txt.dyn",".dyn_txt","_tmpl.txt",".dyn"], :rb =>["_rb.dyn",".dyn_rb","_tmpl.rb",".dyn"], :c=>["_c.dyn",".dyn_c","_tmpl.c",".dyn"], :html => ["_html.dyn",".dyn_html","_tmpl.html","_tmpl.rhtml",".dyn"],:txtl=>["_txtl.dyn",".dyn_txtl","_tmpl.txtl","_tmpl.rhtml",".dyn"],
+  :tm=>["_tm.dyn",".dyn_tm","_tmpl.tm",".dyn"],
+  :tex=>["_tex.dyn",".dyn_tex","_tmpl.tex",".dyn",".rtex"],
   :odt=>[".dyn_odt_content","_tmpl_content.xml",".dyn_odt_styles","_tmpl_styles.xml",".dyn_odt","_tmpl.odt",".dyn"], #_tmpl.odt is an odt file with content body to extract!
-  :ttm=>[".dyn_ttm","_tmpl.ttm",".dyn"],
+  :ttm=>["_ttm.dyn",".dyn_ttm","_tmpl.ttm",".dyn"],
   :all=>[".dyn"]
   }
 

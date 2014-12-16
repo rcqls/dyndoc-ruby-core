@@ -1436,17 +1436,28 @@ p call
       	to_parse=true
 #p i;p blck[i+1]
         case blck[i+=1]
+        ########################## Commands
         when :main,:content
           var,mode=nil,:view
 	      when :require
 	        var,mode=nil,:load
         when :helpers
           var,mode,to_parse=nil,:helpers,true
-	      when :class
-	        var,mode="_DOCUMENTCLASS_",""
-        when :optclass
+        when :path
+          var,mode=nil,:path
+        when :first
+#p blck[i+=1]
+          var,mode,to_parse=nil,:first,false
+        when :last
+          var,mode,to_parse=nil,:last,false
+        when :texinputs ## Latex
+          var,mode,to_parse=nil,:texinputs,true
+        when :optclass  ## Latex
           var,mode,to_parse=nil,:optclass,true
-        when :preamble
+	      ################################ MODEL VARIABLES
+        when :class     ## Latex
+	        var,mode="_DOCUMENTCLASS_",""
+        when :preamble  
 	        var,mode="_PREAMBLE_","+"
 	      when :postamble
 	        var,mode="_POSTAMBLE_","+"
@@ -1456,15 +1467,19 @@ p call
 	        var,mode="_USEPACKAGE_","+"
 	      when :title
 	        var,mode="_TITLE_","+"
-	      when :path
-	        var,mode=nil,:path
-	      when :first
-#p blck[i+=1]
-	        var,mode,to_parse=nil,:first,false
-	      when :last
-	        var,mode,to_parse=nil,:last,false
-        when :texinputs
-          var,mode,to_parse=nil,:texinputs,true
+        when :before
+          var,mode="_BEGINDOC_","+"
+        when :after
+          var,mode="_ENDDOC_","+"
+        ### specific for HTML! Different from tilt mode!
+        when :js
+          var,mode="_JSDOC_","+"
+        when :css
+          var,mode="_STYLEDOC_","+"
+        when :header
+          var,mode="_HEADER_","+"
+        when :footer
+          var,mode="_FOOTER_","+"
 	      end
 	      i,*b2=next_block(blck,i)
 #p b2

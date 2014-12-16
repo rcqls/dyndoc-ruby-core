@@ -42,6 +42,7 @@ Settings.define 'cfg_dyn.devel_mode', :type=> Symbol, :default=> :none
 Settings.define 'cfg_dyn.ruby_debug', :type=> Symbol, :default=> :none
 
 Settings.define 'cfg_dyn.model_doc', :default => "default"
+Settings.define 'cfg_dyn.format_doc', :default => "tex"
 
 Settings.finally do |c|
 	c['cfg_dyn.langs'].map!{|e| e.to_sym}

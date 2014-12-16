@@ -224,7 +224,7 @@ module Dyndoc
         txt= pre_doc 
         parse(txt,@filterGlobal) ##Style declares objects before compiling the document! Object are created in the global envir!
       end
-#p out_pre
+##p [:out_pre,out_pre]
       return out_pre
     end
 =begin
@@ -247,7 +247,7 @@ module Dyndoc
         txt= post_model 
         out_post << parse(txt)
       end
-#p out_post
+#p [:out_post,out_post]
       return out_post
     end
 
@@ -275,12 +275,12 @@ module Dyndoc
       ## escape=true at the end in order to transform undefined variables in Latex!!!
 ##puts "prepare output: BEFORE apply";puts out
       out=@filter.apply(out,:post,false,true) if [:tex,:odt,:ttm,:html].include? @cfg[:format_doc]
-##puts "prepare output: AFTER apply";puts out
+##p [:prepare_output, out]
       #escape accolade!
       Utils.escape!(out,CHARS_SET_LAST)
 ##puts "prepare output: AFTER Utils.escape!";puts out
       out=Utils.unprotect_format_blocktext(out)
-##puts "prepare output: AFTER Utils.unprotect_format_blocktext";puts out
+##p [:prepare_output, out]
       return out
     end
 
@@ -335,6 +335,7 @@ module Dyndoc
       out=prepare_output(txt)
       prepare_last_output(out)
       clean_as_is(out)
+##p [:output,out]
       return out
     end
 

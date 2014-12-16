@@ -591,19 +591,19 @@ module Dyndoc
       end
     end
 
-    def apply(str,mode=nil,to_filter=true,escape=false)
-      ##return str unless to_filter
-      ##RMK: to_filter unused!
-      @mode,@escape=mode,escape 
-      #puts "str to apply filter";p str
-      @scan.tokenize(str)
-      ext=@scan.extract
-      #p ext
-      res=@scan.rebuild_after_filter(ext,self)
-      #res=res.split("\n") if @mode==:pre and !res.empty?
-      #puts "res";p res
-      res
-    end
+    # def apply(str,mode=nil,to_filter=true,escape=false)
+    #   ##return str unless to_filter
+    #   ##RMK: to_filter unused!
+    #   @mode,@escape=mode,escape 
+    #   #puts "str to apply filter";p str
+    #   @scan.tokenize(str)
+    #   ext=@scan.extract
+    #   #p ext
+    #   res=@scan.rebuild_after_filter(ext,self)
+    #   #res=res.split("\n") if @mode==:pre and !res.empty?
+    #   #puts "res";p res
+    #   res
+    # end
 
     def apply(str,mode=nil,to_filter=true,escape=false)
       ##return str unless to_filter
