@@ -41,7 +41,7 @@ module Dyndoc
 
   ## default mode and extension
   @@mode=:txt
-  @@tmplExt={:txt => ["_txt.dyn",".dyn_txt","_tmpl.txt",".dyn"], :rb =>["_rb.dyn",".dyn_rb","_tmpl.rb",".dyn"], :c=>["_c.dyn",".dyn_c","_tmpl.c",".dyn"], :html => ["_html.dyn",".dyn_html","_tmpl.html","_tmpl.rhtml",".dyn"],:txtl=>["_txtl.dyn",".dyn_txtl","_tmpl.txtl","_tmpl.rhtml",".dyn"],
+  @@tmplExt={:txt => ["_txt.dyn","_raw.dyn",".dyn_txt","_tmpl.txt",".dyn"], :rb =>["_rb.dyn",".dyn_rb","_tmpl.rb",".dyn"], :c=>["_c.dyn",".dyn_c","_tmpl.c",".dyn"], :html => ["_html.dyn",".dyn_html","_tmpl.html","_tmpl.rhtml",".dyn"],:txtl=>["_txtl.dyn",".dyn_txtl","_tmpl.txtl","_tmpl.rhtml",".dyn"],
   :tm=>["_tm.dyn",".dyn_tm","_tmpl.tm",".dyn"],
   :tex=>["_tex.dyn",".dyn_tex","_tmpl.tex",".dyn",".rtex"],
   :odt=>[".dyn_odt_content","_tmpl_content.xml",".dyn_odt_styles","_tmpl_styles.xml",".dyn_odt","_tmpl.odt",".dyn"], #_tmpl.odt is an odt file with content body to extract!
@@ -49,7 +49,7 @@ module Dyndoc
   :all=>[".dyn"]
   }
 
-  @@docExt={:txt => ".txt",:rb => ".rb",:c=>".c",:html=>".html",:txtl=>".rhtml",:tm=>".tm",:tex=>".tex",:odt=>".odt",:ttm=>"_ttm.xml"}
+  @@docExt={:raw => "",:txt => ".txt",:rb => ".rb",:c=>".c",:html=>".html",:txtl=>".rhtml",:tm=>".tm",:tex=>".tex",:odt=>".odt",:ttm=>"_ttm.xml"}
 
   @@dynExt=[".dyn"]
 
