@@ -1480,6 +1480,8 @@ p call
           var,mode="_HEADER_","+"
         when :footer
           var,mode="_FOOTER_","+"
+        when :default
+          var,mode=nil,:default
 	      end
 	      i,*b2=next_block(blck,i)
 #p b2
@@ -1490,6 +1492,8 @@ p call
 	        case mode
 	        when :view
 	          tex << res
+          when :default
+               ## nothing to do: used in document.rb
 	        when :load
 	          #puts "document:require";p  res
 	          eval_LOAD(res.strip.split("\n"),filter)

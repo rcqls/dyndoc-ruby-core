@@ -278,7 +278,7 @@ module Dyndoc
     @@tagblck_set=[:<<,:<,:do,:>>,:>,:">!",:out,:nl,:"\\n",:"r<",:"R<",:"rb<",:"m<",:"M<",:"jl<",:"r>>",:"R>>",:rverb,:"rb>>",:rbverb,:"jl>>",:jlverb,:rout,:"r>",:"R>",:"rb>",:"m>",:"M>",:"jl>",:"_<",:"_>",:"__>",:"html>",:"tex>",:"txtl>",:"ttm>",:"md>",:tag,:"??",:"?",:yield,:"=",:"-",:+,:"%"]
     #Rmk: when a symbol is included in another one, you have to place it before! Ex: :>> before :> and also :<< before :<
     
-    @@tagblck_dyndoc_set = [:main,:content,:before,:after,:require,:helpers,:preamble,:postamble,:style,:title,:path,:first,:last]
+    @@tagblck_dyndoc_set = [:main,:content,:before,:after,:require,:helpers,:preamble,:postamble,:style,:title,:path,:first,:last,:default]
     @@tagblck_tex_set=[:class,:optclass,:package,:texinputs]
     @@tagblck_html_set=[:js,:css,:header,:footer]
 
