@@ -86,9 +86,15 @@
   [#,] widthR[15] [#,] heightR[15][#,] unitR[cm][#,] resR[72][#,] optR[]
   [#,] include[true] [#,] optTex[scale=0.75]
   [#,] newR[FALSE]
-  [#<]{#rpng]#{rcode}[#}
-  [#R>]require(base64)
-  cat(img("#{img}"))
+  [#=]delete[FALSE]
+  [#?]#{=img}==""[#=]img[#r{tempfile(fileext=".png")}][#=]delete[TRUE]
+  [#?]#{=rcode}!=""[#<]{#rpng]#{rcode}[#}[#?]end
+  [#R<]require(base64)
+  print(#{=img})
+  codeimg<-img(#{=img})
+  print(codeimg)
+  if(#{delete}) unlink(#{=img})
+  [#>][#r{codeimg}]
   [#}
 
 
