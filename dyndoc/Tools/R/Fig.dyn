@@ -82,6 +82,16 @@
   [#>][{#rfig]#{rcode}[#,]deviceR[png][#}]
   [#}
 
+  {#def]img64[#,] rcode[] [#,] img[]
+  [#,] widthR[15] [#,] heightR[15][#,] unitR[cm][#,] resR[72][#,] optR[]
+  [#,] include[true] [#,] optTex[scale=0.75]
+  [#,] newR[FALSE]
+  [#<]{#rpng]#{rcode}[#}
+  [#R>]require(base64)
+  cat(img("#{img}"))
+  [#}
+
+
   {#def]rjpeg[#,] rcode[] [#,] img[]
   [#,] widthR[10] [#,] heightR[10][#,] unitR[cm][#,]  resR[72][#,] optR[]
   [#,] include[true] [#,] optTex[scale=0.75]
