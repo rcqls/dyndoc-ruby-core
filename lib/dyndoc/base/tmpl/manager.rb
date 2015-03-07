@@ -46,8 +46,12 @@ module Dyndoc
       require "dyndoc/common/dynArray"
       dyndocToolsR = File.join(Dyndoc.cfg_dir[:gem_path],"share","R","dyndocTools.R").gsub('\\','/')
       ## WD is introduced by Msys and ConEmuDir by ConEmu
-      dyndocToolsR =  (ENV['WD'] || ENV['ConEmuDir']).split('\\')[0...-2].join(File::Separator) + dyndocToolsR  if RUBY_PLATFORM =~ /msys/
-      R4rb << "source('"+dyndocToolsR+"',chdir=TRUE)"
+      dyndocToolsRoot = RUBY_PLATFORM =~ /msys/ ? (ENV['WD'] || ENV['ConEmuDir']).split('\\')[0...-2].join(File::Separator) : ""
+      R4rb << "source('"+dyndocToolsRoot+dyndocToolsR+"',chdir=TRUE)"
+      if RUBY_PLATFORM =~ /msys/
+        dyndocMsys2R = File.join(Dyndoc.cfg_dir[:gem_path],"share","R","dyndocMsys2.R").gsub('\\','/')
+        R4rb << "source('"+dyndocToolsRoot+dyndocMsys2R+"',chdir=TRUE)"
+      end
     end
 
     def TemplateManager.initJulia
