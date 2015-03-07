@@ -6,4 +6,4 @@ require(rb4R)
 source("tools/dynArray.R",local=.dyndocEnvir)
 source("tools/dynCapture.R",local=.dyndocEnvir)
 
-attach(.dyndocEnvir)
+attach(.dyndocEnvir,name="dyndoc:tools")
