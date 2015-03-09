@@ -27,7 +27,7 @@ DyndocMsys2.global_mingw_path<-function(pa){
   if((substring(pa,1,1) %in% c("C","c","D","d","E","e","Z","z")) && substring(pa,2,2)==":")  {
     # global mingw path
     sep <- if(substring(pa,3,3)=="\\") '\\\\' else '/'
-    paste(substring(pa,1,1),paste(strsplit(substring(pa,4),sep)[[1]],collapse="/"),sep=":")
+    paste(substring(pa,1,1),paste(c("",strsplit(substring(pa,4),sep)[[1]]),collapse="/"),sep=":")
   } else {
     NULL
   }
