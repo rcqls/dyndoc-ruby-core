@@ -23,6 +23,11 @@ module Dyndoc
 	      ([".cfg_dyn",".dyn_cfg"].map{|ext| name+ext}.select{|f| File.exists? f})[0]
 	    end
 
+	    def Utils.lib_file_exists?(tmpl)
+	      name=File.join(File.dirname(tmpl),File.basename(tmpl,".*"))
+	      (["_lib.dyn",".dyn_lib"].map{|ext| name+ext}.select{|f| File.exists? f})[0]
+	    end
+
 	    def Utils.out_rsrc_exists?(tmpl)
 	      name=File.join(File.dirname(tmpl),File.basename(tmpl,".*"))
 	      ## if not a directory it is the zipped version! TODO! 
