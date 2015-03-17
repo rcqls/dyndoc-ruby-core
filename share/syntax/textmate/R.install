@@ -1,6 +1,0 @@
-#!/bin/bash
-
-if [ "$1" = "redcar" ]; then
-
-	#Redcar Install: TODO
-fi
