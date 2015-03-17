@@ -82,20 +82,31 @@
   [#>][{#rfig]#{rcode}[#,]deviceR[png][#}]
   [#}
 
-  {#def]img64[#,] rcode[] [#,] img[]
+  {#def]img[#,] rcode[] [#,] img[]
   [#,] widthR[15] [#,] heightR[15][#,] unitR[cm][#,] resR[72][#,] optR[]
-  [#,] include[true] [#,] optTex[scale=0.75]
-  [#,] newR[FALSE]
+  [#,] optTex[scale=0.75]
+  [#,] newR[TRUE]
   [#=]delete[FALSE]
-  [#?]#{=img}==""[#=]img[#r{tempfile(fileext=".png")}][#=]delete[TRUE]
-  [#?]#{=rcode}!=""[#<]{#rpng]#{rcode}[#}[#?]end
+  [#?]Dyndoc.tmpl_mngr.fmtOutput == "tex"[#<]
+    {#if]#{0?img}[#=]img[:{File.join($dyn_rsrc,"img","rfig_:{$rfig+=1}:{$rfig_exts[:png]}")}]
+    [#else][#<]
+      {#if]File.dirname(#{=img})=="."[#>]img[:{File.join($dyn_rsrc,"img",#{=img})}][#if}
+    [#if}
+  [#?]Dyndoc.tmpl_mngr.fmtOutput == "html"[#<]
+    {#if]#{0?img}[#=]img[#r{tempfile(fileext=".png")}][#=]delete[TRUE][#if}
+  [#?]#{+?rcode}[#<]{#rpng]#{rcode}[#}[#?]end
   [#R<]require(base64)
-  print(#{=img})
+  #print(#{=img})
   codeimg<-img(#{=img})
-  print(codeimg)
+  #print(codeimg)
   if(#{delete}) unlink(#{=img})
+  [#?]Dyndoc.tmpl_mngr.fmtOutput == "html"
   [#>][#r{codeimg}]
+  [#?]Dyndoc.tmpl_mngr.fmtOutput == "tex"
+  [#>][\includegraphics[#{optTex}]{#{img}}]
   [#}
+
+
 
 
   {#def]rjpeg[#,] rcode[] [#,] img[]

@@ -321,7 +321,7 @@ module Dyndoc
     def output(input,fromfile=nil)
       @filename=@tmpl_cfg[:filename_tmpl]
       input=Dyndoc.input_from_file(@filename=input) if fromfile
-      input=@tmpl_cfg[:lib_dyn_content]+input
+      input=@tmpl_cfg[:lib_dyn_content]+"[#main][#>]"+input unless @tmpl_cfg[:lib_dyn_content].empty?
       ## fetch the contents of all saved variables! This fasten the compilation!
       Utils.saved_content_fetch_variables_from_file(@filename,self)
 
