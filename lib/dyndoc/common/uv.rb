@@ -10,8 +10,8 @@ end
 
 module Uv
 
-  self.syntax_path=File.join(Dyndoc.cfg_dir[:gem_path],"share","syntax","ultraviolet","syntax")
-  self.render_path=File.join(Dyndoc.cfg_dir[:gem_path],"share","syntax","ultraviolet","render")
+  self.syntax_path=File.join(Dyndoc.cfg_dir[:etc],"uv","syntax")
+  self.render_path=File.join(Dyndoc.cfg_dir[:etc],"uv","render")
 
   def self.parse(text, output = "xhtml", syntax_name = nil, line_numbers = false, render_style = nil, headers = false)
     Dyndoc::RenderProcessor.load(output, render_style, line_numbers, headers) do |processor|
