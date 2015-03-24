@@ -98,6 +98,8 @@ header=header.map{|k,v| k+"="+v.to_s}.join(",")
 
 {#def]peteR[#,]rcode[][#>]{#Rems]#{rcode}[#}[#def}
 
+{#def]RVerb[#,]rcode[][#>]{#Rems]#{rcode}[#}[#def}
+
 {#def]Rems_in[#?]!line[:input].empty?[#>] \textcolor{beaubleu}{:{line[:input].chomp.gsub(/\'\\t\'/,"'{\\textbackslash}t'").gsub(/\"\\t\"/,"\"{\\textbackslash}t\"")}}<\n>[#}
 
 {#def]Rems_out[#rb>]line[:output].split("\n").map{|l| '\textit{\textcolor{beauvert}{'+l+"}}"}.join("\n")+"\n"[#}
