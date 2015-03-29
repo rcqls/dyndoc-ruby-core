@@ -46,7 +46,7 @@ module Dyndoc
       require "dyndoc/common/dynArray"
       dyndocToolsR = File.join(Dyndoc.cfg_dir[:gem_path],"share","R","dyndocTools.R").gsub('\\','/')
       ## WD is introduced by Msys and ConEmuDir by ConEmu
-      dyndocToolsRoot = RUBY_PLATFORM =~ /(?:msys|mingw)/ ? (ENV['WD'] || ENV['ConEmuDir']).split('\\')[0...-2].join(File::Separator) : ""
+      dyndocToolsRoot = RUBY_PLATFORM =~ /msys/ ? (ENV['WD'] || ENV['ConEmuDir']).split('\\')[0...-2].join(File::Separator) : ""
       R4rb << "source('"+dyndocToolsRoot+dyndocToolsR+"',chdir=TRUE)"
       if RUBY_PLATFORM =~ /msys/
         dyndocMsys2R = File.join(Dyndoc.cfg_dir[:gem_path],"share","R","dyndocMsys2.R").gsub('\\','/')
