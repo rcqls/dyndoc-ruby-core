@@ -10,6 +10,12 @@ require "open3"
 
 module Dyndoc
 
+  def Dyndoc.which_path(bin)
+    cmd=`which #{bin}`.strip
+    cmd=DyndocMsys2.global_path_msys2mingw(cmd) if RUBY_PLATFORM =~ /mingw/
+    return cmd
+  end
+
   module Converter
 
     SOFTWARE={}
@@ -50,8 +56,7 @@ module Dyndoc
         if File.exist? File.join(ENV["HOME"],".cabal","bin","pandoc")
           SOFTWARE[:pandoc]=File.join(ENV["HOME"],".cabal","bin","pandoc")
         else
-          cmd = `which pandoc`.strip
-          cmd=DyndocMsys2.global_path_msys2mingw(cmd) if RUBY_PLATFORM =~ /mingw/
+          cmd = Dyndoc.which_path("pandoc")
           SOFTWARE[:pandoc]=cmd unless cmd.empty?
           #cmd=`type "pandoc"`
           #SOFTWARE[:pandoc]=cmd.strip.split(" ")[2] unless cmd.empty?
