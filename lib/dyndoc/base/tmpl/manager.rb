@@ -52,6 +52,9 @@ module Dyndoc
         dyndocMsys2R = File.join(Dyndoc.cfg_dir[:gem_path],"share","R","dyndocMsys2.R").gsub('\\','/')
         R4rb << "source('"+dyndocToolsRoot+dyndocMsys2R+"',chdir=TRUE)"
       end
+      if RUBY_PLATFORM =~ /mingw/
+        require File.join(ENV["DYNDOC_MSYS2_ROOT"],ENV["DYNDOC_HOME"],"bin","msys2","file_tools.rb")
+      end
     end
 
     def TemplateManager.initJulia

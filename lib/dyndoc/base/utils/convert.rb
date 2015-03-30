@@ -51,6 +51,7 @@ module Dyndoc
           SOFTWARE[:pandoc]=File.join(ENV["HOME"],".cabal","bin","pandoc")
         else
           cmd = `which pandoc`.strip
+          cmd=DyndocMsys2.global_path_msys2mingw(cmd) if RUBY_PLATFORM =~ /mingw/
           SOFTWARE[:pandoc]=cmd unless cmd.empty?
           #cmd=`type "pandoc"`
           #SOFTWARE[:pandoc]=cmd.strip.split(" ")[2] unless cmd.empty?
