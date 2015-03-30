@@ -53,7 +53,7 @@ module Dyndoc
         R4rb << "source('"+dyndocToolsRoot+dyndocMsys2R+"',chdir=TRUE)"
       end
       if RUBY_PLATFORM =~ /mingw/
-        require File.join(ENV["DYNDOC_MSYS2_ROOT"],ENV["DYNDOC_HOME"],"bin","msys2","file_tools.rb")
+        require File.join(ENV["DYNDOC_HOME"],"bin","msys2","file_tools.rb")
       end
     end
 
