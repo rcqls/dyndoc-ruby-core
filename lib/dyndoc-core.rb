@@ -33,6 +33,7 @@ Settings.define 'cfg_dyn.options.pdflatex_echo', :type => :boolean, :default => 
 Settings.define 'cfg_dyn.dyndoc_session', :type => Symbol, :default => :normal #or :interactive
 
 Settings.define 'cfg_dyn.dyndoc_mode', :type => Symbol, :default => :normal
+Settings.define 'cfg_dyn.docker_mode', :type => :boolean, :default => false
 Settings.define 'cfg_dyn.working_dir', :type => String, :default => ""
 Settings.define 'cfg_dyn.root_doc', :type => String, :default => ""
 Settings.define 'cfg_dyn.nbChar_error', :type => Integer, :default => 300
