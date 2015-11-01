@@ -6,7 +6,7 @@ require "dyndoc/base/filters"
 require "dyndoc/base/envir"
 require "dyndoc/base/scanner"
 require "dyndoc/plugins/tex"
-require "dyndoc/base/utils/convert"
+require "dyndoc-converter"
 require "dyndoc/base/helpers"
 require "configliere"
 
