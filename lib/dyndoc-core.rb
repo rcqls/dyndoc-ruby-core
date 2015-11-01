@@ -33,7 +33,7 @@ Settings.define 'cfg_dyn.options.pdflatex_echo', :type => :boolean, :default => 
 Settings.define 'cfg_dyn.dyndoc_session', :type => Symbol, :default => :normal #or :interactive
 
 Settings.define 'cfg_dyn.dyndoc_mode', :type => Symbol, :default => :normal
-Settings.define 'cfg_dyn.docker_mode', :type => :boolean, :default => false
+#Settings.define 'cfg_dyn.docker_mode', :type => :boolean, :default => false
 Settings.define 'cfg_dyn.working_dir', :type => String, :default => ""
 Settings.define 'cfg_dyn.root_doc', :type => String, :default => ""
 Settings.define 'cfg_dyn.nbChar_error', :type => Integer, :default => 300
@@ -44,6 +44,7 @@ Settings.define 'cfg_dyn.ruby_debug', :type=> Symbol, :default=> :none
 
 Settings.define 'cfg_dyn.model_doc', :default => "default"
 Settings.define 'cfg_dyn.format_doc', :default => :tex
+Settings.define 'cfg_dyn.pandoc_filter', :default => "md2docx"
 
 Settings.finally do |c|
 	c['cfg_dyn.langs'].map!{|e| e.to_sym}
