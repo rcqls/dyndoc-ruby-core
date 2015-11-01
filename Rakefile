@@ -5,7 +5,7 @@ PKG_NAME='dyndoc-ruby-core'
 PKG_VERSION='1.0.0'
 
 PKG_FILES=FileList[
-    'lib/dyndoc-core.rb',
+    'lib/dyndoc-core.rb','lib/dyndoc-converter.rb','lib/dyndoc-software.rb',
     'lib/dyndoc/**/*.rb',
     'dyndoc/**/*',
     'share/julia/**/*',
