@@ -44,7 +44,7 @@ Settings.define 'cfg_dyn.ruby_debug', :type=> Symbol, :default=> :none
 
 Settings.define 'cfg_dyn.model_doc', :default => "default"
 Settings.define 'cfg_dyn.format_doc', :default => :tex
-Settings.define 'cfg_dyn.pandoc_filter', :default => "md2docx"
+Settings.define 'cfg_dyn.pandoc_filter', :default => ""
 
 Settings.finally do |c|
 	c['cfg_dyn.langs'].map!{|e| e.to_sym}
