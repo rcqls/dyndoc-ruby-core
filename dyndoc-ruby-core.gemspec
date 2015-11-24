@@ -1,10 +1,10 @@
 
 require 'rubygems/package_task'
 
-PKG_NAME='dyndoc-ruby-core'
-PKG_VERSION='1.0.0'
+pkg_name='dyndoc-ruby-core'
+pkg_version='1.0.0'
 
-PKG_FILES=FileList[
+pkg_files=FileList[
     'lib/dyndoc-core.rb',
     'lib/dyndoc/**/*.rb',
     'dyndoc/**/*',
@@ -17,14 +17,14 @@ PKG_FILES=FileList[
 spec = Gem::Specification.new do |s|
     s.platform = Gem::Platform::RUBY
     s.summary = "R and Ruby in text document"
-    s.name = PKG_NAME
-    s.version = PKG_VERSION
+    s.name = pkg_name
+    s.version = pkg_version
     s.licenses = ['MIT', 'GPL-2']
     s.requirements << 'none'
     s.add_dependency("configliere","~>0.4",">=0.4.18")
     #s.add_dependency("specific_install","~>0.2",">=0.2.10")
     s.require_path = 'lib'
-    s.files = PKG_FILES.to_a
+    s.files = pkg_files.to_a
     s.description = <<-EOF
   Provide templating in text document.
   EOF
