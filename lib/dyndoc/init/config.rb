@@ -75,7 +75,6 @@ module Dyndoc
   def Dyndoc.init_dyndoc_library_path
 
     [File.join(FileUtils.pwd,".dyndoc_library_path"),File.join(FileUtils.pwd,"dyndoc_library_path.txt"),File.join(@@cfg_dir[:etc],"dyndoc_library_path")].each do |dyndoc_library_path|
-    
       if File.exists? dyndoc_library_path
         path=File.read(dyndoc_library_path).strip
         path=path.split(Dyndoc::PATH_SEP).map{|pa| File.expand_path(pa)}.join(Dyndoc::PATH_SEP)
