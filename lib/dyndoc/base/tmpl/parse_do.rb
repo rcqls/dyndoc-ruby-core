@@ -494,44 +494,54 @@ p [vars,b2]
               parse(b2,filter).strip.split(",").each{|key| @vars.remove(key)}
       	    end
       	  when :+
+      ##Dyndoc.warn "+:-1:block",[i,blck]
       	    i,*b2=next_block(blck,i)
+      ##Dyndoc.warn "+:0:i,b2",[i,b2]
       	    if cond_tag and cond
       	      var,pos=b2[0][1].split(",")
-      #p var;p pos
+      ## Dyndoc.warn "+:1:var,pos",[var,pos]
       	      pos = -1 unless pos
       	      pos=pos.to_i
       	      var=filter.apply(var)
       	      varObj=@vars.extract_raw(var)
-      #puts "var:#{var}";p varObj
+      ## Dyndoc.warn "+:2:var",[var,varObj,(varObj.is_a? Array)]
       	      if varObj
       		      if varObj.is_a? Array
       		        pos=varObj.length+pos+1 if pos<0
       		        varNew=var+".#{pos}"
       		        #new element
-      		        b2[0][1]="::ADDED_ELT"
-      #puts "+:b2";p b2
-      		        b=make_var_block(b2.unshift(:var),filter)
-      #p b
+                  ## Needs to deep dup (dup is not enough!)
+                  b2dup=Marshal.load( Marshal.dump(b2) )
+      		        b2dup[0][1]="::ADDED_ELT"
+      ## Dyndoc.warn "+:3:b2,b2dup,blck",[b2,b2dup,blck]
+      		        b=make_var_block(b2dup.unshift(:var),filter)
+      ## Dyndoc.warn  "b",b
       		        eval_VARS(b,filter)
       		        type=@vars.extract_raw("::ADDED_ELT").class
       		        res={:val=>[""]}
       		        res=[] if type==Array
       		        res={} if type==Hash
       		        varObj.insert(pos,res)
-      #p varObj
-      #p b2
-      		        b2[1][1]=varNew
-      		        b=make_var_block(b2,filter)
-      #p b
+      ## Dyndoc.warn "varObj",[varObj,b2]
+      		        b2dup[1][1]=varNew
+      		        b=make_var_block(b2dup,filter)
+      ## Dyndoc.warn "+:4:b2,b2dup,blck",[b2,b2dup,blck]
       		        eval_VARS(b,filter)
       		      elsif varObj.is_a? Hash and varObj[:val]
-      		        b2[0][1]="::ADDED_ELT"
-      #puts "+:b2";p b2
-      		        b=make_var_block(b2.unshift(:var),filter)
-      #p b
+      ## Dyndoc.warn "+:else1:blck",blck
+                  ## Needs to deep dup (dup is not enough!)
+                  b2dup=Marshal.load( Marshal.dump(b2) )
+      		        b2dup[0][1]="::ADDED_ELT"
+      ## Dyndoc.warn "+:3else:b2",[b2,b2dup]
+      ## Dyndoc.warn "+:else2:blck",blck
+      ## Dyndoc.warn "+:else2:b2.unshift(:var)",b2dup.unshift(:var)
+      		        b=make_var_block(b2dup.unshift(:var),filter)
+      ## Dyndoc.warn "+:4else:b",b
+      ## Dyndoc.warn "+:else2:blck",blck
       		        eval_VARS(b,filter)
       		        res=@vars.extract_raw("::ADDED_ELT")
       		        varObj[:val][0].insert(pos,res[:val][0])
+      ## Dyndoc.warn "+:5else:varObj",[varObj,b]
       		      end
       #puts "varNew:#{var}";p @vars.extract_raw(var)
       	      end
