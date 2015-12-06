@@ -12,3 +12,5 @@
 *.OLD
 *#
 node_modules/
+
+*.gem
