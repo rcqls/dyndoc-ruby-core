@@ -170,7 +170,8 @@ module Dyndoc
       #init @partTag
       @tags=TagManager.init_input_tags(([@fmt]+@cfg[:tag_doc]+@tmpl_cfg[:tag_tmpl]).uniq)
 #p @alias
-#puts "init_tags";p @tags
+#
+Dyndoc.warn "init_tags",@tags
       #To deal later: TagManager.apply_alias(@tags,@alias)
       p [:init_tags, @tags] if @cfg[:cmd]==:cfg
     end
