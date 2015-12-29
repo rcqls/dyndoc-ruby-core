@@ -331,7 +331,7 @@ module Dyndoc
           :out=>[], 
           :blck=>[], 
           :saved=>[],
-          :call=>  [:",",:blck],
+          :call=>  [:",",:blck,:"->"],
 	        :style=> [:of,:",",:blck,:default],
           :input=>[:","],
           :r=>[:in],

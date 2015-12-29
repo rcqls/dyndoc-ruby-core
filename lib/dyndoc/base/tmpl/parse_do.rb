@@ -1182,7 +1182,7 @@ p call
       i=-1
       begin 
         case blck[i+=1]
-          when :blck
+          when :blck, :"->"
             #todo: change codename with the arg of blck
             i,*b2=next_block(blck,i)
             codename=parse(b2,filter).strip
