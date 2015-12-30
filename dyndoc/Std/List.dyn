@@ -1,6 +1,27 @@
-{#def]List[#,]list[#rb<]@vars.local[:prev][#{=list}]={}[#}
+## each and keys methods for List class (see dyndoc-ruby-demo/BaseLang/List.dyn)
+
+
+{#hide]
+Does not work! To debug! 
+{#meth]keys.List[#rb>]@vars.extract("self.content").keys[#}
+[#hide}
 
 {#meth]listkeys.List[#rb>]@vars.extract("self.content").keys[#}
+
+{#meth]each.List[#,]fct[]
+[#?]#{0?fct}[#rb>]
+@vars.extract_raw(".content").each do |k,v| #
+  {#>][#=].key[:{k}][#=].value[:{v[:val]}][#yield]default[#>}
+end
+[#?]else[#rb>]
+@vars.extract_raw(".content").each do |k,v| #
+  {#>][#=].key[:{k}][#=].value[:{v[:val]}][#>]{#call]#{fct}[#,]#{.key}[#,]#{.value}[#call}[#>}
+end
+[#meth}
+
+## The code below is just here for old compatibility but would be remove or update soon
+
+{#def]List[#,]list[#rb<]@vars.local[:prev][#{=list}]={}[#}
 
 {#meth]apply.List[#,]_key_[key][#,]_elt_[val]
 [#rb>]_key_[#{=_key_}.strip]
@@ -23,4 +44,3 @@
 @nb.delete(#{=_elt_})
 @keysList.delete(#{=_elt_})
 [#}
-

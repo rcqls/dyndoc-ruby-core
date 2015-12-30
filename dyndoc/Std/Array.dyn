@@ -1,3 +1,38 @@
+{#meth]each_with_index.Array[#,]fct[]
+[#?]#{0?fct}[#rb>]
+@vars.extract_raw(".content").each_with_index do |v,i| #
+  {#>][#=].index[:{i}][#=].value[:{v[:val]}][#yield]default[#>}
+end
+[#?]else[#rb>]
+@vars.extract_raw(".content").each_with_index do |v,i| #
+  {#>][#=].index[:{i}][#=].value[:{v[:val]}][#>]{#call]#{fct}[#,]#{.index}[#,]#{.value}[#call}[#>}
+end
+[#meth}
+
+{#meth]each.Array[#,]fct[]
+[#?]#{0?fct}[#rb>]
+@vars.extract_raw(".content").each do |v| #
+  {#>][#=].value[:{v[:val]}][#yield]default[#>}
+end
+[#?]else[#rb>]
+@vars.extract_raw(".content").each do |v| #
+  {#>][#=].value[:{v[:val]}][#>]{#call]#{fct}[#,]#{.value}[#call}[#>}
+end
+[#meth}
+
+
+{#meth]join.Array[#,]sep[,]
+[#rb>][@vars.extract("self.content").join(#{=sep})]
+[#}
+
+{#meth]add.Array[#,]elt[#,]pos[-1]
+[#rb<]
+@vars.extract_raw("self.content").insert(#{pos},@vars.extract_raw("elt"))
+[#>][{#join]self[#}]
+[#}
+
+## OLD STUFF to check!
+
 {#def]Array[#,]ary[#,]parent
 [#?]#{+?parent}[#rb<]@vars.extract_raw(#{=parent})[#{=ary}]=[]
 [#?]else[#rb<]@vars.local[:prev][#{=ary}]=[]
@@ -5,17 +40,8 @@
 
 {#def]length[#,]ary[#>]#{# #{ary}}[#}
 
-{#meth]add.Array[#,]elt[#,]pos[-1]
-[#rb<]
-@vars.extract_raw("self.content").insert(#{pos},@vars.extract_raw("elt"))
-[#}
-
 {#meth]compact.Array[#rb<]
 @vars.extract_raw("self.content").map!{|e| (e[:val][0].empty? ? nil : e )}.compact!
-[#}
-
-{#meth]join.Array[#,]sep[]
-[#rb>][@vars.extract("self.content").join(#{=sep})]
 [#}
 
 {#hide]OLD!!!{#meth]join.Array[#,]sep[]

@@ -12,13 +12,13 @@ module Dyndoc
 
     def FilterManager.letters(mode=nil)
       return @@letters unless mode
-      return @@letters_short if mode==:short 
+      return @@letters_short if mode==:short
     end
 
     def FilterManager.delim
       [@@start,@@stop]
     end
-    
+
     def initialize(envir={},tmpl=nil) #rbEnvir=nil,rEnvir=nil
       @envir=Envir.new(envir)
       @tmpl=tmpl
@@ -36,19 +36,19 @@ module Dyndoc
 
     def delim=(s)
       case s
-      when "{" 
+      when "{"
 	      @@start,@@stop="\\{","\\}"
       when "["
 	      @@start,@@stop="\\[","\\]"
       end
     end
-    
+
 
 # READ AND IMPORT VARIABLES! ##############
 
 ######################
-# read ordered dict 
-######################    
+# read ordered dict
+######################
     def FilterManager.eval_options(opts)
       opts=":local" unless opts
       if opts.scan(/^([A-Z\d\?]*[+]?[-]?)$/)[0]
@@ -73,7 +73,7 @@ module Dyndoc
 	  ## list of variables (only for VARS not for CALL and INPUT)
 	  res=s.split(",").map{|e| e.strip.scan(/^(\:\:?[\w\._]*\*?)(?:\[(.*)\])?$/)[0]}
 	  if res.all?
-	    res.map{|k,o| 
+	    res.map{|k,o|
 	      o=FilterManager.eval_options(o)
 	      k.strip!
 	      if k[0,2]=="::"
@@ -90,7 +90,7 @@ module Dyndoc
 	  else
 	    first_lines=false
 	  end
-	else 
+	else
 	  first_lines=false
 	end
 	unless first_lines
@@ -115,14 +115,14 @@ module Dyndoc
 	    tmp=str.scan(/^[\"\'](.*)[\"\']$/)[0]
 #p tmp
 	    str=(tmp ? tmp[0] : str)
-	    elt=[str,opts] ## always an Array 
+	    elt=[str,opts] ## always an Array
 	    dict << [key,elt]
-	  else 
+	  else
 	    ## append the line
 	    #puts "append the line";p s
 	     dict[-1][1][0] += ((dict[-1][1][0]=="") ? "" : "\n")+s
-	  end 
-	end 
+	  end
+	end
       }
       ##
       dict2=[]
@@ -140,8 +140,8 @@ module Dyndoc
       }
       #deal with whitespace at the beginning and the end of a block!
       dict2.each{|k,v| v[0]=Utils.unprotect_blocktext(v[0]) unless v[0].is_a? Array}
-      dict2 
-    end 
+      dict2
+    end
 
 ########################
 # import ordered dict to final one!
@@ -156,7 +156,7 @@ module Dyndoc
         #ruby variables
 #puts "#{k}";p v
         #p @envir.local
-        #TODO: evaluer la variable en tenant compte de la valuer :default! 
+        #TODO: evaluer la variable en tenant compte de la valuer :default!
         # environnement objet! accessor objet!
 	    elsif k.is_a? String
         if v[1] and v[1].include? :array
@@ -183,7 +183,7 @@ module Dyndoc
 	        env=@envir.curenv
 	      elsif opts.include? :global
 	        env=@envir.global
-	      else ## the default is local!!! 
+	      else ## the default is local!!!
 	        env=@envir.local
 	      end
         ## deal with v[0]
@@ -280,8 +280,8 @@ module Dyndoc
           elsif Envir.is_listElt?(curElt)
 #puts "keys";p keys
             #change it! curElt is here curEnv!
-#curEnv.each{|k,e| if k!=:prev 
-#  puts "curEnv(AV)[#{k}]";p e 
+#curEnv.each{|k,e| if k!=:prev
+#  puts "curEnv(AV)[#{k}]";p e
 #  end
 #}
 #puts "curElt(AV)";p curElt
@@ -290,15 +290,15 @@ module Dyndoc
             #curElt=v
 	          curEnv[keys[-1]]=v
 #puts "curElt(AP)";p curElt
-#curEnv.each{|k,e| if k!=:prev  
-#puts "curEnv(AP)[#{k}]";p e 
+#curEnv.each{|k,e| if k!=:prev
+#puts "curEnv(AP)[#{k}]";p e
 #  end
 #}
           end
 	      elsif v.is_a? Hash and v[:attr] and (v[:attr].include? :default)
           ## This is the old tricks!!!
           ## unless (env==@envir.local and @envir.key_defined?(keys[0]))  or (env.include? keys[0] and !env[keys[0]][0].empty?)
-          ## This is the new one! 
+          ## This is the new one!
           # if (env==@envir.local) and !(Envir.elt_defined?(@envir.local,keys))
           # BUT this does not work for CoursProba because of RFig with rcode empty!
           # last try: direct adaptation of the old one  without further thinking!
@@ -311,7 +311,7 @@ module Dyndoc
 	      else
           ## otherwise, create it
 #p "ici";p keys;p v
-	   
+
           curElt=Envir.get_elt!(env,keys)
           curElt[keys[-1]]=v if curElt
 	        #Envir.set_elt!(env,keys,v)
@@ -357,7 +357,7 @@ module Dyndoc
       if ["="].include? txt2[0,1]
 #p txt2
         out_type+="="
-#p out_type 
+#p out_type
         txt2=txt2[1..-1]
       end
       @current=txt2
@@ -376,7 +376,7 @@ module Dyndoc
         if res[0]=='try-error'
           puts "WARNING: #{txt} was not properly evaluated!" if Dyndoc.cfg_dyn[:ruby_mode]!=:expression
           $dyn_logger.write("ERROR R: #{txt} was not properly evaluated!\n") unless Dyndoc.cfg_dyn[:dyndoc_mode]==:normal
-          res=txt 
+          res=txt
         end
         #puts "#{txt} in #{@rEnvir[0]} is #{res}"
       when ":r","#r"
@@ -385,7 +385,7 @@ module Dyndoc
         if res[0]=='try-error'
           puts "WARNING: #{txt} was not properly evaluated!" if Dyndoc.cfg_dyn[:ruby_mode]!=:expression
           $dyn_logger.write("ERROR R: #{txt} was not properly evaluated!\n") unless Dyndoc.cfg_dyn[:dyndoc_mode]==:normal
-          res=txt 
+          res=txt
         end
         #puts "#{txt} in #{@rEnvir[0]} is #{res}"
       when ":jl","#jl"
@@ -402,14 +402,14 @@ module Dyndoc
 #puts "txxt2";p txt2
 	      if txt2[-1,1]=="?"
 	        if res=@envir.extract(txt2[0...-1]) and res.class==String
-	          #nothing else to do! res is 
-            #p res 
+	          #nothing else to do! res is
+            #p res
 	        else
 	          res=""
 	        end
 	      elsif txt2[0,1]=="#" #fetch the length of the list
 	        res=@envir.extract(txt2[1..-1])
-          #puts "\#{#{txt2}\}";p res
+          #Dyndoc.warn "\#{#{txt2}\}",res
 	        res=(res ? res.length : -1)
 	        #res=-1;in_type+"{"+txt2+"}"
 	      elsif txt2[0,1]=="?"
@@ -546,14 +546,14 @@ module Dyndoc
         #  res[0].inspect
         #else
           res.inspect
-        #end 
+        #end
       when ":",":rb",":Rb","#rb","#Rb"
 #puts "convert [rb]:";p res
         if res.is_a? Array
           res.join(", ")
-        else 
+        else
           res.to_s
-        end 
+        end
       when ":R=","#R=",":r=","#r="
         if res.is_a? Array
           res2="c("+res.map{|e| "'"+e.to_s+"'"}.join(",")+")"
@@ -562,7 +562,7 @@ module Dyndoc
           res2
         else
           "'"+res.to_s+"'" #QUESTION???? .gsub(/\\/,'\\\\\\\\')
-        end 
+        end
       when ":R","#R",":r","#r"
         if res.is_a? Array
           res.join(",")
@@ -581,20 +581,20 @@ module Dyndoc
           res.join(",")
         else
           "\""+res.to_s+"\""
-        end 
+        end
       when "","@","#","##","none","#F"
         if res.is_a? Array
           res.join(",")
         else
           res.to_s
-        end 
+        end
       end
     end
 
     # def apply(str,mode=nil,to_filter=true,escape=false)
     #   ##return str unless to_filter
     #   ##RMK: to_filter unused!
-    #   @mode,@escape=mode,escape 
+    #   @mode,@escape=mode,escape
     #   #puts "str to apply filter";p str
     #   @scan.tokenize(str)
     #   ext=@scan.extract
@@ -608,7 +608,7 @@ module Dyndoc
     def apply(str,mode=nil,to_filter=true,escape=false)
       ##return str unless to_filter
       ##RMK: to_filter unused!
-      @mode,@escape=mode,escape 
+      @mode,@escape=mode,escape
       res=""
       str.split(Dyndoc::AS_IS).each_with_index do |code,i|
         #puts "code";p code;p i
@@ -617,7 +617,7 @@ module Dyndoc
           ext=@scan.extract
           #p ext
           res2=@scan.rebuild_after_filter(ext,self)
-          res << res2 
+          res << res2
         else
           res << Dyndoc::AS_IS+code+Dyndoc::AS_IS
         end
