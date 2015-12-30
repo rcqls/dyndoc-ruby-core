@@ -20,6 +20,20 @@ end
 end
 [#meth}
 
+{#meth]map.Array[#,]fct[]
+[#?]#{0?fct}[#rb<]##Dyndoc.warn 'toto'
+@vars.extract_raw(".content").map! do |v| #
+  res={#>][#=].value[:{v[:val]}][#yield]default[#>}
+  ##Dyndoc.warn :res,{val: [res]}
+  {val: [res]}
+end
+[#?]else[#rb<]##Dyndoc.warn 'toto2'
+@vars.extract_raw(".content").map! do |v| #
+  res={#>][#=].value[:{v[:val]}][#>]{#call]#{fct}[#,]#{.value}[#call}[#>}
+  ##Dyndoc.warn :res,{val: [res]}
+  {val: [res]}
+end
+[#meth}
 
 {#meth]join.Array[#,]sep[,]
 [#rb>][@vars.extract("self.content").join(#{=sep})]
@@ -65,7 +79,7 @@ end
 [#rb<]@ind[#{=_elt_}]=-1
 [#}
 
-{#meth]map.Array[#,]_elt_[elt]
+{#meth]mapOLD.Array[#,]_elt_[elt]
 [#rb>]_elt_[#{=_elt_}.strip]
 [#rb<]
 @nb={} unless @nb
