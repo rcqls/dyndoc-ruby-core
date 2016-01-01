@@ -202,7 +202,7 @@ module Dyndoc
         if @@newBlcks[blckname][item][:do_code]
           blckRbCode=
 %Q[def do_blck_#{blckname}_#{item}(tex,blck,filter)
-##p blck
+##Dyndoc.warn :newBlck, blck
   blckMngr=BlckMngr.new(self,blck,tex,filter)
   ## the next code is automatically generated!
   #{@@newBlcks[blckname][item][:do_code][0][1]}
@@ -214,7 +214,8 @@ end]
       end
 #=end
       #p methods.sort
-      #puts "newBlck[\"#{blckname}\"]";p @@newBlcks[blckname]
+      #
+      p "newBlck[\"#{blckname}\"]";p @@newBlcks[blckname]
     end
 
     def blckMode_normal?
@@ -268,16 +269,16 @@ end]
       if blckname
         filter.envir["blckname"]=blckname
       end
-      #puts "completed_newBlck: blck init";p blck
+      #Dyndoc.warn "completed_newBlck: blck init",[blckname,blck]
       i=(blckname ? 2 : 1)
       ## blckAnyTag behaves like the previous tag in @@newBlcks.keys (all the user-defined commands)
       cmd=@blckDepth.reverse.find{|e| @@newBlcks.keys.include? e} if cmd=="blckAnyTag"
-#Dyndoc.warn "extension",[i,cmd,@@newBlcks[cmd],@blckDepth]
+      #Dyndoc.warn "extension",[i,cmd,@@newBlcks[cmd],@blckDepth]
       items=(@@newBlcks[cmd].keys)-[":pre",":post",:aggregate]
-      #puts "completed:items";p items
+      #Dyndoc.warn "completed:items",items
       if @@newBlcks[cmd][:aggregate] #and blckname
-        ##puts "aggregate";
         blck=aggregate_newBlck(blck,@@newBlcks[cmd][:aggregate].map{|e| e.to_sym},items.map{|e| e.to_sym},i)
+        ##Dyndoc.warn "aggregate",blck
       end
       ## first replace :"," by :"="
       while blck[i]==:","
@@ -285,13 +286,15 @@ end]
         i+=2
       end
       ## prepend the pre code if it exists!
+      ##Dyndoc.warn "blck.length(BEFORE pre)",[blckname,cmd,blck.length,blck]
       if @@newBlcks[cmd][":pre"] and blckname
         blck.insert(i,*(@@newBlcks[cmd][":pre"]))
         i+=@@newBlcks[cmd][":pre"].length
       end
+      ##Dyndoc.warn "blck.length",[blck.length,blck]
       while i < blck.length-1
         item=blck[i].to_s
-        #puts "item";p cmd;p item
+        #Dyndoc.warn "item",[cmd,item]
         if items.include? item
           if @@newBlcks[cmd][item][:pre]
             blck.insert(i,*(@@newBlcks[cmd][item][:pre]))
@@ -313,9 +316,9 @@ end]
         else
           i+=1
         end
-        #puts "completed_newBlck: blck iter";p blck
+        #Dyndoc.warn "completed_newBlck: blck iter",blck
       end
-      #puts "completed_newBlck: blck before end";p blck
+      #Dyndoc.warn "completed_newBlck: blck before end",blck
       ## prepend the pre code if it exists!
       if @@newBlcks[cmd][":post"] and blckname
         blck.insert(i+1,*(@@newBlcks[cmd][":post"]))
@@ -324,7 +327,7 @@ end]
       #p blck
       ## find tag
       #p @@newBlcks[cmd]
-      #puts "completed_newBlck: blck end";p blck
+      #Dyndoc.warn "completed_newBlck: blck end",blck
       return blck
     end
 

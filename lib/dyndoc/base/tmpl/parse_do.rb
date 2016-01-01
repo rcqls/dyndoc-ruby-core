@@ -87,7 +87,7 @@ module Dyndoc
         @@depth+=1
         ###TO temporarily AVOID RESCUE MODE:
         ###
-        if true; method("do_"+cmd).call(out,b,filterLoc); else
+        if false; method("do_"+cmd).call(out,b,filterLoc); else
         begin
           ## Dyndoc.warn "cmd",[cmd,b]
           method("do_"+cmd).call(out,b,filterLoc)
@@ -297,14 +297,20 @@ p [vars,b2]
     #########################################
 
     def do_blck(tex,blck,filter)
-#begin puts "do_blck";p @curCmd;p blck; end #if @curCmd=="navigator"
+#begin puts "do_blck";p @curCmd;p blck; end if @curCmd=="blck"
       i=0 #blck[0]==:blck
       #New mode (071108): save and restore named block!
       curCmd,blckname=@curCmd,nil
 
       if blck[1].is_a? Array
-          blckname=parse([blck[1]],filter).strip
+          ## Fix blckAnyTag when starting with text => add :>
+          if  blck[0] == :blckAnyTag and blck[1][0]==:main
+            blck.insert(1,:>)
+          else
+            blckname=parse([blck[1]],filter).strip
+          end
       end
+      ##Dyndoc.warn :blckname,[blckname,blck]
       if curCmd=="saved"
         ####################################################################
         ## TODO: all the stuff generated has to be saved!
@@ -343,11 +349,17 @@ p [vars,b2]
           #p blck
           @newBlckMode=true
           (["blckAnyTag"]+cmdBlcks).each do |cmd|
-            #puts "cmd";p cmd.to_sym;p blck[0]
+            #Dyndoc.warn "cmd",[cmd.to_sym,blck[0]]
             if blck[0]==cmd.to_sym
-              #puts "BEFORE COMPLETED_BLCK";p blckname;p blck
+              # Fix bug when calling newBlck with no space at the beginning
+              # blckname==nil only for blckAnyTag
+              if !blckname and cmd!="blckAnyTag"
+                blckname=""
+                blck=blck[0,1]+[[:main,""]]+blck[1..-1]
+              end
+              #Dyndoc.warn "BEFORE COMPLETED_BLCK",[cmd,blckname,blck]
               blck=completed_newBlck(cmd,blckname,blck,filter)
-              #puts "AFTER COMPLETED_BLCK";p blck
+              #Dyndoc.warn "AFTER COMPLETED_BLCK",blck
             end
           end
 
