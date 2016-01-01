@@ -214,8 +214,7 @@ end]
       end
 #=end
       #p methods.sort
-      #
-      p "newBlck[\"#{blckname}\"]";p @@newBlcks[blckname]
+      #Dyndoc.warn "newBlck[\"#{blckname}\"]",@@newBlcks[blckname]
     end
 
     def blckMode_normal?
