@@ -13,19 +13,25 @@ module Dyndoc
     @@tmpl_mngr = tmpl_mngr
   end
 
+  ## Make more readable the creation of newBlck
+  def Dyndoc.cache(cache_={})
+    return Dyndoc.tmpl_mngr.vars[Dyndoc.tmpl_mngr.blckName[-1]] if cache_.empty?
+    Dyndoc.tmpl_mngr.vars[Dyndoc.tmpl_mngr.blckName[-1]]=cache_
+  end
+
   module Ruby
-  
+
   class TemplateManager
-    
+
     attr_accessor :global, :filterGlobal, :filter, :vars, :libs , :tmpl , :blocks, :calls, :args, :envirs, :fmt, :Fmt, :fmtContainer, :fmtOutput, :dyndocMode ,:echo, :filename, :tags, :strip
     attr_accessor :tmpl_cfg, :cfg_tmpl, :cfg, :doc
-    attr_accessor :rbEnvir, :rbEnvirs,  :rEnvir 
+    attr_accessor :rbEnvir, :rbEnvirs,  :rEnvir
     attr_accessor :rbBlock
     attr_reader :scan, :blckName
     ### attr_accessor :mark
 
     @@interactive=nil
-    
+
     def TemplateManager.interactive
       @@interactive=Dyndoc.cfg_dyn[:dyndoc_session]==:interactive unless @@interactive
       @@interactive
@@ -40,7 +46,7 @@ module Dyndoc
       #p "client";p Dyndoc.cfg_dyn;p interactive
       R4rb << "rm(list=ls(all=TRUE))" if !first and !@@interactive #remove all initial variables if previous documents session
       R4rb << ".dynStack<-new.env()" #used for R variables used by dyndoc
-      RServer.init_envir 
+      RServer.init_envir
       RServer.init_filter
       ## ruby and R init for dynArray stuff
       require "dyndoc/common/dynArray"
@@ -80,11 +86,11 @@ module Dyndoc
       attr[:tags_tex],attr[:tex_vars] = @@tags_tex,@@tex_vars if TemplateManager.class_variables.include? "@@tag_tex"
       attr
     end
-    
+
     def initialize(tmpl_cfg={},with=true)
       # just in case it is not yet initialized!
       (Dyndoc.cfg_dyn[:langs] << :R).uniq! if with==true
-        
+
 #puts "DEBUT INIT TemplateManager"
       @tmpl_cfg=tmpl_cfg
 =begin
@@ -104,6 +110,12 @@ module Dyndoc
         puts "DYNDOC SEARCH PATH:"
         puts Dyndoc.get_pathenv(Dyndoc.cfg_dyn[:root_doc]).join(":")
       end
+    end
+
+    ## Make more readable the creation of newBlck
+    def cache(cache_={})
+      return @vars[blckName[-1]] if cache_.empty?
+      @vars[blckName[-1]]=cache_
     end
 
     ## equivalent to :pre_doc for not interactive document
@@ -165,8 +177,8 @@ module Dyndoc
     def init_tags(input)
       ## read the global aliases (config files alias)
       TagManager.global_alias(@alias) # @alias increased
-      ## read the local aliases (in the main doc) 
-      TagManager.local_alias(@alias,input) # @alias increased 
+      ## read the local aliases (in the main doc)
+      TagManager.local_alias(@alias,input) # @alias increased
       #init @partTag
       @tags=TagManager.init_input_tags(([@fmt]+@cfg[:tag_doc]+@tmpl_cfg[:tag_tmpl]).uniq)
 #p @alias
@@ -180,8 +192,8 @@ Dyndoc.warn "init_tags",@tags
       @init_keys=KeysManager.init_keys((@cfg[:keys_doc]+@tmpl_cfg[:keys_tmpl]).uniq)
 #puts "Manager:init_keys";p @init_keys
     end
-    
-    
+
+
     def init_model(input)
       @pre_doc,@post_doc,@pre_model,@post_model=[],[],[],[]
       if @cfg[:model_doc] and Dyndoc.cfg_dir[:tmpl_path][@cfg[:format_doc]]
@@ -210,8 +222,8 @@ Dyndoc.warn "init_tags",@tags
         }
       end
 #p @pre_doc
-      
-      if @cfg[:post_doc] 
+
+      if @cfg[:post_doc]
         @cfg[:post_doc].uniq.each{|t|
           @post_doc << File.read(Dyndoc.doc_filename(t))
         }
@@ -224,12 +236,12 @@ Dyndoc.warn "init_tags",@tags
       out_pre=""
       unless @pre_model.empty?
         pre_model=@pre_model.join("\n") + "\n"
-        txt= pre_model 
+        txt= pre_model
         out_pre << parse(txt)
       end
       unless @pre_doc.empty?
         pre_doc=@pre_doc.join("\n") + "\n"
-        txt= pre_doc 
+        txt= pre_doc
         parse(txt,@filterGlobal) ##Style declares objects before compiling the document! Object are created in the global envir!
       end
 ##p [:out_pre,out_pre]
@@ -247,12 +259,12 @@ Dyndoc.warn "init_tags",@tags
       #puts "output_post_model:post doc";p @post_doc
       unless @post_doc.empty?
         post_doc="\n"+@post_doc.join("\n")
-        txt= post_doc 
+        txt= post_doc
         parse(txt)
       end
       unless @post_model.empty?
         post_model="\n"+@post_model.join("\n")
-        txt= post_model 
+        txt= post_model
         out_post << parse(txt)
       end
 #p [:out_post,out_post]
@@ -274,7 +286,7 @@ Dyndoc.warn "init_tags",@tags
 #p Dyndoc.dyn_block[:first]
       ## dyn_block[:first] called in preloaded libraries!
       out << parse(Dyndoc.dyn_block[:first]) if Dyndoc.dyn_block[:first]
-#puts "prepare_output";p out 
+#puts "prepare_output";p out
       out << parse(txt)
 #puts "prepare_output";p out
       ## dyn_block[:last] (for example, used to record some information)
@@ -335,7 +347,7 @@ Dyndoc.warn "init_tags",@tags
       init_keys
       init_model(input)
 #p input
-      ## add the tag document in order to replace the user tag preamble and etc. Introduction of styles because of the odt format and the new convention in general to use styles even in latex. 
+      ## add the tag document in order to replace the user tag preamble and etc. Introduction of styles because of the odt format and the new convention in general to use styles even in latex.
       #txt="{#document][#content]"+input+"[#}"
       txt=input
 #p txt
@@ -384,7 +396,7 @@ class String
   def to_dyn
     if Dyndoc.tmpl_mngr
       return Dyndoc.tmpl_mngr.parse_string(self)
-    else 
+    else
       return self
     end
   end

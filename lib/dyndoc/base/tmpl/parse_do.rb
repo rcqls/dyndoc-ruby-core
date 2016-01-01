@@ -6,11 +6,11 @@ module Dyndoc
   def Dyndoc.vars=(vars)
     @@vars=vars
   end
-  
+
   def Dyndoc.vars
     @@vars
   end
-  
+
   module Ruby
 
   class TemplateManager
@@ -43,9 +43,9 @@ module Dyndoc
 #puts "parse";p texblock
       if texblock.is_a? String
         ## Dyndoc.warn "parse",texblock
-        if @@interactive 
+        if @@interactive
           Utils.parse_dyn_block_for_interactive!(texblock)
-        else 
+        else
           Utils.parse_raw_text!(texblock,self)
         end
         #Dyndoc.warn "After parse_raw_text",texblock
@@ -53,7 +53,7 @@ module Dyndoc
         #escape accolade every time a new text is scanned!
         Utils.escape!(texblock,CHARS_SET_FIRST)
         Utils.clean_bom_utf8!(texblock)
-        Utils.silence_warnings do 
+        Utils.silence_warnings do
           texblock=@scan.process("{#document][#content]" + texblock + "[#}")
         end
         ## Dyndoc.warn "parsed",texblock
@@ -85,7 +85,7 @@ module Dyndoc
         cmd=@@cmdAlias[cmd] if @@cmdAlias.keys.include? cmd
 #Dyndoc.warn "parse:cmd,b",[cmd,b]
         @@depth+=1
-        ###TO temporarily AVOID RESCUE MODE: 
+        ###TO temporarily AVOID RESCUE MODE:
         ###
         if true; method("do_"+cmd).call(out,b,filterLoc); else
         begin
@@ -102,21 +102,21 @@ module Dyndoc
           end
           puts codeText
           if @@depth==1
-            puts "=> Exiting abnormally!\n"         
+            puts "=> Exiting abnormally!\n"
             raise SystemExit
           else
             raise RuntimeError, "Dyn Runtime Error"
           end
         ensure
           @@depth -= 1
-        end 
-        ###TO temporarily AVOID RESCUE MODE: 
+        end
+        ###TO temporarily AVOID RESCUE MODE:
         ###
         end
       }
       ##restore old partTag and vars
       @tags=tagsOld if tags
-      @tags.uniq! 
+      @tags.uniq!
       @vars=varsOld
       Dyndoc.vars=@vars
 #Dyndoc.warn "parse:out",out
@@ -169,7 +169,7 @@ module Dyndoc
 
     def do_do(tex,blck,filter)
       i=-1
-      begin 
+      begin
         case blck[i+=1]
           when :do,:<
             i,*b2=next_block(blck,i)
@@ -252,7 +252,7 @@ p [vars,b2]
       val=Utils.format_blocktext(val)
 #puts "format_blocktext:val";p val
       if vars
-        vars.split(",").each{|var| 
+        vars.split(",").each{|var|
           eval_SET(var.strip,val,filter)
         }
       else
@@ -272,7 +272,7 @@ p [vars,b2]
         :default => defaultFormat,
         :current => currentFormat
       }
-      which==:all ? formats : formats[which] 
+      which==:all ? formats : formats[which]
     end
 
     def outputFormat
@@ -311,7 +311,7 @@ p [vars,b2]
         ## tex records all the generated content but what about the files!
         ## Maybe, keep tracks of all files generated! By default put it inside inside .dyn_out directory
         ## but also records which files have been generated in the saved mode!
-        ####################################################################  
+        ####################################################################
         #blckname=parse([blck[1]],filter).strip
         ##puts "blckname";p blckname
         return if blckname.empty?
@@ -346,11 +346,11 @@ p [vars,b2]
             #puts "cmd";p cmd.to_sym;p blck[0]
             if blck[0]==cmd.to_sym
               #puts "BEFORE COMPLETED_BLCK";p blckname;p blck
-              blck=completed_newBlck(cmd,blckname,blck,filter) 
+              blck=completed_newBlck(cmd,blckname,blck,filter)
               #puts "AFTER COMPLETED_BLCK";p blck
             end
           end
-          
+
         elsif blck[1].is_a? Array
   	      #blckname=parse([blck[1]],filter).strip
   	      to_end=!blckname.empty?
@@ -359,7 +359,7 @@ p [vars,b2]
   	        if ["+",">","$"].include? blckname[0,1]
   	          mode,blckname = :append,blckname[1..-1].strip
   	        elsif ["^","<"].include? blckname[0,1]
-  	          mode,blckname = :prepend,blckname[1..-1].strip    
+  	          mode,blckname = :prepend,blckname[1..-1].strip
   	        end
   	        to_exec,blckname=true,blckname[0...-1] if blckname[-1,1]=="!"
 #Dyndoc.warn "to_exec",[to_exec,blckname]
@@ -376,7 +376,7 @@ p [vars,b2]
         # normal (old) mode
         cond,cond_tag=true,true
         condArch=[]
-        
+
         #p blck if curCmd=="tabbar"
         if @@newBlcks.keys.include? @blckDepth[-1]
           @blckName ||= []
@@ -422,7 +422,7 @@ p [vars,b2]
   	        end
   #puts "cond in block #{code}=";p cond
   	      when :tag,:"??"
-  ## Dyndoc.warn "tag:blck",blck         
+  ## Dyndoc.warn "tag:blck",blck
   	        i,*b2=next_block(blck,i)
   ## Dyndoc.warn "tag:b2",b2
   	        code=parse(b2,filter).strip.downcase
@@ -437,7 +437,7 @@ p [vars,b2]
   ## Dyndoc.warn "mode and code",[mode,code]
   	          tags=TagManager.make_tags(code)
   ## Dyndoc.warn "tags, @tags",[tags,@tags]
-  	    
+
   	          cond2_tag=TagManager.tags_ok?(tags,@tags)
   #puts "mode, cond_tag et cond2_tag";p mode; p cond_tag;p cond2_tag
   	          if mode=="&"
@@ -466,7 +466,7 @@ p [vars,b2]
             newblck=blck[i]
   #puts "newblock";p newblck;p blck
             i,*b2=next_block(blck,i)
-  #p b2 
+  #p b2
   	          code=b2[0][1..-1]
 ##p code
               #need to be cleaned with no bracket at the beginning and the end of the block!
@@ -484,7 +484,7 @@ p [vars,b2]
       	    if cond_tag and cond
       #puts "=:b2";p b2
       	      b=make_var_block(b2.unshift(:var),filter)
-      #puts "=:b";p b  
+      #puts "=:b";p b
       	      eval_VARS(b,filter)
       	    end
           when :"-"
@@ -573,10 +573,10 @@ p [vars,b2]
                 else
                   @curFmtContainer=nil #to redefine at the end
                 end
-                i,*b2=next_block(blck,i)  
+                i,*b2=next_block(blck,i)
                 if cond_tag and cond and !b2.empty? #if b2 empty nothing to do!
                   @fmtContainer.unshift newblck
-                  val=parse(b2,filter) 
+                  val=parse(b2,filter)
                   if @fmtContainer[1] and @fmtContainer[1]==@fmtContainer[0] #no need to convert!
                     tex << val
                   else #convert
@@ -589,7 +589,7 @@ p [vars,b2]
 
             when :"r>",:"rb>",:"R>",:"m>",:"M>",:"jl>"
                   newblck=blck[i]
-                  i,*b2=next_block(blck,i) 
+                  i,*b2=next_block(blck,i)
       #puts "RB>";p b2;p i;p blck
       	        if cond_tag and cond and !b2.empty? #if b2 empty nothing to do!
                   vars,b2=get_named_blck(b2,filter)
@@ -602,7 +602,7 @@ p [vars,b2]
       	         end
       	  when :"r>>",:"R>>",:rout,:rverb
       	    newblck=blck[i]
-                  i,*b2=next_block(blck,i) 
+                  i,*b2=next_block(blck,i)
       	    if cond_tag and cond
                   vars,b2=get_named_blck(b2,filter)
                   if b2
@@ -614,7 +614,7 @@ p [vars,b2]
       	      val=Utils.format_blocktext(val)
       #puts "format_blocktext:val";p val
       	      if vars
-      		vars.split(",").each{|var| 
+      		vars.split(",").each{|var|
       		eval_SET(var.strip,val,filter)
       	      }
       	      else
@@ -627,7 +627,7 @@ p [vars,b2]
       	    end
           when :"jl>>",:jlverb,:"rb>>",:rbverb
             newblck=blck[i]
-                  i,*b2=next_block(blck,i) 
+                  i,*b2=next_block(blck,i)
             if cond_tag and cond
                   vars,b2=get_named_blck(b2,filter)
                   if b2
@@ -639,7 +639,7 @@ p [vars,b2]
               val=Utils.format_blocktext(val)
       #puts "format_blocktext:val";p val
               if vars
-          vars.split(",").each{|var| 
+          vars.split(",").each{|var|
           eval_SET(var.strip,val,filter)
               }
               else
@@ -705,11 +705,12 @@ p [vars,b2]
       	    end
           else
             i,*b2=next_block(blck,i)
-            blckCmd=(current_block_tag.is_a? Symbol) ?  "do_blck_"+curCmd+"_"+current_block_tag.to_s : nil
+            blckCmd=(current_block_tag.is_a? Symbol) ?  ("do_blck_"+curCmd+"_"+current_block_tag.to_s).to_sym : nil
+            #Dyndoc.warn :blckCmd,[current_block_tag,blckCmd,(methods.include? blckCmd),methods.sort]
             blckCmd=nil if blckCmd and !(methods.include? blckCmd)
+            #Dyndoc.warn :blckCmd2,blckCmd
             if cond_tag and cond and blckCmd
-              #puts "blck command";p blckCmd;p b2
-              #p blckName
+              #Dyndoc.warn :blck_command #, [blckCmd,b2]
               method(blckCmd).call(tex,b2,filter)
             end
           end
@@ -783,12 +784,12 @@ p [vars,b2]
                 b2=var
               end
             end
-            
+
           end
 #p name
 #p b2
 #p dict
-	  # DO NOT remove lstrip! Otherwise, there is an error of compilation in test/V3/testECO2.dyn! => README.250808: OK now! The explanation was that is was needed only by @varscan (solved now)! The __STR__ escape the first and last whitespaces 
+	  # DO NOT remove lstrip! Otherwise, there is an error of compilation in test/V3/testECO2.dyn! => README.250808: OK now! The explanation was that is was needed only by @varscan (solved now)! The __STR__ escape the first and last whitespaces
 #p b2
           b2=parse(b2,filter) #.lstrip #.split("\n")
 #puts "name";p name
@@ -836,13 +837,13 @@ p [vars,b2]
 		              affect="==>"
 		            end
 		            name=":"+name unless name[0,1]==":"
-		            affect="["+modif+"] "+affect unless modif.empty?  
+		            affect="["+modif+"] "+affect unless modif.empty?
 #p b2.strip
 		            if (arr=@varscan.build_vars(b2.strip)) #the stuff for parsing  array
 #puts "arr";p arr
 #p b2
 		              b2=arr.map{|k,v|
-		                name+"."+k+affect+Utils.protect_blocktext(v) 
+		                name+"."+k+affect+Utils.protect_blocktext(v)
 		              }.join(sep)
                   ## add the order!
                   ## ONLY for list not array!
@@ -866,7 +867,7 @@ p [vars,b2]
 #puts "b";p b
         end
       end while i<blck.length-1
-#puts "make_var_block";p b 
+#puts "make_var_block";p b
      return b
     end
 
@@ -877,7 +878,7 @@ p [vars,b2]
 #puts "do_var:filter.local";p filter.envir.local
       eval_VARS(b,filter)
     end
-  
+
     def do_set(tex,blck,filter)
       i,*b2=next_block(blck,1)
 #puts "set";p blck[1]
@@ -917,7 +918,7 @@ p [vars,b2]
         filter.envir[name]=[code]
         outType=nil
         outType=filter.outType+"=" if filter.outType
-        tex << filter.convert(name+"!",outType) if @curCmd==">"  #useful for templating as in Table.dyn 
+        tex << filter.convert(name+"!",outType) if @curCmd==">"  #useful for templating as in Table.dyn
       else
 #Dyndoc.warn  "res",res
         tex << res
@@ -950,10 +951,10 @@ p [vars,b2]
       end
       code=Dyndoc::Utils.dyndoc_raw_text(code) if mode.include? :test
       #puts "do_eval:mode";p mode;p code
-      #PUT THE FOLLOWING IN THE DOCUMENTATION: 
+      #PUT THE FOLLOWING IN THE DOCUMENTATION:
       #puts "WARNING: {#dyn] accept :last and :raw in this order!" unless (mode - [:last,:raw]).empty?
       if mode.include? :pre
-	      tex2=prepare_output(code) 
+	      tex2=prepare_output(code)
 #puts "TOTO";p output_pre_model;p @pre_model
 #puts "do_eval:PRE tex2";p tex2
       else
@@ -1002,8 +1003,8 @@ p [vars,b2]
 #puts "do_input:b";p b
       tex << eval_INPUT(tmpl,b,filter)
     end
- 
-    def do_require(tex,blck,filter)   
+
+    def do_require(tex,blck,filter)
       ## just load and parse : read some FUNCs and EXPORT some variables
       ## in the header
 #Dyndoc.warn "do_require",blck
@@ -1012,7 +1013,7 @@ p [vars,b2]
 #Dyndoc.warn "require",tmpl
       eval_LOAD(tmpl,filter)
     end
- 
+
     def do_func(tex,blck,filter)
       call=parse_args(blck[1],filter)
       code=blck[2..-1]
@@ -1024,17 +1025,17 @@ p [vars,b2]
       call=parse_args(blck[1],filter)
       code,arg,var,rbEnvir=nil,[],[:var],nil
       i=1
-      begin 
+      begin
         case blck[i+=1]
           when :binding
             i,*b2=next_block(blck,i)
             rbEnvir=b2[0][1].strip
           when :do,:<,:out,:>,:"r<",:"rb<",:"r>",:"R>",:"R<",:"r>>",:rverb,:"rb>>",:rbverb,:"jl>>",:jlverb,:"rb>",:"?",:tag,:"??",:yield,:>>,:"=",:"+",:<<,:"txtl>",:"html>",:"tex>",:"_>"
             code = blck[i..-1].unshift(:blck)
-          when :"," 
+          when :","
             i,*b2=next_block(blck,i)
 #p blck;p b2
-            #deal with 
+            #deal with
             b2=b2[0]
             if b2[0]==:named
 =begin
@@ -1048,19 +1049,19 @@ if false
 	      var << :"," unless var.length==1
 #p var0
 	      var += var0
-#next: New one 
+#next: New one
 else
 =end
 #puts "b2";p b2
-	      # 151108: Adding "!" at the end of the parameter name disables the default ability. This is completed with 
-	      arg << (b2[1][-1,1]=="!" ? b2[1][0...-1]+"-USER-" : b2[1]) 
+	      # 151108: Adding "!" at the end of the parameter name disables the default ability. This is completed with
+	      arg << (b2[1][-1,1]=="!" ? b2[1][0...-1]+"-USER-" : b2[1])
 #p arg
 	      b2[1]+="?"
-	      b2 << [:main,""] unless b2[2]      
+	      b2 << [:main,""] unless b2[2]
 #p b2
               var << :"," unless var.length==1
               var << b2
-#end 
+#end
 	    elsif b2[0]==:main
 #puts "make_def";p call
 	      parse([b2],filter).split(",").map{|v| v.strip}.each{|v|
@@ -1071,7 +1072,7 @@ else
 #p var
 	      #var << b2
             end
-          else #just after the arg is a comment and not dealt 
+          else #just after the arg is a comment and not dealt
             i,*b2=next_block(blck,i)
         end
       end while i<blck.length-1 and !code
@@ -1120,13 +1121,13 @@ else
 #p inR
         inR,parentR=inR.split("<").map{|e| e.strip}
         parentR=@rEnvir[0] unless parentR or  RServer.exist?(parentR)
-#p parentR 
+#p parentR
         RServer.new_envir(inR,parentR) unless RServer.exist?(inR)
         i+=1
       end
 #puts "do_new:var,klass";p var;p klass
 =begin
-      b2=blck[4..-1].map{|e| 
+      b2=blck[4..-1].map{|e|
         if e.is_a? Array and e[0]==:named
           e[1]=var+"."+e[1]
         end
@@ -1180,18 +1181,18 @@ p call
     def make_call(blck,filter)
       code,codename,var={"default"=>[:blck]},"default",[]
       i=-1
-      begin 
+      begin
         case blck[i+=1]
           when :blck, :"->"
             #todo: change codename with the arg of blck
             i,*b2=next_block(blck,i)
             codename=parse(b2,filter).strip
             code[codename]=[:blck]
-          when :do,:<,:out,:>,:"r<",:"R<",:"rb<",:"r>",:"R>",:"rb>",:nl,:"\n",:>>,:"?",:tag,:"??",:"=",:"+",:<<,:"%" #NO :yield because of infinite loops 
+          when :do,:<,:out,:>,:"r<",:"R<",:"rb<",:"r>",:"R>",:"rb>",:nl,:"\n",:>>,:"?",:tag,:"??",:"=",:"+",:<<,:"%" #NO :yield because of infinite loops
             code[codename] << blck[i]
             i,*b2=next_block(blck,i)
             code[codename] += b2
-          when :var,:"," 
+          when :var,:","
             var << blck[i]
             i,*b2=next_block(blck,i)
 #puts "var et ,";p b2
@@ -1208,7 +1209,7 @@ p call
       code.each_key{|k| code.delete(k) if code[k].length==1 }
       return [var,code]
     end
- 
+
     def do_call(tex,blck,filter)
 #puts "do_call";p blck
       call=parse_args(blck[1],filter)
@@ -1236,7 +1237,7 @@ p call
 #puts "VAR2";p blck[2..-1].unshift(:var)
 #puts "var block (AV)";p var
 
-      #19/10/08: this complete the method name if necessary in order to provide args! Now, meth may be used with partial argument completed in the R spirit! 
+      #19/10/08: this complete the method name if necessary in order to provide args! Now, meth may be used with partial argument completed in the R spirit!
       call4args,vars4args=call.dup,[]
       isMeth=CallFilter.isMeth?(call)
 ##puts "#{call} isMeth => #{isMeth}!!!"
@@ -1254,15 +1255,15 @@ p call
 	      end
       end
 
-#puts "call4args=#{call4args}" 
-#p @args[call4args]   
+#puts "call4args=#{call4args}"
+#p @args[call4args]
       args=(@args[call4args] ? @args[call4args].dup : nil)
       args+=vars4args if args
 #puts "args";p args
 #TODO: for method, args has to be initialized by finding the class of the object! Pb: how to know that it is a method => make a method in Call???
-      b=(var.length==1 ? [] : make_var_block(var,filter,args)) 
+      b=(var.length==1 ? [] : make_var_block(var,filter,args))
 #puts "var block (AP)";p b
-      b,meth_args_b=CallFilter.argsMeth(call,b) 
+      b,meth_args_b=CallFilter.argsMeth(call,b)
 #puts "call";p call
 #p @calls[call]
 #puts "var2 block";p b
@@ -1318,10 +1319,10 @@ p call
     def register_style_cmds(cmds,style,force=nil)
       ## register cmds
       register_style_init
-      cmds.each{|cmd| 
+      cmds.each{|cmd|
         @styles[:cmd][cmd]=style if force or !@styles[:cmd][cmd]
       }
-    end 
+    end
 
     def do_style(tex,blck,filter)
       call=parse_args(blck[1],filter)
@@ -1375,8 +1376,8 @@ p call
       	elsif call[1]=="alias" and @styles
       	    aliases=parse([blck[2]],filter).split(",")
       	    value=parse([blck[4]],filter)
-      	    aliases.each{|a| 
-      	      @styles[:alias][a]=value 
+      	    aliases.each{|a|
+      	      @styles[:alias][a]=value
       	    }
       	end
       else
@@ -1467,7 +1468,7 @@ p call
 	      ################################ MODEL VARIABLES
         when :class     ## Latex
 	        var,mode="_DOCUMENTCLASS_",""
-        when :preamble  
+        when :preamble
 	        var,mode="_PREAMBLE_","+"
 	      when :postamble
 	        var,mode="_POSTAMBLE_","+"
@@ -1510,7 +1511,7 @@ p call
 	          #puts "document:require";p  res
 	          eval_LOAD(res.strip.split("\n"),filter)
           when :helpers
-            eval_LOAD_HELPERS(res.strip.split("\n"),filter) 
+            eval_LOAD_HELPERS(res.strip.split("\n"),filter)
 	        when :path
 #puts "document:path";p res
 	          unless res.strip.empty?
@@ -1521,7 +1522,7 @@ p call
 	            rootpaths=@tmpl_cfg[:rootDoc].split(Dyndoc::PATH_SEP)
 #Dyndoc.warn "rootpaths",rootpaths
 	            newpaths=[]
-	            paths.each{|e| 
+	            paths.each{|e|
 		            #if File.exist?(e)
 		            #  newpaths << e
 		            #els
@@ -1582,7 +1583,7 @@ p call
             #p cond
           when :else
             cond= !cond
-        end 
+        end
         filter.outType=nil
         i,*b2=next_block(blck,i)
         tex << parse(b2,filter) if cond
@@ -1604,7 +1605,7 @@ p call
             cond=!eval_args(blck[i+=1],filter)
           when :else
             cond= true
-        end 
+        end
         filter.outType=nil
         i,*b2=next_block(blck,i)
         tex << parse(b2,filter) if cond
@@ -1620,7 +1621,7 @@ p call
       # @forFilter is here to make available the dyn variables!
       @cptRbCode,@rbCode,@texRbCode,@forFilter=-1,{},{},filter unless @rbCode
       code << "if res; for " << parse_args(blck[1],filter).strip << " do\n"
-      cpt=(@cptRbCode+=1) #local value to delete later! 
+      cpt=(@cptRbCode+=1) #local value to delete later!
 #p cpt
       @rbCode[cpt]=[blck[2..-1].unshift(:blck)]
       @texRbCode[cpt]=tex
@@ -1636,8 +1637,8 @@ p call
       @texRbCode.delete(cpt)
       filter.outType=nil
     end
-   
-   
+
+
 
     def do_case(tex,blck,filter)
       choices=parse_args(blck[1],filter).strip
@@ -1667,7 +1668,7 @@ p call
 #if cond
 #  puts "tex in case";p tex
 #end
-        end while todo and i<blck.length-1 
+        end while todo and i<blck.length-1
       }
 #puts "tex in case";p tex
     end
@@ -1736,7 +1737,7 @@ p call
           @rEnvir.shift
         else
           if w=@rEnvir.index(inR)
-            @rEnvir.delete_at(w) 
+            @rEnvir.delete_at(w)
           end
         end
       when :show
@@ -1777,7 +1778,7 @@ p call
       require "dyndoc/common/uv" if @@interactive
 
       warn_level = $VERBOSE;$VERBOSE = nil
-      tex << (@@interactive ? Uv.parse(res.force_encoding("utf-8"), "xhtml", File.join(Uv.syntax_path,"r.syntax") , false, "solarized",false) : res.force_encoding("utf-8") )   
+      tex << (@@interactive ? Uv.parse(res.force_encoding("utf-8"), "xhtml", File.join(Uv.syntax_path,"r.syntax") , false, "solarized",false) : res.force_encoding("utf-8") )
       $VERBOSE = warn_level
 #Dyndoc.warn "rverb:result",res
       @rEnvir.shift if inR
@@ -1794,7 +1795,7 @@ p call
 #puts "rverb:b2";p b2
       code=parse(b2,filter)
       i+=1
-      
+
       mode=@cfg[:mode_doc]
       #p [mode,@fmt,@fmtOutput]
       mode=@fmtOutput.to_sym if @fmtOutput and ["html","tex","txtl","raw"].include? @fmtOutput
@@ -1803,7 +1804,7 @@ p call
         i,*b2=next_block(blck,i)
         mode=parse(b2,filter).strip.to_sym
       end
-      
+
       process_rb(code)
       ## Dyndoc.warn "rverb:rcode";p code
       res=RbServer.echo_verb(code,@@interactive ? :raw : mode,@rbEnvir[0])
@@ -1812,8 +1813,8 @@ p call
       warn_level = $VERBOSE;$VERBOSE = nil
       tex << (@@interactive ? Uv.parse(res, "xhtml", File.join(Uv.syntax_path,"ruby.syntax") , false, "solarized",false) : res )
       $VERBOSE = warn_level
-#puts "rverb:result";p res 
-      
+#puts "rverb:result";p res
+
       filter.outType=nil
     end
 
@@ -1827,7 +1828,7 @@ p call
 #puts "rverb:b2";p b2
       code=parse(b2,filter)
       i+=1
-      
+
       mode=@cfg[:mode_doc]
       #p [mode,@fmt,@fmtOutput]
       mode=@fmtOutput.to_sym if @fmtOutput and ["html","tex","txtl","raw"].include? @fmtOutput
@@ -1836,7 +1837,7 @@ p call
         i,*b2=next_block(blck,i)
         mode=parse(b2,filter).strip.to_sym
       end
-       
+
       process_jl(code)
 #puts "rverb:rcode";p code
       res=JLServer.echo_verb(code,@@interactive ? :raw : mode)
@@ -1844,16 +1845,16 @@ p call
       warn_level = $VERBOSE;$VERBOSE = nil
       tex << (@@interactive ? Uv.parse(res, "xhtml", File.join(Uv.syntax_path,"julia.syntax") , false, "solarized",false) : res )
       $VERBOSE = warn_level
-#puts "rverb:result";p res 
-      
+#puts "rverb:result";p res
+
       filter.outType=nil
     end
- 
+
     def dynBlock_in_doLangBlock?(blck)
       blck.map{|b| b.respond_to? "[]" and [:>,:<,:<<].include? b[0] }.any?
     end
 
-    attr_accessor :doLangBlock    
+    attr_accessor :doLangBlock
 
     def make_do_lang_blck(blck,id,lang=:rb)
       #p blck
@@ -1869,13 +1870,13 @@ p call
           @doLangBlockEnvs=[0] unless @doLangBlockEnvs #never empty?
           @doLangBlockEnvs << (doLangBlockEnv=@doLangBlockEnvs.max + 1)
           @doLangBlock[id][:env] << doLangBlockEnv
-          
+
           ## NEW: Special treatment for R code because environment is different from GlobalEnv
           case lang
           when :R
             # first, get the environment
             codeLangBlock="{.GlobalEnv$.env4dyn$rbBlock#{doLangBlockEnv.to_s} <- environment();.rb(\""+codeLangBlock+"\");invisible()}"
-            # use it to evaluate the dyn block with R stuff! (renv) 
+            # use it to evaluate the dyn block with R stuff! (renv)
             @doLangBlock[id][:code][cptCode]= "[#<]{#renv]rbBlock#{doLangBlockEnv.to_s}+[#}[#>]"+@doLangBlock[id][:code][cptCode]+"[#<]{#renv]rbBlock#{doLangBlockEnv.to_s}-[#}"
           when :jl
             # Nothing since no binding or environment in Julia
@@ -1883,11 +1884,11 @@ p call
             codeLangBlock="begin Ruby.run(\""+codeLangBlock+"\") end"
             @doLangBlock[id][:code][cptCode]= "[#>]"+@doLangBlock[id][:code][cptCode]
           when :rb
-            ##DEBUG: codeRbBlock="begin $curDyn.tmpl.rbenvir_go_to(:rbBlock#{rbBlockEnv.to_s},binding);p \"rbBlock#{doBlockEnv.to_s}\";p \"rbCode=#{codeRbBlock}\";$result4BlockCode="+codeRbBlock+";$curDyn.tmpl.rbenvir_back_from(:rbBlock#{doLangBlockEnv.to_s});$result4BlockCode; end" 
-            codeLangBlock="begin Dyndoc.tmpl_mngr.rbenvir_go_to(:rbBlock#{doLangBlockEnv.to_s},binding);$result4BlockCode="+codeLangBlock+";Dyndoc.tmpl_mngr.rbenvir_back_from(:rbBlock#{doLangBlockEnv.to_s});$result4BlockCode; end"    
+            ##DEBUG: codeRbBlock="begin $curDyn.tmpl.rbenvir_go_to(:rbBlock#{rbBlockEnv.to_s},binding);p \"rbBlock#{doBlockEnv.to_s}\";p \"rbCode=#{codeRbBlock}\";$result4BlockCode="+codeRbBlock+";$curDyn.tmpl.rbenvir_back_from(:rbBlock#{doLangBlockEnv.to_s});$result4BlockCode; end"
+            codeLangBlock="begin Dyndoc.tmpl_mngr.rbenvir_go_to(:rbBlock#{doLangBlockEnv.to_s},binding);$result4BlockCode="+codeLangBlock+";Dyndoc.tmpl_mngr.rbenvir_back_from(:rbBlock#{doLangBlockEnv.to_s});$result4BlockCode; end"
           end
           case lang
-          when :R 
+          when :R
             process_r(@doLangBlock[id][:code][cptCode])
           when :jl
             # TODO
@@ -1919,7 +1920,7 @@ p call
       ##@doLangBlock[id][:tex] << @doLangBlock[id][:out] if tag == :>
       ## THIS IS NEW
       print @doLangBlock[id][:out] if tag == :>
-      ## 
+      ##
       #Dyndoc.warn "EVALRBBLOCK: @doLangBlock[id][:out]",@doLangBlock[id][:out] if tag == :>
       #######################################
 
@@ -1927,7 +1928,7 @@ p call
         return ( lang==:R ? RServer.output(@doLangBlock[id][:out],@rEnvir[0],true) : eval(@doLangBlock[id][:out]) )
       else
         return @doLangBlock[id][:out]
-      end  
+      end
     end
 
 =begin DO NOT REMOVE: OLD STUFF (just in case the experimental one fails!!!)
@@ -1937,7 +1938,7 @@ p call
 #p blck
 #puts "do_rb binding"; p binding; p local_variables
       dynBlock=dynBlock_in_doLangBlock?(blck)
-      if dynBlock 
+      if dynBlock
         ##OLD:@filterRbBlock=filter
         @doLangBlock=[] unless @doLangBlock
         @doLangBlock << {:tex=>'',:code=>[],:out=>'',:filter=>filter,:env=>[]} #@filterRbBlock}
@@ -1980,7 +1981,7 @@ p call
       ## Dyndoc.warn "blck",blck
       ## Dyndoc.warn "do_rb binding",binding,local_variables
       dynBlock=dynBlock_in_doLangBlock?(blck)
-      if dynBlock 
+      if dynBlock
         @doLangBlock=[] unless @doLangBlock
         @doLangBlock << {:tex=>'',:code=>[],:out=>'',:filter=>filter,:env=>[]} #@filterRbBlock}
         rbBlockId=@doLangBlock.length-1
@@ -2012,7 +2013,7 @@ p call
         @doLangBlock.pop
       end
       $stdout=@rbIO.empty? ? STDOUT : @rbIO[-1]
-      
+
       filter.outType=nil
       ## Dyndoc.warn "SORTIE RB!",dynBlock,blck,tex2
     end
@@ -2029,7 +2030,7 @@ p call
       if tag == :>
         outcode=@doLangBlock[id][:out].gsub(/\\/,'\\\\\\\\') #to be compatible with R
         outcode=outcode.gsub(/\'/,"\\\\\'")
-        #Dyndoc.warn 
+        #Dyndoc.warn
         outcode='cat(\''+outcode+'\')'
         #Dyndoc.warn "outcode",outcode
         outcode.to_R # CLEVER: directly redirect in R output that is then captured
@@ -2038,7 +2039,7 @@ p call
         return ( lang==:R ? RServer.output(@doLangBlock[id][:out],@rEnvir[0],true) : eval(@doLangBlock[id][:out]) )
       else
         return @doLangBlock[id][:out]
-      end  
+      end
     end
 
 
@@ -2046,7 +2047,7 @@ p call
       ## rBlock stuff
       # Dyndoc.warn "do_R",blck
       dynBlock=dynBlock_in_doLangBlock?(blck)
-      if dynBlock 
+      if dynBlock
         @doLangBlock=[] unless @doLangBlock
         @doLangBlock << {:tex=>'',:code=>[],:out=>'',:filter=>filter,:env=>[]}
         rBlockId=@doLangBlock.length-1
@@ -2066,7 +2067,7 @@ p call
         as_default_tmpl_mngr!
         tex2=eval_RCODE(code,filter,:blockR => true)
         ## Dyndoc.warn "RRRRRRRRRRRRRRRR: tex2",tex2
-        tex << tex2 
+        tex << tex2
       else
         # pretty is put to false because prettyNum does not accept empty output or something like that!
         eval_RCODE(code,filter,:pretty=> false)
@@ -2101,15 +2102,15 @@ p call
         return ( lang==:jl ? JLServer.eval(@doLangBlock[id][:out],@rEnvir[0],true) : eval(@doLangBlock[id][:out]) )
       else
         return @doLangBlock[id][:out]
-      end  
+      end
     end
 
     def do_jl(tex,blck,filter)
       return unless Dyndoc.cfg_dyn[:langs].include? :jl
       ## jlBlock stuff
-      as_default_tmpl_mngr! if 
+      as_default_tmpl_mngr! if
       dynBlock=dynBlock_in_doLangBlock?(blck)
-      if dynBlock 
+      if dynBlock
         @doLangBlock=[] unless @doLangBlock
         @doLangBlock << {:tex=>'',:code=>[],:out=>'',:filter=>filter,:env=>[]}
         jlBlockId=@doLangBlock.length-1
@@ -2147,7 +2148,7 @@ p call
       i=0
       i,*b2=next_block(blck,i)
       code=parse(b2,filter)
-       
+
       #p ["Mathematica",code]
       code='TeXForm['+code+']' if blck[0]==:"M>"
       tex2=Dyndoc::Converter.mathlink(code)
@@ -2173,22 +2174,22 @@ p call
           tags=TagManager.make_tags(parse_args(blck[i+=1],filter).strip)
         else
           puts "ERROR! Only [#when] tag! ";p blck[i]
-        end 
+        end
 #p part_tag
         i,*b2=next_block(blck,i)
         # fparse if allowed!
         if TagManager.tags_ok?(tags,@tags)
 #p b2
           tex << parse(b2,filter)
-        end 
+        end
       end while i<blck.length-1
     end
 
     def do_keys(tex,blck,filter)
       arg=parse_args(blck[1],filter).strip
 #puts "do_keys: @keys";p @keys
-      #Register!      
-      if arg[0..8]=="register:" 
+      #Register!
+      if arg[0..8]=="register:"
 #puts ">>>>>>>>> Keys->Register";p arg
 #puts "@keys:";p @keys
 	      $dyn_keys={} unless $dyn_keys
@@ -2197,15 +2198,15 @@ p call
 	        $dyn_keys[:index]=$dyn_keys[:crit][:user]
 	        ## predefined
 	        $dyn_keys[:crit][:pre]=["order","required"]
-	        $dyn_keys["order"]={:type=>:order} 
+	        $dyn_keys["order"]={:type=>:order}
 	        $dyn_keys["required"]={:type=>:required}
 	        ## user defined
-	        $dyn_keys[:alias]=[] 
-	        $dyn_keys[:current]=[] 
+	        $dyn_keys[:alias]=[]
+	        $dyn_keys[:current]=[]
 	        $dyn_keys[:begin]=[]
 	        $dyn_keys[:end]=[]
 	      end
-	      arg[9..-1].split(":").each{|e| 
+	      arg[9..-1].split(":").each{|e|
 	        type=e.split("=").map{|e2| e2.strip}
 	        res={:type=>type[1].to_sym}
 	        crit,*aliases=type[0].split(",").map{|e2| e2.strip}
@@ -2227,7 +2228,7 @@ p call
 #puts "After make_keys: @keys";p @keys #if @tmpl_cfg[:debug]
 #p @init_keys
       #Set!
-      elsif arg[0..3]=="set:" 
+      elsif arg[0..3]=="set:"
 ##puts ">>>>>>>>> Keys->Set"
 	      @init_keys=KeysManager.init_keys([arg[4..-1].strip])
 	      @keys.merge!(KeysManager.make_keys(@init_keys))
@@ -2250,7 +2251,7 @@ p call
 	        lock_parent=$dyn_keys[:current][-1] unless to_merge
 	        $dyn_keys[:cpt]+=1
 	      end
-	
+
 #puts "mode_keys";p mode_keys
 #p arg
 	      arg=arg[1..-1] if to_merge
@@ -2261,12 +2262,12 @@ p call
 	      if to_merge
 	        KeysManager.merge(lock)
 	      elsif lock_parent
-	        KeysManager.merge(lock,lock_parent) 
+	        KeysManager.merge(lock,lock_parent)
 	      end
 #p lock
 	      KeysManager.make_title(lock)
 #p $dyn_keys[:title]
-	
+
 #puts "do_keys:lock";p lock
 	      # remember the last lock!
 	      $dyn_keys[:lastlock]=lock
@@ -2308,14 +2309,14 @@ p call
 
     def keys_show(texAry)
       puts "@keys";p @keys
-      texAry.each{|e|     
+      texAry.each{|e|
 	      p e[:lock]
 	      p e[:content]
       }
     end
 
     def keys_select(texAry)
-      texAry.find_all{|e| 
+      texAry.find_all{|e|
 	      KeysManager.unlocked?(e[:lock],@keys)
       }
     end
@@ -2328,7 +2329,7 @@ p call
 #puts "a";p a
 	      res=a[:order]*(e1[:lock][a[:val]] <=> e2[:lock][a[:val]])
 	      i+=1
-	    end 
+	    end
 	    #because of pb of sort to deal with equality!
 	    res=e1[:index]<=>e2[:index] if res==0
 	    res
@@ -2341,9 +2342,9 @@ p call
 	keys_compare(e1,e2)
       }
     end
-    
 
-    def keys_print(tex,texAry) 
+
+    def keys_print(tex,texAry)
       #keys_show(texAry.flatten) if @tmpl_cfg[:debug]
       texAry=keys_select(texAry.flatten)
       keys_show(texAry) if @tmpl_cfg[:debug]
@@ -2359,13 +2360,13 @@ p call
 #p parse(blck[1..-1],filter).split(",").map{|e| e.strip}
 #p @tags
       taglist=parse(blck[1..-1],filter).strip
-  
+
       taglist.split(",").map{|e| e.strip}.each{|tag|
         if tag[0,1]=="-"
           @tags.delete(TagManager.init_input_tag(tag[1..-1]))
         else
   	     tag=tag[1..-1] if tag[0,1]=="+"
-  	     @tags << TagManager.init_input_tag(tag) 
+  	     @tags << TagManager.init_input_tag(tag)
         end
       }
 #puts "ici";p @tags
@@ -2379,7 +2380,7 @@ p call
 #p parse([@def_blck[-1][codename]],filter) if @def_blck[-1][codename]
         tex << parse([@def_blck[-1][codename]],filter) if @def_blck[-1][codename]
 #p filter.envir.local["self"]
-       end 
+       end
     end
 
     def do_get(tex,blck,filter)

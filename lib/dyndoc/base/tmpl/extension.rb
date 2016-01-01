@@ -1,6 +1,6 @@
 module Dyndoc
 
-  
+
   module Ruby
 
 
@@ -21,10 +21,14 @@ module Dyndoc
     end
 
     def parse(blck=@blck,filter=@filter)
-      ##Dyndoc.warn  "parse!!!",blck
+      ##Dyndoc.warn "parse!!!",blck
       res=@tmplMngr.parse(blck,filter)
       ##Dyndoc.warn "result parse",res
       res
+    end
+
+    def parse!(blck=@blck,filter=@filter)
+      self << parse(blck,filter)
     end
 
     def <<(content)
@@ -88,8 +92,8 @@ module Dyndoc
     end
 
     def goto_next_child!
-      unless @gone 
-        @pos+=@children[-1].length 
+      unless @gone
+        @pos+=@children[-1].length
         @gone=true #only once!
       end
     end
@@ -133,7 +137,7 @@ module Dyndoc
       return child
     end
 
-    def child_as_var 
+    def child_as_var
       b=@tmplMngr.make_var_block(child.unshift(:var),@filter)
       @tmplMngr.eval_VARS(b,@filter)
     end
@@ -203,8 +207,9 @@ module Dyndoc
   ## the next code is automatically generated!
   #{@@newBlcks[blckname][item][:do_code][0][1]}
 end]
-          #p blckRbCode
+          #Dyndoc.warn :blckRbCode, blckRbCode
           Dyndoc::Ruby::TemplateManager.module_eval(blckRbCode)
+          #Dyndoc.warn :methods, methods.sort
         end
       end
 #=end
@@ -219,7 +224,7 @@ end]
     def aggregate_newBlck(blck,aggrItems,allAggrItems,from)
       res,newBlck=blck[0...from],nil
       ##puts "debut aggr";p res;p aggrItems;p allAggrItems
-      resAggr=[] #to save the different elements in the right order 
+      resAggr=[] #to save the different elements in the right order
       (from..(blck.length-1)).each do |i|
         if newBlck
           if allAggrItems.include? blck[i]
@@ -230,9 +235,9 @@ end]
               resAggr << blck[i]
             end
           else
-            newBlck[:blck] << blck[i]          
+            newBlck[:blck] << blck[i]
           end
-        else 
+        else
           if aggrItems.include? blck[i]
             resAggr << (newBlck={:tag=>blck[i],:blck=>[:blck]})
           else
@@ -250,7 +255,7 @@ end]
           res << e[:tag] << ((e[:blck][1].is_a? Symbol) ? e[:blck] : [:blck,start]+e[:blck][1..-1])
         else
           res << e
-        end 
+        end
       }
       ##puts "result";p res
       res
@@ -258,7 +263,7 @@ end]
     end
 
     def completed_newBlck(cmd,blckname,blck,filter)
-      ### IMPORTANT: blckname==nil means inside sub-blck :blckAnyTag and then no init performed as :pre and :post preprocess!  
+      ### IMPORTANT: blckname==nil means inside sub-blck :blckAnyTag and then no init performed as :pre and :post preprocess!
       ## As in [#rb>] for (i in 1..3) {#>][#bar]....[#} !!!! No blckname here!
       if blckname
         filter.envir["blckname"]=blckname
@@ -274,7 +279,7 @@ end]
         ##puts "aggregate";
         blck=aggregate_newBlck(blck,@@newBlcks[cmd][:aggregate].map{|e| e.to_sym},items.map{|e| e.to_sym},i)
       end
-      ## first replace :"," by :"=" 
+      ## first replace :"," by :"="
       while blck[i]==:","
         blck[i]= :"="
         i+=2
