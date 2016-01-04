@@ -42,6 +42,7 @@ module Dyndoc
       @varscan=VarsScanner.new unless @varscan
 #puts "parse";p texblock
       if texblock.is_a? String
+        texblock=texblock.force_encoding("utf-8")
         ## Dyndoc.warn "parse",texblock
         if @@interactive
           Utils.parse_dyn_block_for_interactive!(texblock)
@@ -87,7 +88,7 @@ module Dyndoc
         @@depth+=1
         ###TO temporarily AVOID RESCUE MODE:
         ###
-        if false; method("do_"+cmd).call(out,b,filterLoc); else
+        if true; method("do_"+cmd).call(out,b,filterLoc); else
         begin
           ## Dyndoc.warn "cmd",[cmd,b]
           method("do_"+cmd).call(out,b,filterLoc)
@@ -574,8 +575,8 @@ p [vars,b2]
             when :"_<"
               i,*b2=next_block(blck,i)
               val=parse(b2,filter).strip
-              @defaultFmtContainer=(val+">").to_sym if ["","html","tex","txtl","ttm","md"].include? val
-            when :"txtl>",:"ttm>",:"tex>",:"html>",:"_>",:"__>",:"md>"
+              @defaultFmtContainer=(val+">").to_sym if ["","html","tex","txtl","ttm","md","adoc"].include? val
+            when :"txtl>",:"ttm>",:"tex>",:"html>",:"_>",:"__>",:"md>",:"adoc>"
                 newblck=blck[i]
                 @curFmtContainer=:"tex>" unless @curFmtContainer
                 if newblck==:"__>"
@@ -1042,7 +1043,7 @@ p [vars,b2]
           when :binding
             i,*b2=next_block(blck,i)
             rbEnvir=b2[0][1].strip
-          when :do,:<,:out,:>,:"r<",:"rb<",:"r>",:"R>",:"R<",:"r>>",:rverb,:"rb>>",:rbverb,:"jl>>",:jlverb,:"rb>",:"?",:tag,:"??",:yield,:>>,:"=",:"+",:<<,:"txtl>",:"html>",:"tex>",:"_>"
+          when :do,:<,:out,:>,:"r<",:"rb<",:"r>",:"R>",:"R<",:"r>>",:rverb,:"rb>>",:rbverb,:"jl>>",:jlverb,:"rb>",:"?",:tag,:"??",:yield,:>>,:"=",:"+",:<<,:"txtl>",:"md>",:"adoc>",:"html>",:"tex>",:"_>"
             code = blck[i..-1].unshift(:blck)
           when :","
             i,*b2=next_block(blck,i)
@@ -1200,7 +1201,7 @@ p call
             i,*b2=next_block(blck,i)
             codename=parse(b2,filter).strip
             code[codename]=[:blck]
-          when :do,:<,:out,:>,:"r<",:"R<",:"rb<",:"r>",:"R>",:"rb>",:nl,:"\n",:>>,:"?",:tag,:"??",:"=",:"+",:<<,:"%" #NO :yield because of infinite loops
+          when :do,:<,:out,:>,:"r<",:"R<",:"rb<",:"r>",:"R>",:"rb>",:nl,:"\n",:>>,:"?",:tag,:"??",:"=",:"+",:<<,:"%",:"html>",:"tex>",:"txtl>",:"md>",:"adoc>" #NO :yield because of infinite loops
             code[codename] << blck[i]
             i,*b2=next_block(blck,i)
             code[codename] += b2
@@ -1223,7 +1224,8 @@ p call
     end
 
     def do_call(tex,blck,filter)
-#puts "do_call";p blck
+#
+Dyndoc.warn "do_call",blck
       call=parse_args(blck[1],filter)
 #puts "do_call";p call
 #p args
@@ -1237,7 +1239,8 @@ p call
       var,code=make_call(var_block,filter)
 #puts "VAR"
 #p code
-#puts "do_call:var";p var
+#
+Dyndoc.warn "do_call:var",var
 
 #p var
 =begin
@@ -1278,10 +1281,11 @@ p call
       b,meth_args_b=CallFilter.argsMeth(call,b)
 #puts "call";p call
 #p @calls[call]
-#puts "var2 block";p b
+#
+Dyndoc.warn "var2 block",b
 #p meth_args_b
 
-#puts "call:out";p eval_CALL(call,b,filter)
+#Dyndoc.warn "call:out",eval_CALL(call,b,filter)
       tex << eval_CALL(call,b,filter,meth_args_b,code)
     end
 

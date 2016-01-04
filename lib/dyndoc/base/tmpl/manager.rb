@@ -19,6 +19,10 @@ module Dyndoc
     Dyndoc.tmpl_mngr.vars[Dyndoc.tmpl_mngr.blckName[-1]]=cache_
   end
 
+  def Dyndoc.extract_var(id)
+    Dyndoc.tmpl_mngr.vars.extract(id)
+  end
+
   module Ruby
 
   class TemplateManager
@@ -116,6 +120,10 @@ module Dyndoc
     def cache(cache_={})
       return @vars[blckName[-1]] if cache_.empty?
       @vars[blckName[-1]]=cache_
+    end
+
+    def extract_var(id)
+      @vars.extract(id)
     end
 
     ## equivalent to :pre_doc for not interactive document

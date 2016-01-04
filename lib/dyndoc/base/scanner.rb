@@ -2,26 +2,26 @@
 #   1) Gestion du parsing en mode dtag
 #     .) Imbrication des blocs :dtag  {%...%}
 #     .) Bloc texte est splitté en une alternance de blocs :main et de blocs :dtag {%...%}
-#     .) Sortie de process en une structure: 
-# ex: [[:main,"..."] [:if, [:args,"...",[...]"],[:main,"..."],:else,[:main,"..."]] 
-#     .) NEW: un bloc peut être inséré dans un argument :args 
+#     .) Sortie de process en une structure:
+# ex: [[:main,"..."] [:if, [:args,"...",[...]"],[:main,"..."],:else,[:main,"..."]]
+#     .) NEW: un bloc peut être inséré dans un argument :args
 #     TODO: 1) desescaper le délimiteur dans :args
 #   2) Gestion du parsing des appels fonctions @{...}@
 #     TODO
 #   3) TODO: imbrication des modes #{} :{} et :R{} à gérer
 # RMK: 1) a-t-on besoin d'autant de mode? A réfléchir mais c'est en fonction des priorités d'exécution.
 #   2) Il y a 4 grands modes d'utilisation:
-#     a) Mode imbriqué blocks dtag : {% ...%} 
+#     a) Mode imbriqué blocks dtag : {% ...%}
 #       rmk: exécution d'un block intérieur après le bloc :main précédent du block principal!
 #     b) Mode séquentiel Part tags : %() utiles dans pour le multi-output
 #     c) Mode séquentiel Utilisateur : [#...]
 #     d) Mode imbriqué dans blocks texte : #[r,R,Rb]{}, :[R,r]{} , @{}@
-#       rmk: exécution des blocks intérieurs avant le block principal 
+#       rmk: exécution des blocks intérieurs avant le block principal
 
 require 'strscan'
 
 if RUBY_VERSION < "1.9"
-  
+
   class String
     alias :byteslice :"[]"
   end
@@ -30,7 +30,7 @@ end
 
 module Dyndoc
   class Scanner
-    
+
     @@type={}
 
     @@close={"("=>")","["=>"]","{"=>"}"}
@@ -53,7 +53,7 @@ module Dyndoc
       #mode corresponds to @start[@mode[:start],@mode[:length]] and @stop[@mode[:stop],@mode[:length]]
       init_strange
       @scan=StringScanner.new("")
-    end 
+    end
 
     ######################################
     # stack is a sequence of delimiters
@@ -63,7 +63,7 @@ module Dyndoc
       open_stack,keep=[],{}
       stack.each do |elt|
         if elt[1]==1
-          open_stack << elt 
+          open_stack << elt
         else
           if open_stack.empty?
             ##too many closed delimiters
@@ -97,7 +97,7 @@ module Dyndoc
         end
         if mode!=1
           p2=@scan.check_until(@stop)
-          if p2 
+          if p2
             s2=@scan.pre_match.size
             m2=@scan.matched
           end
@@ -126,10 +126,10 @@ module Dyndoc
 
     def init_atom
       if @tag[:atom]
-        @txt.gsub!(@tag[:atom][:match]){|w| 
+        @txt.gsub!(@tag[:atom][:match]){|w|
           m=@tag[:atom][:match].match(w)
           res=""
-          (1...m.size).each{|i| 
+          (1...m.size).each{|i|
             res << (@tag[:atom][:replace][i] ? @tag[:atom][:replace][i] : m[i])
           }
           res
@@ -151,7 +151,7 @@ module Dyndoc
         if elt[1]==1
           #new bloc
           parent=block
-          block={:type=>elt[2][0...-1],:start=>elt[0],:inside=>[]} 
+          block={:type=>elt[2][0...-1],:start=>elt[0],:inside=>[]}
           stack2 << [block,parent]
         elsif elt[1]==-1
           block,parent=stack2.pop
@@ -167,11 +167,11 @@ module Dyndoc
       return (@token={:txt=> @txt,:inside=> (root[:inside])})
     end
 
-## Extract a structure with a root block which is a text block and the child blocks which are dtag blocks. 
+## Extract a structure with a root block which is a text block and the child blocks which are dtag blocks.
     @@strange="_[_?_]_"
 
     def init_strange(strange=@@strange)
-      @strange=strange 
+      @strange=strange
       @re_strange=/#{Regexp.escape(@strange)}/
       @re_strange2=/(#{Regexp.escape(@strange)})/
     end
@@ -246,7 +246,7 @@ module Dyndoc
   end
 
   class DevTagScanner < Scanner
-    
+
 =begin TO_REMOVE
       @@type[:dtag] = {
           :start=>'\{%(\w*)',
@@ -260,11 +260,11 @@ module Dyndoc
           :start=>'\{[\#\@]([\w\:\|-]*[<>]?[=?!><]?(\.\w*)?)\]',
           :stop=>  '\[[\#\@]([\w\:\|-]*[<>]?[=?!><]?)\}',
           :atom=>{:match=>/(\{[\#\@][\w\:\|]*)([\#\@]\})/,:replace=>{2=>"][#}"}},
-          :block=> '\]', #no longer | 
+          :block=> '\]', #no longer |
           :keyword=>['\[[\#\@]','\]'],
           :mode=>{:start=>0,:stop=>-1,:length=>1}
         }
-      
+
     def get_tag_blck
       @@tagblck_set
     end
@@ -275,9 +275,9 @@ module Dyndoc
       init_tag(@tag_type) if [:dtag].include? @tag_type
     end
 
-    @@tagblck_set=[:<<,:<,:do,:>>,:>,:">!",:out,:nl,:"\\n",:"r<",:"R<",:"rb<",:"m<",:"M<",:"jl<",:"r>>",:"R>>",:rverb,:"rb>>",:rbverb,:"jl>>",:jlverb,:rout,:"r>",:"R>",:"rb>",:"m>",:"M>",:"jl>",:"_<",:"_>",:"__>",:"html>",:"tex>",:"txtl>",:"ttm>",:"md>",:tag,:"??",:"?",:yield,:"=",:"-",:+,:"%"]
+    @@tagblck_set=[:<<,:<,:do,:>>,:>,:">!",:out,:nl,:"\\n",:"r<",:"R<",:"rb<",:"m<",:"M<",:"jl<",:"r>>",:"R>>",:rverb,:"rb>>",:rbverb,:"jl>>",:jlverb,:rout,:"r>",:"R>",:"rb>",:"m>",:"M>",:"jl>",:"_<",:"_>",:"__>",:"html>",:"tex>",:"txtl>",:"ttm>",:"md>",:"adoc>",:tag,:"??",:"?",:yield,:"=",:"-",:+,:"%"]
     #Rmk: when a symbol is included in another one, you have to place it before! Ex: :>> before :> and also :<< before :<
-    
+
     @@tagblck_dyndoc_set = [:main,:content,:before,:after,:require,:helpers,:preamble,:postamble,:style,:title,:path,:first,:last,:default,:cfg]
     @@tagblck_tex_set=[:class,:optclass,:package,:texinputs]
     @@tagblck_html_set=[:js,:css,:header,:footer]
@@ -293,7 +293,7 @@ module Dyndoc
 	        :rmk=>:hide,
           :static => :saved,
           :comment=>:hide,
-          :>> => [:blck,:>], 
+          :>> => [:blck,:>],
           #:"b>" => [:blck, :>],
           :"rb>" => [:blck, :"rb>"],
           :"R>" =>  [:blck, :"R>"],
@@ -311,39 +311,40 @@ module Dyndoc
           :"html>" =>  [:blck, :"html>"],
           :"txtl>" =>  [:blck, :"txtl>"],
           :"md>" =>  [:blck, :"md>"],
+          :"adoc>" =>  [:blck, :"adoc>"],
           :"ttm>" =>  [:blck, :"ttm>"]
         },
         :empty_keyword=>["?","empty"],
         :keyword=>{
 	        :document => @@tagblck_dyndoc_set + @@tagblck_tex_set + @@tagblck_html_set,
           :if=> [:else,:elsif,:if,:unless],
-          :unless=> [:else,:elsif,:if,:unless], 
-	        :for=>[], 
-          :loop=>[:break], 
-          :case=>[:when,:else], 
+          :unless=> [:else,:elsif,:if,:unless],
+	        :for=>[],
+          :loop=>[:break],
+          :case=>[:when,:else],
           :var=>[:","],
-          :set=>[], 
-          :def=>[:",",:binding], 
-          :meth=>[:","], 
-          :new=>[:",",:of,:in,:blck], 
-          :super=>[:",",:parent,:blck], 
+          :set=>[],
+          :def=>[:",",:binding],
+          :meth=>[:","],
+          :new=>[:",",:of,:in,:blck],
+          :super=>[:",",:parent,:blck],
           :do=>[],
-          :out=>[], 
-          :blck=>[], 
+          :out=>[],
+          :blck=>[],
           :saved=>[],
           :call=>  [:",",:blck,:"->"],
 	        :style=> [:of,:",",:blck,:default],
           :input=>[:","],
           :r=>[:in],
-          :rverb=>[:in,:mode], 
-          :rbverb=>[:mode], 
-          :jlverb=>[:mode], 
-	        :rout=>[:in,:mode], 
+          :rverb=>[:in,:mode],
+          :rbverb=>[:mode],
+          :jlverb=>[:mode],
+	        :rout=>[:in,:mode],
           :eval=>[:to],
           :ifndef=>[:<<],
-          :tags=>[:when], 
-      	  :keys=> [], 
-      	  :part=>[], 
+          :tags=>[:when],
+      	  :keys=> [],
+      	  :part=>[],
       	  :get=>[:blck]
         },
       	:keyword_reg=>{ #to overpass :keyword
@@ -387,7 +388,7 @@ module Dyndoc
     }
 
     attr_accessor :dtag
-     
+
     def init_tag(type=:dtag)
       @dtag=@@dtag[type]
       @tag_instr=@dtag[:instr]+@dtag[:alias].keys.map{|e| e.to_s}
@@ -422,14 +423,14 @@ module Dyndoc
     ## update an existing tag keywork (ex: document for html structure by adding #css #js #menu or anything needed in the model)
     def update_tag_keyword(keyword,tags_set=[],args={})
       @tag_keyword[keyword] += tags_set
-      @tag_blck[:keyword][keyword] += new_tags_set if args[:mode] && args[:mode] == :blck 
+      @tag_blck[:keyword][keyword] += new_tags_set if args[:mode] && args[:mode] == :blck
     end
 
 ## Types of result block:
 ##  1) :main
 ##  2) :args
 ##  3) :instr (:if, :case, ...)
-## Types of parsed block: 
+## Types of parsed block:
 ##  1) :text -> main block alternating text and dtag blocks
 ##  2) :dtag -> {% ...%}
 
@@ -471,7 +472,7 @@ module Dyndoc
 #p ["pre_match=",@scan.pre_match,"to=",@scan.pre_match.bytesize]
         to=@scan.pre_match.bytesize #.length
         ##Dyndoc.warn "TOOOOOOOOOOO2222",[@scan.pre_match,to]
-        delim2=@scan[1] 
+        delim2=@scan[1]
         delim2=@@open[delim2] if @@open[delim2]
 #p ["delim2=",delim2,/#{Regexp.escape(delim2)}/]
 #p @block[from...-1]
@@ -506,12 +507,12 @@ module Dyndoc
       #Regexp.escape(key.to_s)+((@dtag[:named_tag][key]) ? @dtag[:named_tag][key] : "")
       if @dtag[:named_tag][key]
       	if add
-      	  @named_tags << key 
-      	  return nil 
+      	  @named_tags << key
+      	  return nil
       	else
       	  @dtag[:named_tag][key][:tag].sub("_TAG_",Regexp.escape( key.to_s ))
       	end
-            else 
+            else
       	return Regexp.escape(key.to_s)
       end
     end
@@ -557,7 +558,7 @@ module Dyndoc
         if instr.is_a? Array
           res += instr
           instr=instr[0]
-        else 
+        else
           res << instr
         end
         if (@tag_arg+@tag_code).include? instr
@@ -567,11 +568,11 @@ module Dyndoc
           when :next_block
             @is_arg=true
           end
-        end 
+        end
       else
 	      instr2=(style ?  :style : :call)
         #pour un éventuel ajout de > ou < à la fin
-        if [">","<"].include? instr[-1,1] 
+        if [">","<"].include? instr[-1,1]
           instr2,instr=(instr2.to_s+instr[-1,1]).to_sym,instr[0...-1]
         end
         res << instr2 << [:args, {:txt=>instr,:inside=>[]}]
@@ -591,7 +592,7 @@ module Dyndoc
           tag_keyword=@tag_keyword[instr] if @tag_keyword[instr]
         else
           tag_keyword=(@tag_keyword[instr] ? @tag_keyword[instr] : [] )
-        end  
+        end
 	      keytags=nil
 	      @named_tags,@tag_selected=[],nil
 	      if tag_keyword
@@ -639,16 +640,16 @@ module Dyndoc
 	        end
 	    #res << (key=key[1..-1].to_sym)
       #p @tag_arg
-          if @tag_arg.include? key #without @tag_code inside a block 
+          if @tag_arg.include? key #without @tag_code inside a block
             case @dtag[:mode_arg]
-            when :find 
-              res << find_args(inside) 
+            when :find
+              res << find_args(inside)
               from=@scan.pos
             when :next_block
               @is_arg=true
             end
           end
-        else 
+        else
           #Last text block!
 #p /(#{@tag[:block]}?)\s*(#{@tag[:stop]})/
           @scan.check_until(/(#{@tag[:block]}?)\s*(#{@tag[:stop]})/)
@@ -666,14 +667,14 @@ module Dyndoc
 
     def parse_block(blck)
       res=convert_block(blck)
-#puts "res";p res 
+#puts "res";p res
       ##Stop scan when :txt instruction to avoid parsing!
       if TXT_DTAG.include? res[0]
         res2=[res[0],rebuild_after_filter(res[1][1])]
         # NO MORE POSSIBLE! res2 << res[1][1][:name] if res[1][1][:name]
 #p res2
         return res2
-      end 
+      end
       res2=[]
       res.each{|e|
 #p e
@@ -686,7 +687,7 @@ module Dyndoc
           end
         else
           res2 << e
-        end 
+        end
       }
 #p res2
       #make :blck block if necessary
@@ -706,7 +707,7 @@ module Dyndoc
           res_blck << b
           #is there an :args block?
           res_blck << res.shift if @tag_arg.include? b
-          #if no first tag_blck then put the default :out tag 
+          #if no first tag_blck then put the default :out tag
           blck=[:blck]
           blck << :out unless @@tagblck_set.include? res[0]
         else
@@ -714,8 +715,8 @@ module Dyndoc
             blck << b
           else
             #needed for example :case block
-            res_blck << b 
-          end 
+            res_blck << b
+          end
           #is the end of blck?
           if res.empty? or (instr.include? res[0])
             res_blck << blck if blck
@@ -759,12 +760,12 @@ module Dyndoc
           b=blck[:inside].shift
           res_b=parse_block(b)
           if (res_modif=parsed_block_with_modifier(res_b))
-            res << res_modif 
+            res << res_modif
           end
-#puts "parse_text: res_b";p res_b         
+#puts "parse_text: res_b";p res_b
           res << res_b
         else
-          res << [:main,e] 
+          res << [:main,e]
         end
       }
       res=[[:named,blck[:name]]+res] if blck[:name]
@@ -880,7 +881,6 @@ module Dyndoc
       end
     end
 
-    
+
   end
 end
-
