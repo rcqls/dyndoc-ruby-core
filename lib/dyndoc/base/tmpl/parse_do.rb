@@ -1224,8 +1224,7 @@ p call
     end
 
     def do_call(tex,blck,filter)
-#
-Dyndoc.warn "do_call",blck
+#Dyndoc.warn "do_call",blck
       call=parse_args(blck[1],filter)
 #puts "do_call";p call
 #p args
@@ -1239,8 +1238,7 @@ Dyndoc.warn "do_call",blck
       var,code=make_call(var_block,filter)
 #puts "VAR"
 #p code
-#
-Dyndoc.warn "do_call:var",var
+#Dyndoc.warn "do_call:var",var
 
 #p var
 =begin
@@ -1281,8 +1279,7 @@ Dyndoc.warn "do_call:var",var
       b,meth_args_b=CallFilter.argsMeth(call,b)
 #puts "call";p call
 #p @calls[call]
-#
-Dyndoc.warn "var2 block",b
+#Dyndoc.warn "var2 block",b
 #p meth_args_b
 
 #Dyndoc.warn "call:out",eval_CALL(call,b,filter)
