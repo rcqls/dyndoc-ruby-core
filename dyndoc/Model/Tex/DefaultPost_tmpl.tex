@@ -5,7 +5,7 @@
 pkgs,pkg_opts,pkg_modifs={},{},{}
 nb=-1
 ##p #{=_USEPACKAGE_}
-#{=_USEPACKAGE_}.split("\n").each {|pkg| # 
+#{=_USEPACKAGE_}.split("\n").each {|pkg| #
 	if pkg =~ /([^\\]*)\|?\\usepackage(?:\[([^\{]*)\])?\{(.*)\}/
 		nb+=1
 		##p [$1,$2,$3]
@@ -17,16 +17,16 @@ nb=-1
 		pkg_opts[nb],pkg_modifs[nb]=$2,$1	#save options!
 	end
 }
-##p pkgs
+##Dyndoc.warn :pkgs,pkgs
 #selection between same package.
 pkgs_to_keep=[nil]*(nb+=1)
-#run over 
+#run over
 pkgs.each{|key,inds| #
 	#p [key,inds]
 	if inds.length>1
 		##p inds
 		modifs=inds.map{|i| pkg_modifs[i]}
-		##p modifs
+		##Dyndoc.warn :modifs,modifs
 		i_sel=nil
 		modifs.each_with_index{|modif,i| #
 			case modif.strip
@@ -34,16 +34,14 @@ pkgs.each{|key,inds| #
 				i_sel=modif.to_i
 			when "-" 	# remove it if it exists!
 				i_sel=nil
-			when "-" 	# remove it if it exists!
-				i_sel=nil
 				break
 			when "!" 	# this one and not the other
 				i_sel=i
-				break	
+				break
 			when "?" 	# only if it does not exist!
 				i_sel=i unless i_sel
 			when "+" 	# append :opts
-				if i_sel 
+				if i_sel
 					if pkg_opts[inds[i_sel]]
 						pkg_opts[inds[i_sel]]+=","+pkg_opts[inds[i]]
 					else
@@ -66,7 +64,7 @@ pkgs.each{|key,inds| #
 packages=[]
 #p nb
 (0...nb).each{|i| #
-#p pkg_opts[i]
+#Dyndoc.warn :opt,[i,pkg_opts[i],pkgs_to_keep[i]]
 	packages << "\\usepackage"+( pkg_opts[i] ? "["+pkg_opts[i]+"]" : "" )+"{"+pkgs_to_keep[i]+"}" if pkgs_to_keep[i]
 }
 packages=packages.join("\n")
