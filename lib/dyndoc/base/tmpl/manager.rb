@@ -43,6 +43,11 @@ module Dyndoc
 
     # Maybe better located inside server.rb
     def TemplateManager.initR
+      # For windows! R now change HOME variable by appending "/Documents" at the end. Ruby does not do that!
+      unless File.exist? File.join(ENV["HOME"],"R","win-library")
+        ENV["HOME"] += "/Documents"
+      end
+
       first=require "R4rb" #save if it the first initialization!
       Dyndoc.warn "FIRST INIT OF R!!!! => #{first}"
       Array.initR

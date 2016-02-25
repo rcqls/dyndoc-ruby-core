@@ -93,7 +93,7 @@
       {#if]File.dirname(#{=img})=="."[#>]img[:{File.join($dyn_rsrc,"img",#{=img})}][#if}
     [#if}
   [#?]Dyndoc.tmpl_mngr.fmtOutput == "html"[#<]
-    {#if]#{0?img}[#=]img[#r{tempfile(fileext=".png")}][#=]delete[TRUE][#if}
+    {#if]#{0?img}[#=]img[#r{gsub("\\\\","/",tempfile(fileext=".png"))}][#=]delete[TRUE][#if}
   [#?]#{+?rcode}[#<]{#rpng]#{rcode}[#}[#?]end
   [#R<]require(base64)
   #print(#{=img})
@@ -115,7 +115,7 @@
   [#,] newR[FALSE]
   [#>][{#rfig]#{rcode}[#,]deviceR[jpeg][#}]
   [#}
-  
+
   {#def]rpdf[#,] rcode[] [#,] img[]
   [#,] widthR[5] [#,] heightR[5][#,] optR[]
   [#,] include[true] [#,] optTex[scale=1.0]

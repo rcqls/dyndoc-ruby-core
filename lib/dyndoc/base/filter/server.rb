@@ -30,7 +30,7 @@ module Dyndoc
     @@start,@@stop="\\{","\\}"
 
     def RbServer.filter(str,rbEnvir=nil)
-      res=str.gsub(/\\?(?i:\#Rb|\#rb|\:Rb|\:rb|\:)#{@@start}[^#{@@stop}]+#{@@stop}/) {|w|  
+      res=str.gsub(/\\?(?i:\#Rb|\#rb|\:Rb|\:rb|\:)#{@@start}[^#{@@stop}]+#{@@stop}/) {|w|
 	  if w[0,1]=="\\"
 	    w[1..-1]
 	  else
@@ -66,8 +66,8 @@ module Dyndoc
 		        out=rbEnvir.module_eval(code)
 		    end
 	    rescue
-	    	if RUBY_VERSION >= "1.9.3" and rbEnvir.is_a? Binding and rbEnvir.eval("local_variables").include? :childBinding 
-	    		begin 
+	    	if RUBY_VERSION >= "1.9.3" and rbEnvir.is_a? Binding and rbEnvir.eval("local_variables").include? :childBinding
+	    		begin
 		    		rbEnvir2=rbEnvir.eval("childBinding")
 		    		out=rbEnvir2.eval(code)
 		    		return out
@@ -81,9 +81,9 @@ module Dyndoc
 			# or more informative for debugging!
 
 			out="\\:{"+code+"}"
-			
+
 			if Dyndoc.cfg_dyn[:ruby_debug] ==:expression
-	        	Dyndoc.warn "WARNING: >>>>>>>>>>>>>>>>>>+\n"+opts[:error]+" in #{rbEnvir}:\n"+code+"\n<<<<<<<<<<<<<<<<<<" 
+	        	Dyndoc.warn "WARNING: >>>>>>>>>>>>>>>>>>+\n"+opts[:error]+" in #{rbEnvir}:\n"+code+"\n<<<<<<<<<<<<<<<<<<"
 			end
 
 
@@ -91,7 +91,7 @@ module Dyndoc
 				##p ["error ruby",code]
 	        	$dyn_logger.write("\nERROR Ruby:\n"+code+"\n")
 	        end
-			
+
 	    rescue SyntaxError
 	        puts "RbServer syntax error in: "+code
 	        raise SystemError if Dyndoc.cfg_dyn[:dyndoc_mode]==:normal and  Dyndoc.cfg_dyn[:ruby_debug]!=:none
@@ -190,7 +190,7 @@ module Dyndoc
 	end
 
 	if $dyndoc_rserv
-		##puts "$dyndoc_rserv";p $dyndoc_rserv 
+		##puts "$dyndoc_rserv";p $dyndoc_rserv
 		RServer.R4rb :Rserve,$dyndoc_rserv
 		R4rb_status? if $dyndoc_server_hostname
 	end
@@ -213,7 +213,7 @@ module Dyndoc
       hide=0
       passe=0
       opt = nil
-      code="" 
+      code=""
       ##Dyndoc.warn "block",block
       block.each_line{|l|
 		l2=l.chomp
@@ -255,19 +255,19 @@ module Dyndoc
 		    ## redirect R output
 		    code << l << "\n" ##ajout de "\n" grace à Pierre (le 15/12/05) pour bug: "1:10 #toto" -> pas de sortie car parse erreur n2!!!
 			case @@mode
-	        when :capture_normal	    
+	        when :capture_normal
 		        evalOk=(R4rb <<  ".output<<-capture.output({"+RServer.code_envir(code,env)+"})")
 	        when :capture_cqls
 	        	evalOk=(R4rb <<  ".output<<-capture.output.cqls({"+RServer.code_envir(code,env)+"})")
 	        end
 
 		    ##Dyndoc.warn "evalOk",code,evalOk
-		    if evalOk  
+		    if evalOk
 		     txt=(@@out < '.output' ) ##.join("\n").split(/\n/)
-		     code="" 
+		     code=""
 		    else
 		      txt=@@out=[]
-		    end 
+		    end
 		    if optout and optout.keys.include? "short"
 		      short=optout["short"].split(",")
 		      short[0]=short[0].to_i
@@ -284,7 +284,7 @@ module Dyndoc
 		      ##txt.each{|l| txtout << l <<"\n"}
 		    end
 		  end
-		  optout=nil 
+		  optout=nil
 		  hide -= 1 if hide>0
 		  passe -=1 if passe>0
 		end
@@ -300,7 +300,7 @@ module Dyndoc
       hide=0
       passe=0
       opt = nil
-      code="" 
+      code=""
 	  block.each_line{|l|
 		l2=l.chomp
 		inst=l2.delete(" ").split("|")[0]
@@ -341,12 +341,12 @@ module Dyndoc
 	    ## redirect R output
 	    code << l << "\n" ##ajout de "\n" grace à Pierre (le 15/12/05) pour bug: "1:10 #toto" -> pas de sortie car parse erreur n2!!!
 	    evalOk=(R4rb <<  ".output<<-capture.output({"+RServer.code_envir(code,env)+"})")
-	    if evalOk  
+	    if evalOk
 	     txt=(@@out < '.output' ) ##.join("\n").split(/\n/)
-	     code="" 
+	     code=""
 	    else
 	      txt=@@out=[]
-	    end 
+	    end
 	    if optout and optout.keys.include? "short"
 	      short=optout["short"].split(",")
 	      short[0]=short[0].to_i
@@ -363,7 +363,7 @@ module Dyndoc
 	    outputs << output.gsub(/^[\n]*/,"")
 	    input,output="",""
 	  end
-	  optout=nil 
+	  optout=nil
 	  hide -= 1 if hide>0
 	  passe -=1 if passe>0
 	end
@@ -373,17 +373,17 @@ module Dyndoc
 
 
     @@mode=:capture_cqls #or :capture_protected or capture_normal or capture_local
-    
+
     def RServer.mode=(val)
       @@mode= val
     end
-    
+
     def RServer.mode
       @@mode
     end
 
     @@device_cmd,@@device="png","png"
-    
+
     def RServer.device(dev="pdf")
     	case dev
     	when "pdf"
@@ -392,11 +392,11 @@ module Dyndoc
     		@@device_cmd,@@device="png","png"
     	end
     end
-    
+
     #def RServer.input_semi_colon(block)
     #  block.map{|e| e.chomp!;((e.include? ";") ? (ee=e.split(";");["##!eval",e,"##hide:#{ee.length}"]+ee) : e )}.compact.join("\n")
     #end
-    
+
     def RServer.inputsAndOutputs(block,id="",optRDevice="",prompt={:normal=>'',:continue=>''},env="Global")
       Utils.clean_eol(block)
       envLoc=env
@@ -411,7 +411,7 @@ module Dyndoc
       code=""
       # add R device
       imgdir=($dyn_rsrc ? File.join($dyn_rsrc,"img") : "/tmp/Rserver-img"+rand(1000000).to_s)
-      
+
       imgfile=File.join(imgdir,"tmpImgFile"+id.to_s+"-")
       cptImg=0
       imgCopy=[]
@@ -420,7 +420,7 @@ module Dyndoc
       Dir[imgfile+"*"].each{|f| FileUtils.rm_f(f)}
 #p Dir[imgfile+"*"]
 
-	
+
 	#Dyndoc.warn "fig command:", "#{@@device_cmd}(\"#{imgfile}%d.#{@@device}\",#{optRDevice})"
       R4rb << "#{@@device_cmd}(\"#{imgfile}%d.#{@@device}\",#{optRDevice})"
       #block=RServer.input_semi_colon(block)
@@ -461,10 +461,10 @@ module Dyndoc
 
         if echo>0
           echo -= 1
-          echoLines << l2 
+          echoLines << l2
           next
         end
-  
+
         if echo==0 and !echoLines.empty? and !results.empty?
           results[-1][:output] << "\n" unless results[-1][:output].empty?
           results[-1][:output]  << echoLines.join("\n")
@@ -489,7 +489,7 @@ module Dyndoc
 	          imgName=File.basename(opt["img"].strip,".*")
 	          imgName+=".#{@@device}" #unless imgName=~/\.#{@@device}$/
 	          imgName=File.join(imgdir,imgName)
-	          
+
 	          imgCopy << {:in => imgfile+cptImg.to_s+".#{@@device}",:out=>imgName}
 	          opt.delete("img")
 	        else
@@ -497,7 +497,7 @@ module Dyndoc
 	        end
 	        puts "DYN ERROR!!! no fig allowed after empty R output!!!" unless results[-1]
 	        results[-1][:img]={:name=>imgName}
-	        results[-1][:img][:opt]=opt if opt and !opt.empty? 
+	        results[-1][:img][:opt]=opt if opt and !opt.empty?
 	        #could not copy file now!!!!
 	      when "##add"
 	        results[-1][:add]=opt
@@ -510,15 +510,15 @@ module Dyndoc
 	          l2,envLoc=RServer.find_envir(l2,envLoc)
 	          #Dyndoc.warn "after",l,envLoc
 	          input <<  l2 << "\n"
-	          #Dyndoc.warn :input3, input 
+	          #Dyndoc.warn :input3, input
 	        end
 	        if passe==0 and l2[0,1]!="#"
 	          ## redirect R output
 	          code << l2 << "\n" ##ajout de "\n" grace à Pierre (le 15/12/05) pour bug: "1:10 #toto" -> pas de sortie car parse erreur n2!!!
 	          case @@mode
 	          when :capture_cqls
-	            ##TODO: instead of only splitting check that there is no 
-	            ## or ask the user to use another character instead of ";" printed as is in the input! 
+	            ##TODO: instead of only splitting check that there is no
+	            ## or ask the user to use another character instead of ";" printed as is in the input!
 	            codes=code.split(";")
 	            #Dyndoc.warn :codes, codes
 	            evalOk=(R4rb << ".output <<- ''")
@@ -527,8 +527,8 @@ module Dyndoc
 	              #Dyndoc.warn "tmp",tmp
 	            }
               when :capture_protected
-	            ##TODO: instead of only splitting check that there is no 
-	            ## or ask the user to use another character instead of ";" printed as is in the input! 
+	            ##TODO: instead of only splitting check that there is no
+	            ## or ask the user to use another character instead of ";" printed as is in the input!
 	            codes=code.split(";")
 	            evalOk=(R4rb << ".output <<- ''")
 	            codes.each{|cod|
@@ -567,10 +567,10 @@ module Dyndoc
 	          #p evalOk;p code;R4rb << "print(geterrmessage())";R4rb << "if(exists(\".output\") ) print(.output)"
 	          if evalOk
 	            txt=(@@out < '.output' ) ##.join("\n").split(/\n/)
-	            code="" 
+	            code=""
 	          else
 	            txt=@@out=[]
-	          end 
+	          end
 	          if optout and optout.keys.include? "short"
 	            short=optout["short"].split(",")
 	            short[0]=short[0].to_i
@@ -598,7 +598,7 @@ module Dyndoc
 	            results << result unless (result[:input]+result[:output]).empty?
 	          #end
 	          input,output="",""
-	          
+
 	        end
 	        if passe==0 and l2[0,1]=="#"
 	          result={}
@@ -617,7 +617,7 @@ module Dyndoc
 	          results << result
 	          input,output="",""
 	        end
-	        optout=nil 
+	        optout=nil
 	        hide -= 1 if hide>0
 	        passe -=1 if passe>0
 	        #Dyndoc.warn :hide2,hide
@@ -626,7 +626,7 @@ module Dyndoc
       R4rb << "dev.off()"
       imgCopy.each{|e|
 	      FileUtils.mkdir_p File.dirname(e[:out]) unless File.exist? File.dirname(e[:out])
-	      if File.exists? e[:in] 
+	      if File.exists? e[:in]
 	        FileUtils.mv(e[:in],e[:out])
 	      else
 	        Dyndoc.warn "WARNING! #{e[:in]} does not exists for #{e[:out]}"
@@ -638,7 +638,7 @@ module Dyndoc
       #Dyndoc.warn :results, results
       return results
     end
- 
+
     @@out=[]
 
     @@start,@@stop="\\{","\\}"
@@ -647,7 +647,7 @@ module Dyndoc
       #out2=out.gsub(/\\n/,'\textbackslash{n}')
       out.gsub("{",'\{').gsub("}",'\}').gsub("~",'\boldmath\ensuremath{\mathtt{\sim}}')
     end
-    
+
     def RServer.formatInput(out)
       out2=out.gsub(/\\n/,'\textbackslash{n}')
       ## {\texttildelow}
@@ -665,7 +665,7 @@ module Dyndoc
       #Dyndoc.warn :formatInput4, [out,out2,out3]
       return out2.gsub("~",'\boldmath\ensuremath{\mathtt{\sim}}')
     end
-    
+
 
     def RServer.filter(str)
       ## modified (28/5/04) (old : /\#R\{.+\}/ => {\#R{ok}} does not work since "ok}" was selected !!
@@ -696,7 +696,7 @@ module Dyndoc
 #puts "New env #{env} in #{parent}"
       ".GlobalEnv$.env4dyn$#{env}<-new.env(parent=.GlobalEnv$.env4dyn$#{parent})".to_R
     end
-    
+
     def RServer.local_code_envir(code,env="Global")
       "local({"+code+"},.GlobalEnv$.env4dyn$#{env})"
     end
@@ -737,7 +737,7 @@ module Dyndoc
 #Dyndoc.warn "without",code,(@@out < "evalq("+code+",.env4dyn$"+env+")"),"done"
       	code="prettyNum("+code+")" if pretty
 #Dyndoc.warn "with",code,(@@out < "evalq("+code+",.env4dyn$"+env+")"),"done"
-		
+
       	## code="evalq("+code+",envir=.GlobalEnv$.env4dyn$"+env+")" ##-> replaced by
       	code=RServer.code_envir(code,env)
 #Dyndoc.warn "RServer.output->",code,(@@out < code)
@@ -753,13 +753,13 @@ module Dyndoc
 #Dyndoc.warn "without",code,(@@out < "evalq("+code+",.env4dyn$"+env+")"),"done"
       	code="prettyNum("+code+")" if opts[:pretty]
 #Dyndoc.warn "with",code,(@@out < "evalq("+code+",.env4dyn$"+env+")"),"done"
-		
+
       	## code="evalq("+code+",envir=.GlobalEnv$.env4dyn$"+env+")" ##-> replaced by
       	code=RServer.code_envir(code,env)
 #Dyndoc.warn "RServer.output->",code,(@@out < code)
 #Dyndoc.warn "RServer.safe_output: capture",capture,code
 		if opts[:capture] or opts[:blockR]
-			## IMPORTANT; this is here to ensure that a double output is avoided at the end if the last instruction is a print 
+			## IMPORTANT; this is here to ensure that a double output is avoided at the end if the last instruction is a print
 			code = "invisible("+code+")" if invisible
 			code+=";invisible()" if opts[:blockR]
 			#Dyndoc.warn "safe_output",code
@@ -769,11 +769,11 @@ module Dyndoc
 		else
       		res=(@@out < "{.result_try_code<-try({"+code+"},silent=TRUE);if(inherits(.result_try_code,'try-error')) 'try-error' else .result_try_code}") #.join(', ')
  		end
-      	res 
+      	res
     end
 
     #more useful than echo_tex!!!
-    def RServer.rout(code,env="Global") 
+    def RServer.rout(code,env="Global")
       	out="> "+code
       	code="capture.output({"+code+"})"
       	## code="evalq("+code+",.GlobalEnv$.env4dyn$"+env+")" ##-> replaced by
@@ -793,15 +793,15 @@ module Dyndoc
     		R4rb << "print(.libPaths())"
     	end
     	R4rb << "if(!(Sys.getenv('R_LIBS_USER') %in% .libPaths())) .libPaths(Sys.getenv('R_LIBS_USER'))"
-      	## R4rb << "require(dyndoc)" => put in TemplateManager.initR dyndocTools.R
-      	R4rb << "require(rb4R)"
+      ## R4rb << "require(dyndoc)" => put in TemplateManager.initR dyndocTools.R
+      R4rb << "require(rb4R)"
     end
 
   end
 
   class JLServer
 
- 	# def JLServer.init(mode=:default) #mode=maybe zmq (to investigate) 
+ 	# def JLServer.init(mode=:default) #mode=maybe zmq (to investigate)
 	# 	require 'jl4rb'
 	# 	Julia.init
 	# end
