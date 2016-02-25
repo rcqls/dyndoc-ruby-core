@@ -44,7 +44,7 @@ module Dyndoc
     # Maybe better located inside server.rb
     def TemplateManager.initR
       # For windows! R now change HOME variable by appending "/Documents" at the end. Ruby does not do that!
-      if RUBY_PLATFORM =~ /mingw/ File.exist? File.join(ENV["HOME"],"R","win-library")
+      if RUBY_PLATFORM =~ /mingw/ and !(File.exist? File.join(ENV["HOME"],"R","win-library"))
         ENV["HOME"] += "/Documents"
       end
 
