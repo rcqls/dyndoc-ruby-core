@@ -15,7 +15,7 @@ module Dyndoc
     :tmpl_path=>{:tex=>"Tex",:odt=>"Odt",:ttm=>"Ttm",:html => "Html"},
     :model_default=>"Model",
     :file => "", #to complete when dyndoc applied to a file
-    :current_doc_path => "" #completed each time a file is parsed in parse_do 
+    :current_doc_path => "" #completed each time a file is parsed in parse_do
   }
 
   require 'logger'
@@ -79,7 +79,7 @@ module Dyndoc
         path=File.read(dyndoc_library_path).strip
         path=path.split(Dyndoc::PATH_SEP).map{|pa| File.expand_path(pa)}.join(Dyndoc::PATH_SEP)
         if !ENV["DYNDOC_LIBRARY_PATH"] or ENV["DYNDOC_LIBRARY_PATH"].empty?
-          ENV["DYNDOC_LIBRARY_PATH"]= path 
+          ENV["DYNDOC_LIBRARY_PATH"]= path
         else
           ENV["DYNDOC_LIBRARY_PATH"] += Dyndoc::PATH_SEP + path
         end
@@ -89,7 +89,7 @@ module Dyndoc
 
   end
 
-  def Dyndoc.setRootDoc(rootDoc,root,before=true)  
+  def Dyndoc.setRootDoc(rootDoc,root,before=true)
     if rootDoc
       if before
         rootDoc2 = "#{root}:"+rootDoc
@@ -97,7 +97,7 @@ module Dyndoc
         rootDoc2 = rootDoc+":#{root}"
       end
     else
-      rootDoc2=root 
+      rootDoc2=root
     end
     #insure unique path and adress of rootDoc is unchanged!
     rootDoc.replace(rootDoc2.split(":").uniq.join(":")) if rootDoc2
@@ -114,7 +114,7 @@ module Dyndoc
     rootDoc=""
     if File.directory?(path=File.join(@@cfg_dir[:etc],Dyndoc.cfg_dyn['etc_path_subdir']))
       Dir[File.join(path,"*")].sort.each do |pa|
-        rootDoc += (rootDoc.empty? ? "" : ":") + File.read(pa).chomp 
+        rootDoc += (rootDoc.empty? ? "" : ":") + File.read(pa).chomp
       end
     end
     Dyndoc.cfg_dyn['root_doc']=rootDoc
@@ -132,30 +132,30 @@ module Dyndoc
     @@append={}
     tmp=[]
     sys_append=File.join( @@cfg_dir[:etc],"alias")
-    tmp += File.readlines(sys_append) if File.exists? sys_append 
+    tmp += File.readlines(sys_append) if File.exists? sys_append
     home_append=File.join(@@cfg_dir[:etc],'alias')
     tmp += File.readlines(home_append)  if File.exists? home_append
     file_append=File.join(@@cfg_dir[:file],'.dyn_alias')
     tmp += File.readlines(file_append)  if File.exists? file_append
-    tmp.map{|l| 
+    tmp.map{|l|
       if l.include? ">"
         l2=l.strip
         unless l2.empty?
-          l2=l2.split(/[=>,]/).map{|e| e.strip} 
+          l2=l2.split(/[=>,]/).map{|e| e.strip}
           @@append[l2[0]]=l2[-1]
         end
       end
     }
   end
 
-  ## more useable than this !!!   
+  ## more useable than this !!!
   def Dyndoc.absolute_path(filename,pathenv)
 #puts "ici";p filename
     return filename if File.exists? filename
     paths=pathenv##.split(":")
 #puts "absolute_path:filname";p filename
     name=nil
-    paths.each{|e| 
+    paths.each{|e|
       f=File.expand_path(File.join([e,filename]))
 #p f
       if (File.exists? f)
@@ -198,10 +198,10 @@ module Dyndoc
 
   def Dyndoc.ordered_pathenv(pathenv)
     path_ary=[]
-    pathenv.split(PATH_SEP).each{|e| 
-      if e=~/(?:\((\-?\d*)\))(.*)/ 
+    pathenv.split(PATH_SEP).each{|e|
+      if e=~/(?:\((\-?\d*)\))(.*)/
         path_ary.insert($1.to_i-1,$2.strip)
-      else 
+      else
         path_ary << e.strip
       end
     }
@@ -220,20 +220,20 @@ module Dyndoc
     pathenv += PATH_SEP + rootDoc  if rootDoc and !rootDoc.empty?
     pathenv += PATH_SEP + Dyndoc.cfg_dyn[:root_doc]  unless Dyndoc.cfg_dyn[:root_doc].empty?
     pathenv += PATH_SEP + ENV["TEXINPUTS"].split(RUBY_PLATFORM =~ /mingw/ ? ";" : ":" ).join(";") if ENV["TEXINPUTS"] and @@mode==:tex
-    
+
     ##Dyndoc.warn "pathenv",pathenv
     return Dyndoc.ordered_pathenv(pathenv)
   end
-  
+
   # if exts is a Symbol then it is the new @@mode!
   def Dyndoc.doc_filename(filename,exts=@@tmplExt[@@mode],warn=true,pathenv=".",rootDoc=nil)
     rootDoc=Dyndoc.cfg_dyn[:root_doc] unless Dyndoc.cfg_dyn[:root_doc].empty?
     filename=filename.strip
     if exts.is_a? Symbol
-      @@mode=exts 
+      @@mode=exts
       exts=@@tmplExt[@@mode]
     end
-     
+
     pathenv = Dyndoc.get_pathenv(rootDoc)
     exts = exts + @@tmplExt.values.flatten  #if @cfg[:output]
     exts << "" #with extension
@@ -242,7 +242,7 @@ module Dyndoc
     names=exts.map{|ext| Dyndoc.absolute_path(filename+ext,pathenv)}.compact
     name=(names.length>0 ? names[0] : nil)
     if warn
-      print "WARNING: #{filename}  with extension #{exts.join(',')} not reachable in:\n #{pathenv.join(':')}\n" unless name
+      print "WARNING: #{filename}  with extension #{exts.join(',')} not reachable in:\n #{pathenv.join(Dyndoc::PATH_SEP)}\n" unless name
       #puts "tmpl:";p name
     end
     return name
@@ -259,7 +259,7 @@ module Dyndoc
     case File.extname(filename)
     when ".odt"
       odt=Dyndoc::Odt.new(filename)
-      aux[:doc].inputs={} unless aux[:doc].inputs 
+      aux[:doc].inputs={} unless aux[:doc].inputs
       aux[:doc].inputs[filename]= odt unless aux[:doc].inputs[filename]
       odt.body_from_content
     else
@@ -280,7 +280,7 @@ module Dyndoc
     if File.exists? name
       return name
     elsif name.scan(/([^\.]*)(#{@@tmplExt.map{|e| e[1]}.flatten.uniq.map{|e| Regexp.escape(e)}.join("|")})+$/)[0]
-      pathenv=Dyndoc.get_pathenv(Dyndoc.cfg_dyn[:root_doc],false) #RMK: do not know if false really matters here (introduced just in case in get_pathenv!!!) 
+      pathenv=Dyndoc.get_pathenv(Dyndoc.cfg_dyn[:root_doc],false) #RMK: do not know if false really matters here (introduced just in case in get_pathenv!!!)
 #puts "pathenv";p pathenv; p Dyndoc.absolute_path(name,pathenv)
       return Dyndoc.absolute_path(name,pathenv)
     else
