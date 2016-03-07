@@ -49,7 +49,7 @@ module Dyndoc
       if RUBY_PLATFORM =~ /mingw/ and !(File.exist? File.join(ENV["HOME"],"R","win-library")) and (File.exist? File.join(ENV["HOME"],"Documents","R","win-library"))
         ##ENV["HOME"] += "/Documents"
         if ENV["R_LIBS_USER"]
-          puts "Warning (dyndoc): R_LIBS_USER already in use by dyndoc. Fix that by calling inside dyndoc .libPaths(\"#{ENV['R_LIBS_USER']}\")")
+          puts "Warning (dyndoc): R_LIBS_USER already in use by dyndoc. Fix that by calling inside dyndoc .libPaths(\"#{ENV['R_LIBS_USER']}\")"
         end
         ENV["R_LIBS_USER"]=Dir[File.join(ENV["HOME"],"Documents","R","win-library","*")][-1]
         ## RMK: if R_LIBS_USER already exist then the second solution
