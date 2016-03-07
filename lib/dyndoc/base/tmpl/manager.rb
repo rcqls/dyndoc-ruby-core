@@ -43,9 +43,16 @@ module Dyndoc
 
     # Maybe better located inside server.rb
     def TemplateManager.initR
+      ## THIS IS JUST IMPOSSIBLE SINCE RUBY USES HOME TO EXPAND PATH
+      ## NEEDS TO FIND AN ALTERNATIVE SOLUTION: R_LIBS_USER
       # For windows! R now change HOME variable by appending "/Documents" at the end. Ruby does not do that!
-      if RUBY_PLATFORM =~ /mingw/ and !(File.exist? File.join(ENV["HOME"],"R","win-library"))
-        ENV["HOME"] += "/Documents"
+      if RUBY_PLATFORM =~ /mingw/ and !(File.exist? File.join(ENV["HOME"],"R","win-library")) and (File.exist? File.join(ENV["HOME"],"Documents","R","win-library"))
+        ##ENV["HOME"] += "/Documents"
+        if ENV["R_LIBS_USER"]
+          puts "Warning (dyndoc): R_LIBS_USER already in use by dyndoc. Fix that by calling inside dyndoc .libPaths(\"#{ENV['R_LIBS_USER']}\")")
+        end
+        ENV["R_LIBS_USER"]=Dir[File.join(ENV["HOME"],"Documents","R","win-library","*")][-1]
+        ## RMK: if R_LIBS_USER already exist then the second solution
       end
 
       first=require "R4rb" #save if it the first initialization!
