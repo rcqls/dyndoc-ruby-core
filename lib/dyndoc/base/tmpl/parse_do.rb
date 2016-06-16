@@ -1201,7 +1201,7 @@ p call
             i,*b2=next_block(blck,i)
             codename=parse(b2,filter).strip
             code[codename]=[:blck]
-          when :do,:<,:out,:>,:"r<",:"R<",:"rb<",:"r>",:"R>",:"rb>",:nl,:"\n",:>>,:"?",:tag,:"??",:"=",:"+",:<<,:"%",:"html>",:"tex>",:"txtl>",:"md>",:"adoc>" #NO :yield because of infinite loops
+          when :do,:<,:out,:>,:"r<",:"R<",:"rb<",:"r>",:"R>",:"R>>",:"rb>",:nl,:"\n",:>>,:"?",:tag,:"??",:"=",:"+",:<<,:"%",:"html>",:"tex>",:"txtl>",:"md>",:"adoc>" #NO :yield because of infinite loops
             code[codename] << blck[i]
             i,*b2=next_block(blck,i)
             code[codename] += b2

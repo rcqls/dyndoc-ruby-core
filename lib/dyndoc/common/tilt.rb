@@ -1,40 +1,67 @@
-require 'tilt' #this allows the use of any other template 
+require 'tilt' #this allows the use of any other template
 require 'tilt/template' #for creating the dyndoc one
 require 'redcloth'
 
 
 module Tilt
-  
+
   class DynDocTemplate < Template
 
     def DynDocTemplate.init(libs=nil)
-      unless $curDyn
-        require 'dyndoc/V3/init/dyn'
-        CqlsDoc.init_dyn
-        CqlsDoc.set_curDyn(:V3)
-        $curDyn.init(false)
-        $curDyn.tmpl_doc.init_doc
-        if libs
-          @@libs=libs
-          $curDyn.tmpl_doc.require_dyndoc_libs(libs)
-        end 
-        "options(bitmapType='cairo')".to_R
-        $curDyn.tmpl.format_output="html"
-        $curDyn.tmpl.dyndoc_mode=:web # No command line
-        #p [$curDyn.tmpl.dyndocMode,$curDyn.tmpl.fmtOutput]
+      # unless $curDyn
+      #   require 'dyndoc/V3/init/dyn'
+      #   CqlsDoc.init_dyn
+      #   CqlsDoc.set_curDyn(:V3)
+      #   $curDyn.init(false)
+      #   $curDyn.tmpl_doc.init_doc
+      #   if libs
+      #     @@libs=libs
+      #     $curDyn.tmpl_doc.require_dyndoc_libs(libs)
+      #   end
+      #   "options(bitmapType='cairo')".to_R
+      #   $curDyn.tmpl.format_output="html"
+      #   $curDyn.tmpl.dyndoc_mode=:web # No command line
+      #   #p [$curDyn.tmpl.dyndocMode,$curDyn.tmpl.fmtOutput]
+      # end
+
+      ## same as interactive-server
+      @tmpl_mngr=nil
+      @tmpl_filename=nil
+      init_dyndoc
+    end
+
+    def init_dyndoc
+      unless @tmpl_mngr
+        Dyndoc.cfg_dyn['dyndoc_session']=:interactive
+        @tmpl_mngr = Dyndoc::Ruby::TemplateManager.new({})
+        ##is it really well-suited for interactive mode???
+      end
+      reinit_dyndoc
+    end
+
+    def reinit_dyndoc
+      if @tmpl_mngr
+        @tmpl_mngr.init_doc({:format_output=> "html"})
+        @tmpl_mngr.require_dyndoc_libs("DyndocWebTools")
+        puts "InteractiveServer (re)initialized!\n"
+        @tmpl_mngr.as_default_tmpl_mngr! #=> Dyndoc.tmpl_mngr activated!
       end
     end
 
-    # def init_dyndoc
-    #   unless @tmpl_mngr
-    #     Dyndoc.cfg_dyn['dyndoc_session']=:interactive
-    #     @tmpl_mngr = Dyndoc::Ruby::TemplateManager.new({})
-    #     ##is it really well-suited for interactive mode???
-    #     @tmpl_mngr.init_doc({:format_output=> "html"})
-    #     puts "InteractiveServer initialized!\n"
-    #   end
-    # end
-    
+    def process_dyndoc(content)
+      ##p [:process_dyndoc_content,content]
+      @content=@tmpl_mngr.parse(content)
+      ##Dyndoc.warn :content, @content
+      @tmpl_mngr.filterGlobal.envir["body.content"]=@content
+      if @tmpl_filename
+        @tmpl_mngr.filterGlobal.envir["_FILENAME_CURRENT_"]=@tmpl_filename.dup
+        @tmpl_mngr.filterGlobal.envir["_FILENAME_"]=@tmpl_filename.dup #register name of template!!!
+        @tmpl_mngr.filterGlobal.envir["_FILENAME_ORIG_"]=@tmpl_filename.dup #register name of template!!!
+        @tmpl_mngr.filterGlobal.envir["_PWD_"]=File.dirname(@tmpl_filename)
+      end
+      return @content
+    end
+
     def self.engine_initialized?
       defined? ::DynDoc
     end
@@ -47,11 +74,11 @@ module Tilt
 
 
     def prepare_output
-		  return $curDyn.tmpl_doc.make_content(data)
+		  return process_dyndoc(data)
     end
- 
+
     def evaluate(scope, locals, &block)
- 
+
 #=begin
       #puts "locals";p locals
       ## first!!!!
@@ -104,9 +131,9 @@ module Tilt
             % Macro for http reference inclusion, per hypertex.
            \def\href#1#2{\special{html:<a href="#1">}#2\special{html:</a>}}
            \def\urlend#1{#1\endgroup}
-           \def\url{\begingroup \tt 
+           \def\url{\begingroup \tt
             \catcode`\_=13 % Don't know why this works.
-            \catcode`\~=11 \catcode`\#=11 \catcode`\^=11 
+            \catcode`\~=11 \catcode`\#=11 \catcode`\^=11
             \catcode`\$=11 \catcode`\&=11 \catcode`\%=11
           \urlend}% \url for plain \TeX.
           PREAMBLE
