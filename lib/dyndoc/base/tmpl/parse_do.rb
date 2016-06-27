@@ -959,11 +959,12 @@ p [vars,b2]
       Utils.escape_delim!(code)
 #puts "do_eval2: code";p code
       mode=[]
-      while code=~/^(test|pre|last|raw)\|.*/
+      while code=~/^(atom|test|pre|last|raw)\|.*/
         code = code[($1.length+1)..-1]
         mode << $1.to_sym
       end
       code=Dyndoc::Utils.dyndoc_raw_text(code) if mode.include? :test
+      code=Dyndoc::Utils.unprotect_dyn_block_for_atom(code) if mode.include? :atom
       #puts "do_eval:mode";p mode;p code
       #PUT THE FOLLOWING IN THE DOCUMENTATION:
       #puts "WARNING: {#dyn] accept :last and :raw in this order!" unless (mode - [:last,:raw]).empty?

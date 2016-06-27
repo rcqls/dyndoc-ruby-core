@@ -58,6 +58,7 @@ $VERBOSE = nil
 uv_res=Uv.parse(uv_code, "xhtml", syntax , #{lines}, render,false)
 $VERBOSE = warn_level
 ## TODO: trouble with interactive????
+uv_res = Dyndoc::Utils.protect_dyn_block_for_atom(uv_res) if Dyndoc::Ruby::TemplateManager.interactive
 uv_res = Dyndoc::AS_IS+uv_res+Dyndoc::AS_IS unless Dyndoc::Ruby::TemplateManager.interactive
 #Dyndoc.warn "titi"
 #Dyndoc.warn "uv_res:", uv_res
