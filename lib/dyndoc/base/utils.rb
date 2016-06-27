@@ -339,11 +339,11 @@ module Dyndoc
 
     ## Added for atom
     def Utils.protect_dyn_block_for_atom(txt)
-      txt.gsub("#","__DIESE_ATOM__").gsub(":","__SEMICOLON_ATOM__") # => since dyndoc command uses "#" this is very easy way to protect evaluation
+      txt.gsub("#","<_DIESE_ATOM_>").gsub(":","<_SEMICOLON_ATOM_>").gsub("|","<_BAR_ATOM_>") # => since dyndoc command uses "#" this is very easy way to protect evaluation
     end
 
     def Utils.unprotect_dyn_block_for_atom(txt)
-      txt.gsub("__DIESE_ATOM__","#").gsub("__SEMICOLON_ATOM__",":") # => since dyndoc command uses "#" this is very easy way to protect evaluation
+      txt.gsub("<_DIESE_ATOM_>","#").gsub("<_SEMICOLON_ATOM_>",":").gsub("<_BAR_ATOM_>","|") # => since dyndoc command uses "#" this is very easy way to protect evaluation
     end
 
     def Utils.parse_dyn_block_for_interactive!(txt)
