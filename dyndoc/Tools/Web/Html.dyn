@@ -47,13 +47,18 @@ require 'dyndoc/common/uv'
 syntax=File.join(Uv.syntax_path,syntax+".syntax")
 #end
 uv_code = (#{=file}.empty? ? nil : File.read(#{=file}))
-uv_code=((!(#{=code}.empty?) or #{=key}.empty?) ? #{=code} : CqlsDoc::Utils.dyndoc_raw_text(#{=key})).strip unless uv_code
+uv_code=((!(#{=code}.empty?) or #{=key}.empty?) ? #{=code} : Dyndoc::Utils.dyndoc_raw_text(#{=key})).strip unless uv_code
+uv_code = Dyndoc::Utils.unprotect_dyn_block_for_atom(uv_code) if Dyndoc::Ruby::TemplateManager.interactive
 #Dyndoc.warn "CODE",uv_code,#{lines}
 #Uv.parse(uv_code, "xhtml", syntax , #{lines}, render,true)
 #OLD: uv_res=CqlsDoc::AS_IS+Uv.parse(uv_code, "xhtml", #{=syntax}.downcase, true, #{=render})+CqlsDoc::AS_IS
 #Dyndoc.warn "titi"
+warn_level = $VERBOSE
+$VERBOSE = nil
 uv_res=Uv.parse(uv_code, "xhtml", syntax , #{lines}, render,false)
-uv_res = CqlsDoc::AS_IS+uv_res+CqlsDoc::AS_IS unless CqlsDoc::V3::TemplateManager.interactive
+$VERBOSE = warn_level
+## TODO: trouble with interactive????
+uv_res = Dyndoc::AS_IS+uv_res+Dyndoc::AS_IS unless Dyndoc::Ruby::TemplateManager.interactive
 #Dyndoc.warn "titi"
 #Dyndoc.warn "uv_res:", uv_res
 [#>][:{uv_res}<\n>]
@@ -62,7 +67,7 @@ uv_res = CqlsDoc::AS_IS+uv_res+CqlsDoc::AS_IS unless CqlsDoc::V3::TemplateManage
 [#def}
 
 {#def]rverbUV[#,]code[][#,]render[amy][#,]lines[false]
-[#?]CqlsDoc::V3::TemplateManager.interactive
+[#?]Dyndoc::Ruby::TemplateManager.interactive
 [#>]{#rverb]#{code}[#mode]raw[#rverb}
 [#?]else
 [#>]{#uv]{#rverb]#{code}[#mode]raw[#rverb}
@@ -88,11 +93,11 @@ function update_#{.ObjectName}_Switcher(choice) {
     var choices="#{.choices}".split(",");
         for(i in  choices) {
         //alert("lang="+langs[l]);
-                if(choices[i]==choice) { 
+                if(choices[i]==choice) {
                         $("[choice="+choices[i]+"]").show();
                 } else {
                         $("[choice="+choices[i]+"]").hide();
-                }       
+                }
         }
 };
 </script>
@@ -112,7 +117,7 @@ function update_#{.ObjectName}_Switcher(choice) {
 lang=#{=.lang}.split(",")
 lang2=lang.reverse
 [0,1].each {|i| #
-    {#>]<div lang=":{lang[i]}"><img alt=":{lang2[i]}" src="#{document.rsrcSrvUrl?}/images/common/:{lang2[i]}.gif" langSwitcher=":{lang2[i]}"/></div>[#>} 
+    {#>]<div lang=":{lang[i]}"><img alt=":{lang2[i]}" src="#{document.rsrcSrvUrl?}/images/common/:{lang2[i]}.gif" langSwitcher=":{lang2[i]}"/></div>[#>}
 }
 [#meth}
 
@@ -126,11 +131,11 @@ function updateLanguage(lang) {
     var langs="#{.lang}".split(",");
         for(l in  langs) {
         //alert("lang="+langs[l]);
-                if(langs[l]==lang) { 
+                if(langs[l]==lang) {
                         $("[lang="+langs[l]+"]").show();
                 } else {
                         $("[lang="+langs[l]+"]").hide();
-                }       
+                }
         }
     $.cookie("langSwitcher",lang)
 };
@@ -157,12 +162,12 @@ $(document).ready(function() {
 [#def}
 
 {#new]JQuerySwitchable[#of]JsLoader[#code]
-function showSwitched(type,key) { 
+function showSwitched(type,key) {
     $('.switchable[id="'+type+'"][switch="'+key+'"]').show();
     $('.switchable[id="'+type+'"][switch!="'+key+'"]').hide();
 };
 
-function activateSwitchedLink(type,key) { 
+function activateSwitchedLink(type,key) {
     $('a[id="'+type+'"][switch="'+key+'"]').toggleClass("active",true);
     $('a[id="'+type+'"][switch!="'+key+'"]').toggleClass("active",false);
 
@@ -201,7 +206,7 @@ function selectSwitchedPage(type,key) {
     end
 end
 [#rb<]Dyndoc.warn "AAAA: mainMenu" "mainMenu",#{=mainMenu};Dyndoc.warn "ZZZZZ: mainPages",#{=mainPages}
-[#=]::document.mainMenu[<div id="mainMenu"> 
+[#=]::document.mainMenu[<div id="mainMenu">
 <span class="lastMenuItem"></span><\n>#{mainMenu}<\n></div>]
 [#=]::document.mainPages[<div id="mainPages"><\n>#{mainPages}<\n></div>]
 [#}
@@ -215,7 +220,7 @@ end
 [#blck]:post
 [#=]subMenu[]
 [#=]subPages[]
-[#rb<]subMenu=@vars[blckName[-1]][:subMenu] 
+[#rb<]subMenu=@vars[blckName[-1]][:subMenu]
     Dyndoc.warn "blckName[-1]", @vars[blckName[-1]]
     subMenu.each_with_index do |menu,i| #
     {#<][#+]subMenu[<li class="here"><a id="subPage" switch=":{menu[:link]}" {#if]!menu[:subpage][#>]href=":{menu[:link]}"[#}{#if]i==@vars[blckName[-1]][:active][#>] class="select"[#if} {#if]menu[:subpage][#>]onclick='selectSwitchedPage("subPage",":{menu[:link]}");'[#}>:{menu[:title]}</a></li> <\n>][#<}

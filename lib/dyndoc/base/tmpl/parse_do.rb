@@ -593,7 +593,8 @@ p [vars,b2]
                   if @fmtContainer[1] and @fmtContainer[1]==@fmtContainer[0] #no need to convert!
                     tex << val
                   else #convert
-                    ## Dyndoc.warn "txtl formats",[@fmtContainer[0],@fmtOutput,@fmtContainer[1]]
+                    ##Dyndoc.warn "txtl formats",[@fmtContainer[0],@fmtOutput,@fmtContainer[1]]
+                    ##Dyndoc.warn :val, val
                     tex << Dyndoc::Converter.convert(val,@fmtContainer[0],@fmtOutput,@fmtContainer[1]) #last parameter: true means to protect
                   end
                   @curFmtContainer=@fmtContainer[0] unless @curFmtContainer

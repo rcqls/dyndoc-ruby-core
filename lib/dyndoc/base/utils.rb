@@ -61,12 +61,12 @@ module Dyndoc
     def Utils.escape!(str,chars_set)
       chars_set.each{|chars| str.gsub!(/#{Regexp.escape(chars[0])}/,chars[1]) }
     end
-    
+
     def Utils.escape_delim!(str,mode=:last)
       chars_set=(mode==:first ? CHARS_SET_FIRST : CHARS_SET_LAST )
       chars_set.each{|chars| str.gsub!(/#{Regexp.escape(chars[0])}/,chars[1]) }
       return str
-    end  
+    end
 
     def Utils.end_line(key,code)
       while key[-1,1]=="\\"
@@ -97,7 +97,7 @@ module Dyndoc
 #puts "unprotect blocktext";p str
       str.gsub(seq,"")
     end
-    
+
     def Utils.format_blocktext(str)
       str.gsub(/\n[ \t\r\f]*\|/,"\n").gsub(/\|\n/,"").gsub("<\\n>","\n").gsub("<\\t>","\t")
     end
@@ -218,11 +218,11 @@ module Dyndoc
           #puts "parse_raw_text:key added";p key
           code << key if type==">"
           if tmplMngr
-            ## puts inside global envir! 
+            ## puts inside global envir!
             envir=tmplMngr.filterGlobal.envir
             envir[lang+"."+name+".name"]=key
             envir[lang+"."+name+".code"]=@@raw_text[-1]
-            ## "content" would be the name of the result after evaluation and saved in <dyn_basename_file>.dyn_out/raw_code.dyn 
+            ## "content" would be the name of the result after evaluation and saved in <dyn_basename_file>.dyn_out/raw_code.dyn
           end
           @@raw_var_ls << lang+"."+name #
           txt2.shift #last close tag!
@@ -235,14 +235,14 @@ module Dyndoc
       ##OLD: @@raw_key_index=@@raw_key.map{|key| key=~/\_\_(.*)\|(.*)/ ? $1 : nil}.compact
       ##puts "code";p code
       txt.replace(code)
-      
+
     end
 
     def Utils.dyndoc_raw_var_ls
       @@raw_var_ls
     end
 
-    def Utils.dyndoc_raw_var_eval(var,tmplMngr=nil) #var differs from key since it is saved in filter! 
+    def Utils.dyndoc_raw_var_eval(var,tmplMngr=nil) #var differs from key since it is saved in filter!
       return "" unless tmplMngr
       #p var
       return ((@@raw_var_ls.include? var) ? tmplMngr.parse(tmplMngr.filterGlobal.envir[var+".code"]) : "" )
@@ -331,7 +331,7 @@ module Dyndoc
     def Utils.saved_content_get(var,tmplMngr=nil,force=nil)
       return unless tmplMngr
       if force
-        return (Utils.saved_content_to_be_recreated(tmplMngr).include? var) ? nil : tmplMngr.filterGlobal.envir[var]  
+        return (Utils.saved_content_to_be_recreated(tmplMngr).include? var) ? nil : tmplMngr.filterGlobal.envir[var]
       else
         return tmplMngr.filterGlobal.envir[var]
       end
@@ -339,7 +339,11 @@ module Dyndoc
 
     ## Added for atom
     def Utils.protect_dyn_block_for_atom(txt)
-      txt.gsub("#","__DIESE_ATOM__") # => since dyndoc command uses "#" this is very easy way to protect evaluation 
+      txt.gsub("#","__DIESE_ATOM__") # => since dyndoc command uses "#" this is very easy way to protect evaluation
+    end
+
+    def Utils.unprotect_dyn_block_for_atom(txt)
+      txt.gsub("__DIESE_ATOM__","#") # => since dyndoc command uses "#" this is very easy way to protect evaluation
     end
 
     def Utils.parse_dyn_block_for_interactive!(txt)
@@ -353,13 +357,13 @@ module Dyndoc
         if txt2[0]=="{#dyn>]" and txt2[1..-1].include? "[#dyn>}"
           start,tmp,stop=txt2.shift(3)
           ## protect the dyndoc code to delay the evaluation after unprotection (in javascript)
-          code << Utils.protect_dyn_block_for_atom(tmp.inspect) 
+          code << Utils.protect_dyn_block_for_atom(tmp.inspect)
         else
           code << txt2.shift
         end
       end
       code << txt2.join("") #the remaining code
-      #Dyndoc.warn "atom",code 
+      #Dyndoc.warn "atom",code
       txt.replace(code)
     end
 
