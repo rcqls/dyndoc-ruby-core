@@ -2,27 +2,30 @@
 
 module Ruby
 
-	librb=dlopen("libruby") 
+	if "JULIA_RUBYLIB_PATH" in keys(ENV)
+		push!(Libdl.DL_LOAD_PATH, ENV["JULIA_RUBYLIB_PATH"])
+	end
+	librb=Libdl.dlopen("libruby")
 
 	export start,stop,run,alive
 
 	global ruby_alive=false
 
 	function start()
-		ccall(dlsym(librb,:ruby_init),Void,())
-		ccall(dlsym(librb,:ruby_init_loadpath),Void,())
+		ccall(Libdl.dlsym(librb,:ruby_init),Void,())
+		ccall(Libdl.dlsym(librb,:ruby_init_loadpath),Void,())
 		ruby_alive=true
 	end
 
 	function stop()
-		ccall(dlsym(librb,:ruby_finalize),Void,())
+		ccall(Libdl.dlsym(librb,:ruby_finalize),Void,())
 		ruby_alive=false
 	end
 
-	function run(code::String)
+	function run(code::AbstractString)
 		state=1 #not modified then
 		##println(code)
-		res=ccall(dlsym(librb,:rb_eval_string_protect),Ptr{Uint64},(Ptr{Uint8},Ptr{Uint32}),bytestring(code),&state)
+		res=ccall(Libdl.dlsym(librb,:rb_eval_string_protect),Ptr{UInt64},(Ptr{UInt8},Ptr{UInt32}),bytestring(code),&state)
 	 	return nothing
 	end
 
