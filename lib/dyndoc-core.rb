@@ -51,6 +51,11 @@ Settings.finally do |c|
 	c['cfg_dyn.langs'].map!{|e| e.to_sym}
 end
 
+# The settings in this file will be merged with the above
+if File.exists? (dyndoc_yml=File.join(ENV["HOME"],".dyndoc.yml"))
+	Settings.read dyndoc_yml
+end
+
 Settings.resolve!
 require 'dyndoc/init/config'
 Dyndoc.init_dyndoc_library_path
