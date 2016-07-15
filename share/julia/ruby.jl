@@ -2,10 +2,7 @@
 
 module Ruby
 
-	if "JULIA_RUBYLIB_PATH" in keys(ENV)
-		push!(Libdl.DL_LOAD_PATH, ENV["JULIA_RUBYLIB_PATH"])
-	end
-	librb=Libdl.dlopen("libruby")
+	librb=Libdl.dlopen(("JULIA_RUBYLIB_PATH" in keys(ENV)) ? ENV["JULIA_RUBYLIB_PATH"] : "libruby")
 
 	export start,stop,run,alive
 
