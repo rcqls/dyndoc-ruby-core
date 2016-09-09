@@ -16,3 +16,5 @@ node_modules/
 *.gem
 
 *.gem
+
+.DS_Store

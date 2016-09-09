@@ -723,7 +723,7 @@ module Dyndoc
       env2=env.clone
       env=Dyndoc.vars[env+".Renvir"] unless RServer.exist?(env)
       unless RServer.exist?(env)
-        puts "Warning! environment #{env2} does not exist!"
+        Dyndoc.warn "Warning! environment #{env2} does not exist!"
         code=codeSaved
         env="Global"
       end
