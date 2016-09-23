@@ -580,7 +580,12 @@ module Dyndoc
         if res.is_a? Array
           res.join(",")
         else
-          "\""+res.to_s+"\""
+          res2=res.to_s
+          if !(res2.include? '"')
+            "\""+res2+"\""
+          else
+            "%Q{"+res2+"}"
+          end
         end
       when "","@","#","##","none","#F"
         if res.is_a? Array

@@ -1793,9 +1793,9 @@ p call
       require "dyndoc/common/uv" if @@interactive
 
       warn_level = $VERBOSE;$VERBOSE = nil
-      tex << (@@interactive ? Uv.parse(res.force_encoding("utf-8"), "xhtml", File.join(Uv.syntax_path,"r.syntax") , false, "solarized",false) : res.force_encoding("utf-8") )
+      tex << (resUV=(@@interactive ? Uv.parse(res.force_encoding("utf-8"), "xhtml", File.join(Uv.syntax_path,"r.syntax") , false, "solarized",false) : res.force_encoding("utf-8") ))
       $VERBOSE = warn_level
-#Dyndoc.warn "rverb:result",res
+#Dyndoc.warn "rverb:result",resUV
       @rEnvir.shift if inR
       filter.outType=nil
     end
