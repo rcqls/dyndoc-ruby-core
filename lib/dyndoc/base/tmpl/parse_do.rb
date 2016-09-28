@@ -11,6 +11,16 @@ module Dyndoc
     @@vars
   end
 
+  @@user_root_doc=nil
+
+  def Dyndoc.user_root_doc=(user_root_doc)
+    @@user_root_doc=user_root_doc
+  end
+
+  def Dyndoc.user_root_doc
+    @@user_root_doc
+  end
+
   module Ruby
 
   class TemplateManager
@@ -1528,31 +1538,33 @@ p call
           when :helpers
             eval_LOAD_HELPERS(res.strip.split("\n"),filter)
 	        when :path
-#puts "document:path";p res
-	          unless res.strip.empty?
-	            paths=res.strip.split("\n").map{|e| e.strip unless e.strip.empty?}.compact
-#p paths
-              @tmpl_cfg[:rootDoc]="" unless @tmpl_cfg[:rootDoc]
-#Dyndoc.warn "rootDoc",@tmpl_cfg[:rootDoc]
-	            rootpaths=@tmpl_cfg[:rootDoc].split(Dyndoc::PATH_SEP)
-#Dyndoc.warn "rootpaths",rootpaths
-	            newpaths=[]
-	            paths.each{|e|
-		            #if File.exist?(e)
-		            #  newpaths << e
-		            #els
-                if e[0,1]=="-" and File.exist?(e[1..-1])
-		              rootpaths.delete(e[1..-1])
-		            elsif (ind=e.to_i)<0
-		              rootpaths.delete_at(-ind-1)
-                else
-                  newpaths << e
-		            end
-	            }
-	            rootpaths=newpaths+rootpaths
-#p rootpaths
-	            @tmpl_cfg[:rootDoc]=rootpaths.join(Dyndoc::PATH_SEP)
-	          end
+#Dyndoc.warn "document:path",res
+            Dyndoc.user_root_doc=res.strip.split("\n").map{|e| e.strip unless e.strip.empty?}.compact.join(Dyndoc::PATH_SEP) unless res.strip.empty?
+
+#### OBSOLETE from 27/09/2016!!!
+### TODO: - operation possibly in init/config.rb
+#           unless res.strip.empty?
+# #p paths
+# #Dyndoc.warn "root_doc",@tmpl_cfg[:root_doc]
+# 	            rootpaths=@tmpl_cfg[:root_doc].split(Dyndoc::PATH_SEP)
+# #Dyndoc.warn "rootpaths",rootpaths
+# 	            newpaths=[]
+# 	            paths.each{|e|
+# 		            #if File.exist?(e)
+# 		            #  newpaths << e
+# 		            #els
+#                 if e[0,1]=="-" and File.exist?(e[1..-1])
+# 		              rootpaths.delete(e[1..-1])
+# 		            elsif (ind=e.to_i)<0
+# 		              rootpaths.delete_at(-ind-1)
+#                 else
+#                   newpaths << e
+# 		            end
+# 	            }
+# 	            rootpaths=newpaths+rootpaths
+# #Dyndoc.warn :last, rootpaths
+# 	            @tmpl_cfg[:root_doc]=rootpaths.join(Dyndoc::PATH_SEP)
+#	          end
 	        when :first
 	          Dyndoc.dyn_block[:first]=[] unless Dyndoc.dyn_block[:first]
 	          Dyndoc.dyn_block[:first]+=b2

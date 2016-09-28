@@ -214,6 +214,7 @@ module Dyndoc
     pathenv =  Dyndoc.init_pathenv
     pathenv += PATH_SEP + File.join(@@dyn_gem_path,"dyndoc") + PATH_SEP + File.join(@@dyn_gem_path,"dyndoc","Std") if File.exists? File.join(@@dyn_gem_path,"dyndoc")
     # high level of priority since provided by user
+    pathenv += PATH_SEP + Dyndoc.user_root_doc  if Dyndoc.user_root_doc
     pathenv += PATH_SEP + ENV["DYNDOC_LIBRARY_PATH"] if ENV["DYNDOC_LIBRARY_PATH"] and !ENV["DYNDOC_LIBRARY_PATH"].empty?
     pathenv += PATH_SEP + File.join(Dyndoc.cfg_dir[:root_path],"library") if File.exists? File.join(@@cfg_dir[:root_path],"library")
     pathenv += PATH_SEP + @@cfg_dir[:current_doc_path] if with_currentRoot and !@@cfg_dir[:current_doc_path].empty?
