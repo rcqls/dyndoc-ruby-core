@@ -6,4 +6,10 @@ module Dyndoc
 		#puts "dyndoc_home: "+ dyndoc_home
 		dyndoc_home
 	end
+
+	def Dyndoc.home=(value)
+		File.open(File.join(ENV['HOME'],'.dyndoc_home'),"w") do |f|
+			f << value.strip
+		end
+	end
 end
