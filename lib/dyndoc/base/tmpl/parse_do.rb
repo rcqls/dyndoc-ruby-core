@@ -503,7 +503,7 @@ p [vars,b2]
                 filter.outType=nil
         	    end
           #equivalent of :var but DO NOT USE :var
-      	  when :"=",:"tex=",:"md=",:"adoc=",:"html=",:"rb=",:"R=",:"jl="
+        when :"=",:"tex=",:"md=",:"adoc=",:"txtl=",:"html=",:"rb=",:"R=",:"jl="
       	    i,*b2=next_block(blck,i)
       	    if cond_tag and cond
       #puts "=:b2";p b2
@@ -517,7 +517,7 @@ p [vars,b2]
       #puts "-:b2"
               parse(b2,filter).strip.split(",").each{|key| @vars.remove(key)}
       	    end
-      	  when :+,:"tex+",:"md+",:"adoc+",:"html+",:"rb+",:"R+",:"jl+"
+      	  when :+,:"tex+",:"md+",:"adoc+",:"txtl+",:"html+",:"rb+",:"R+",:"jl+"
       ##Dyndoc.warn "+:-1:block",[i,blck]
       	    i,*b2=next_block(blck,i)
       ##Dyndoc.warn "+:0:i,b2",[i,b2]
@@ -570,7 +570,7 @@ p [vars,b2]
       #puts "varNew:#{var}";p @vars.extract_raw(var)
       	      end
       	    end
-           when :out,:>,:">!" # :>! is in some sense equivalent of :set
+          when :out,:>,:">!" # :>! is in some sense equivalent of :set
                   i,*b2=next_block(blck,i)
       #puts "block >, cond_tag, cond";p cond_tag ;p cond
       	     if cond_tag and cond and !b2.empty?
