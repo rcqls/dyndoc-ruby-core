@@ -502,7 +502,8 @@ p [vars,b2]
                 parse(b2,filter)
                 filter.outType=nil
         	    end
-      	  when :"=" #equivalent of :var but DO NOT USE :var
+          #equivalent of :var but DO NOT USE :var
+      	  when :"=",:"tex=",:"md=",:"adoc=",:"html=",:"rb=",:"R=",:"jl="
       	    i,*b2=next_block(blck,i)
       	    if cond_tag and cond
       #puts "=:b2";p b2
@@ -516,7 +517,7 @@ p [vars,b2]
       #puts "-:b2"
               parse(b2,filter).strip.split(",").each{|key| @vars.remove(key)}
       	    end
-      	  when :+
+      	  when :+,:"tex+",:"md+",:"adoc+",:"html+",:"rb+",:"R+",:"jl+"
       ##Dyndoc.warn "+:-1:block",[i,blck]
       	    i,*b2=next_block(blck,i)
       ##Dyndoc.warn "+:0:i,b2",[i,b2]

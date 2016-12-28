@@ -275,7 +275,7 @@ module Dyndoc
       init_tag(@tag_type) if [:dtag].include? @tag_type
     end
 
-    @@tagblck_set=[:<<,:<,:do,:>>,:>,:">!",:out,:nl,:"\\n",:"r<",:"R<",:"rb<",:"m<",:"M<",:"jl<",:"r>>",:"R>>",:rverb,:"rb>>",:rbverb,:"jl>>",:jlverb,:rout,:"r>",:"R>",:"rb>",:"m>",:"M>",:"jl>",:"_<",:"_>",:"__>",:"html>",:"tex>",:"txtl>",:"ttm>",:"md>",:"adoc>",:tag,:"??",:"?",:yield,:"=",:"-",:+,:"%"]
+    @@tagblck_set=[:<<,:<,:do,:>>,:>,:">!",:out,:nl,:"\\n",:"r<",:"R<",:"rb<",:"m<",:"M<",:"jl<",:"r>>",:"R>>",:rverb,:"rb>>",:rbverb,:"jl>>",:jlverb,:rout,:"r>",:"R>",:"rb>",:"m>",:"M>",:"jl>",:"_<",:"_>",:"__>",:"html>",:"tex>",:"txtl>",:"ttm>",:"md>",:"adoc>",:tag,:"??",:"?",:yield,:"=",:"-",:+,:"%",:"tex=",:"tex+",:"md=",:"md+",:"adoc=",:"adoc+",:"html=",:"html+",:"rb=",:"rb+",:"R=",:"R+",:"jl=",:"jl+"]
     #Rmk: when a symbol is included in another one, you have to place it before! Ex: :>> before :> and also :<< before :<
 
     @@tagblck_dyndoc_set = [:main,:content,:before,:after,:require,:helpers,:preamble,:postamble,:style,:title,:path,:first,:last,:default,:cfg]
@@ -512,7 +512,7 @@ module Dyndoc
       	else
       	  @dtag[:named_tag][key][:tag].sub("_TAG_",Regexp.escape( key.to_s ))
       	end
-            else
+      else
       	return Regexp.escape(key.to_s)
       end
     end
