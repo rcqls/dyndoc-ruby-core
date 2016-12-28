@@ -1055,7 +1055,7 @@ p [vars,b2]
           when :binding
             i,*b2=next_block(blck,i)
             rbEnvir=b2[0][1].strip
-          when :do,:<,:out,:>,:"r<",:"rb<",:"r>",:"R>",:"R<",:"r>>",:rverb,:"rb>>",:rbverb,:"jl>>",:jlverb,:"rb>",:"?",:tag,:"??",:yield,:>>,:"=",:"+",:<<,:"txtl>",:"md>",:"adoc>",:"html>",:"tex>",:"_>"
+          when :do,:<,:out,:>,:"r<",:"rb<",:"r>",:"R>",:"R<",:"r>>",:rverb,:"rb>>",:rbverb,:"jl>>",:jlverb,:"rb>",:"?",:tag,:"??",:yield,:>>,:"=",:"+",:<<,:"txtl>",:"md>",:"adoc>",:"ttm>",:"html>",:"tex>",:"_>"
             code = blck[i..-1].unshift(:blck)
           when :","
             i,*b2=next_block(blck,i)
