@@ -1232,6 +1232,8 @@ p call
 #p var
         end
       end while i<blck.length-1
+      ## IMPORTANT: special treatment for default empty block to avoid infinit loop
+      code["default"] << :out << [:main,""] if code["default"].length==1
       code.each_key{|k| code.delete(k) if code[k].length==1 }
       return [var,code]
     end
