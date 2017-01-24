@@ -65,9 +65,9 @@ module Dyndoc
         Utils.escape!(texblock,CHARS_SET_FIRST)
         Utils.clean_bom_utf8!(texblock)
         Utils.silence_warnings do
-          texblock=@scan.process("{#document][#content]" + texblock + "[#}")
+          texblock=@scan.process("{#document][#content]" + texblock + "[#document}")
         end
-        ## Dyndoc.warn "parsed",texblock
+        ##Dyndoc.warn "parsed",texblock
       end
 #p "texblock";p texblock
       unless filterLoc
