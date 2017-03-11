@@ -2,7 +2,7 @@
 
 module Ruby
 
-	librb=Libdl.dlopen(("JULIA_RUBYLIB_PATH" in keys(ENV)) ? ENV["JULIA_RUBYLIB_PATH"] : "libruby")
+	librb=Libdl.dlopen(("JULIA_RUBYLIB_PATH" in keys(ENV)) ? ENV["JULIA_RUBYLIB_PATH"] : "/usr/lib/libruby")
 
 	export start,stop,run,alive
 
@@ -22,7 +22,7 @@ module Ruby
 	function run(code::AbstractString)
 		state=1 #not modified then
 		##println(code)
-		res=ccall(Libdl.dlsym(librb,:rb_eval_string_protect),Ptr{UInt64},(Ptr{UInt8},Ptr{UInt32}),bytestring(code),&state)
+		res=ccall(Libdl.dlsym(librb,:rb_eval_string_protect),Ptr{UInt64},(Ptr{UInt8},Ptr{UInt32}),string(code),&state)
 	 	return nothing
 	end
 

@@ -95,12 +95,12 @@ function capture_julia(cmd::AbstractString)
 			try
 				result=eval(DyndocSandbox, pcmd0)
 			catch e
-	            #io = IOBuffer()
-	            #print(io, "ERROR: ")
-	            #Base.error_show(io, e)
-	            error = "Error: $(string(e))"
-	            #close(io)
-	        end
+          #io = IOBuffer()
+          #print(io, "ERROR: ")
+          #Base.error_show(io, e)
+          error = "Error: $(string(e))"
+          #close(io)
+      end
 			push!(res,(join(cmd0,"\n"),string(result),get_stdout_iobuffer(),error,get_stderr_iobuffer()))
 			cmd0=AbstractString[]
 		end

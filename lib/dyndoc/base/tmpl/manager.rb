@@ -77,23 +77,30 @@ module Dyndoc
       if RUBY_PLATFORM =~ /mingw/
         require File.join(ENV["DYNDOC_HOME"],"bin","msys2","file_tools.rb") if ENV["DYNDOC_HOME"]
       end
+      Dyndoc.logger.info "R initialized inside dyndoc!"
     end
 
     def TemplateManager.initJulia
+      Dyndoc.logger.info "initJulia: first"
       first=require "jl4rb" #save if it the first initialization!
+      Dyndoc.logger.info "initJulia: require"
       Julia.init
+      Dyndoc.logger.info "initJulia: init"
       # init rb4jl stuff
       # since inside ruby, no need Ruby.start and Ruby.stop like in rb4R.
       # sort of equivalent of JLServer.init_filter (but not yet defined)!
       Julia << "include(\""+File.join(Dyndoc.cfg_dir[:gem_path],"share","julia","ruby.jl")+"\")"
+      Dyndoc.logger.info "initJulia: ruby.jl"
       Julia << "include(\""+File.join(Dyndoc.cfg_dir[:gem_path],"share","julia","dynArray.jl")+"\")"
+      Dyndoc.logger.info "initJulia: dynArray.jl"
       #-| To debug ruby.jl and dynArray.jl => uncomment below and commnt above
       # Julia << "include(\""+File.expand_path("~/Github/dyndoc/share/julia/ruby.jl")+"\")"
       # Julia << "include(\""+File.expand_path("~/Github/dyndoc/share/julia/dynArray.jl")+"\")"
       Julia << "using Dyndoc"
+      Dyndoc.logger.info "initJulia: using Dyndoc"
       Julia << "Ruby.alive(true)"
       #Julia << "global const _dynArray=DynArray()"
-      Dyndoc.warn "Julia initialized inside dyndoc!"
+      Dyndoc.logger.info "Julia initialized inside dyndoc!"
 
     end
 

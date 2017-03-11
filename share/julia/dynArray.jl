@@ -8,14 +8,14 @@ importall Ruby
 export DynVector,DynArray,getindex,setindex!,show,Vector,sync,getkey
 
 # this is just a wrapper of Vector type with update of all connected vectors
-# when change on the vector occurs 
+# when change on the vector occurs
 
 
 type DynVector
 	ary::Vector
-	key::ASCIIString
+	key::String
 
-	DynVector(a::Vector,k::ASCIIString)=(x=new();x.ary=a;x.key=k;x)
+	DynVector(a::Vector,k::String)=(x=new();x.ary=a;x.key=k;x)
 end
 
 function getindex(dynvect::DynVector,i::Integer)
@@ -26,8 +26,8 @@ end
 function setindex!(dynvect::DynVector,value,i::Integer)
 	dynvect.ary[i]=value
 	## println("inisde vect:",Ruby.alive())
-	if Ruby.alive() 
-		Ruby.run("Dyndoc::Vector[\""*dynvect.key*"\"].sync(:jl)") 
+	if Ruby.alive()
+		Ruby.run("Dyndoc::Vector[\""*dynvect.key*"\"].sync(:jl)")
 	end
 end
 
@@ -43,18 +43,18 @@ end
 
 global const Vec=DynArray()
 
-function getindex(dynary::DynArray,key::ASCIIString)
+function getindex(dynary::DynArray,key::String)
 	#println("getindex(" * key * ")->todo")
 	#if Ruby.alive()
 		#println("getindex(" * key * ")->to sync")
-		#Ruby.run("Dyndoc::Vector[\""*key*"\"].sync_to(:jl)") 
+		#Ruby.run("Dyndoc::Vector[\""*key*"\"].sync_to(:jl)")
 	#end
 	#println("getindex(" * key * ")->done")
 	dynary.vars[key]
 end
 getindex(dynary::DynArray,key::Symbol)=getindex(dynary,string(key))
 
-function setindex!(dynary::DynArray,value,key::ASCIIString)
+function setindex!(dynary::DynArray,value,key::String)
 	#println("key:" * key)
 	#println(keys(dynary.vars))
 	if(haskey(dynary.vars,key))
@@ -65,7 +65,7 @@ function setindex!(dynary::DynArray,value,key::ASCIIString)
 	end
 
 	## println("inside array:",Ruby.alive())
-	
+
 	if Ruby.alive()
 		Ruby.run("Dyndoc::Vector[\""*key*"\"].sync(:jl)")
 	end
@@ -73,13 +73,13 @@ end
 setindex!(dynary::DynArray,value,key::Symbol)=setindex!(dynary,value,string(key))
 
 
-sync(dynary::DynArray,key::ASCIIString)= if Ruby.alive() Ruby.run("Dyndoc::Vector[\""*key*"\"].sync(:jl)") end
+sync(dynary::DynArray,key::String)= if Ruby.alive() Ruby.run("Dyndoc::Vector[\""*key*"\"].sync(:jl)") end
 
 show(io::IO,dynary::DynArray)=show(io,dynary.vars)
 
 # NO MORE KEY WITH THE FORM "<name>@<ruby id object>"
 # function getkey(dynary::DynArray,k::Symbol)
-# 	for k2 in keys(dynary.vars)  
+# 	for k2 in keys(dynary.vars)
 # 	 	if split(k2,"@")[1] == string(k)
 # 	 		return k2
 # 	 	end
@@ -90,4 +90,3 @@ show(io::IO,dynary::DynArray)=show(io,dynary.vars)
 # setindex!(dynary::DynArray,value,key::Symbol)=setindex!(dynary,value,getkey(dynary,key))
 
 end
-

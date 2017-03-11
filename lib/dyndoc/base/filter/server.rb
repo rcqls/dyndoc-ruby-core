@@ -818,7 +818,7 @@ module Dyndoc
 		## Dyndoc.warn "JLServer.inputsAndOutputs",res
 		res.map!{|input,output,output2,error,error2|
 			{:input=>input,:output=>output,:output2=>output2,:error=>error,:error2=>error2}
-		} if hash
+		} if res and hash
 		res
 	end
 

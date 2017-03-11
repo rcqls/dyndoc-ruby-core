@@ -19,7 +19,7 @@ module Dyndoc
   }
 
   require 'logger'
-  @@dyn_logger = Logger.new @@cfg_dir[:log_file], 7, 1048576
+  @@dyn_logger = nil
 
   def Dyndoc.cfg_dir
     @@cfg_dir
@@ -29,8 +29,16 @@ module Dyndoc
     Settings[:cfg_dyn]
   end
 
+  def Dyndoc.add_logger
+    @@dyn_logger = Logger.new(@@cfg_dir[:log_file], 7, 1048576)
+  end
+
   def Dyndoc.logger
     @@dyn_logger
+  end
+
+  def Dyndoc.logger_info(txt)
+    @@dyn_logger.info(txt)
   end
 
   @@dyn_block={}
