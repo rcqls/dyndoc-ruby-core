@@ -78,10 +78,19 @@ end
 #     end
 # end
 
+function echo_repl_julia(res)
+	buf = IOBuffer();
+	td = TextDisplay(buf);
+	display(td, res);
+	takebuf_string(buf)
+end
+
+
 function capture_julia(cmd::AbstractString)
 	add,cmd0=true,AbstractString[]
 	res=Any[] #Dict{AbstractString,Any}()
 	#println(cmd)
+	#cmd=replace(cmd,r"\$","\$")
 	for l=split(cmd,"\n")
 		#println("l => ",l)
 		push!(cmd0,l)
@@ -101,10 +110,12 @@ function capture_julia(cmd::AbstractString)
           error = "Error: $(string(e))"
           #close(io)
       end
-			push!(res,(join(cmd0,"\n"),string(result),get_stdout_iobuffer(),error,get_stderr_iobuffer()))
+			push!(res,(join(cmd0,"\n"),echo_repl_julia(result),get_stdout_iobuffer(),error,get_stderr_iobuffer()))
 			cmd0=AbstractString[]
 		end
 		#println(res)
 	end
 	res
 end
+
+## Rmk: some idea is to look at weave.jl (src/run.jl)

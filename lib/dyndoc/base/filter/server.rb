@@ -809,13 +809,16 @@ module Dyndoc
 
 	def JLServer.initVerb
 		Julia << "include(\""+File.join(Dyndoc.cfg_dir[:gem_path],"share","julia","dyndoc.jl")+"\")"
-		@@initVerb=true
+    Julia << "push!(Libdl.DL_LOAD_PATH,\"/usr/lib\");push!(Libdl.DL_LOAD_PATH,\"/usr/local/lib\")"
+  	@@initVerb=true
 	end
 
 	def JLServer.inputsAndOutputs(code,hash=true)
 		JLServer.initVerb unless @@initVerb
-		res=(Julia << 'capture_julia('+code.strip.inspect+')')
-		## Dyndoc.warn "JLServer.inputsAndOutputs",res
+    Dyndoc.logger.info("JLServer.inputsAndOutputs: "+code.strip)
+		res=(Julia << 'capture_julia('+code.strip.inspect.gsub("$","\\$")+')')
+		## Dyndoc.warn
+    Dyndoc.logger.info("JLServer.inputsAndOutputs:"+res.inspect)
 		res.map!{|input,output,output2,error,error2|
 			{:input=>input,:output=>output,:output2=>output2,:error=>error,:error2=>error2}
 		} if res and hash
@@ -851,6 +854,7 @@ module Dyndoc
 		out=""
 		res=JLServer.inputsAndOutputs(code)
 		## Dyndoc.warn "JLServer",res
+    return "Error when executing: "+code unless res
 		res.each do |cmd|
 			## Dyndoc.warn "input",cmd
 		 	out << prompt+ cmd[:input].split("\n").each_with_index.map{|e,i| i==0 ? e : " "*(prompt.length)+e}.join("\n").gsub(/\t/," "*tab)
