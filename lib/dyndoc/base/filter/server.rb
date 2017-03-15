@@ -104,10 +104,30 @@ module Dyndoc
       	out
     end
 
+    def RbServer.redirect
+      if block_given?
+        require 'stringio'
+        begin
+          # redirect output to StringIO objects
+          oldstdout,oldstderr=$stdout, $stderr
+          stdout, stderr = StringIO.new, StringIO.new
+          $stdout, $stderr = stdout, stderr
+          yield
+        ensure
+          # restore normal output
+          $stdout, $stderr = oldstdout,oldstderr
+        end
+        return {stdout: stdout.string, stderr: stderr.string}
+      else
+        return {stdout: "", stderr: ""}
+      end
+
+    end
+
     def RbServer.capture(code,rbEnvir=nil)
 
     	require 'stringio'
-		require 'ostruct'
+		  require 'ostruct'
 
 		begin
 		    # redirect output to StringIO objects
@@ -816,10 +836,9 @@ module Dyndoc
 	def JLServer.inputsAndOutputs(code,hash=true)
 		JLServer.initVerb unless @@initVerb
     Dyndoc.logger.info("JLServer.inputsAndOutputs: "+code.strip)
-		res=(Julia << 'capture_julia('+code.strip.inspect.gsub("$","\\$")+')')
-		## Dyndoc.warn
+  	res=(Julia << 'capture_output_julia('+code.strip.inspect.gsub("$","\\$")+')')
     Dyndoc.logger.info("JLServer.inputsAndOutputs:"+res.inspect)
-		res.map!{|input,output,output2,error,error2|
+    res.map!{|input,output,output2,error,error2|
 			{:input=>input,:output=>output,:output2=>output2,:error=>error,:error2=>error2}
 		} if res and hash
 		res
@@ -860,11 +879,13 @@ module Dyndoc
 		 	out << prompt+ cmd[:input].split("\n").each_with_index.map{|e,i| i==0 ? e : " "*(prompt.length)+e}.join("\n").gsub(/\t/," "*tab)
 			out << "\n"
 			## Dyndoc.warn "output1",out
-			out << cmd[:output2]
-			out << (cmd[:output]=="nothing"  ? "" : cmd[:output])
-			## Dyndoc.warn "output2",out
-			out << cmd[:error]!=""  ? cmd[:error] : ""
-			out << (cmd[:output]=="nothing"  ? "" : "\n\n")
+      if cmd[:error]==""
+  			out << (cmd[:output]=="nothing"  ? "" : cmd[:output])
+        out << cmd[:output2]
+  		else
+			  out << cmd[:error]
+      end
+			out << (cmd[:output]=="nothing"  ? "" : "\n")
 			## Dyndoc.warn "output3",out
 		end
 		out

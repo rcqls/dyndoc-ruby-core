@@ -61,7 +61,7 @@ require 'dyndoc/init/config'
 Dyndoc.init_dyndoc_library_path
 Dyndoc.init_rootDoc
 Dyndoc.add_logger
-Dyndoc.logger.info("dyndoc-core loaded!")
+## Dyndoc.logger.info("dyndoc-core loaded!")
 ## Dyndoc.logger.info(".dyndoc.yml: "+File.join(ENV["HOME"],".dyndoc.yml"))
 
 CqlsDoc=Dyndoc #for compatibity

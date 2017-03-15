@@ -35,6 +35,11 @@ module DyndocSandbox
     emit(mime, data) = push!(MIME_OUTPUT, (mime, data))
 end
 
+module Dyndoc2Sandbox
+	importall Ruby
+	importall Dyndoc
+end
+
 function get_stdout_iobuffer()
 	#seek(DyndocSandbox.OUTPUT_STREAM, 0)
 	#jl4rb_out =
@@ -91,6 +96,8 @@ function capture_julia(cmd::AbstractString)
 	res=Any[] #Dict{AbstractString,Any}()
 	#println(cmd)
 	#cmd=replace(cmd,r"\$","\$")
+	# for standard redirection
+	##OUT: (outRead, outWrite) = redirect_stdout()
 	for l=split(cmd,"\n")
 		#println("l => ",l)
 		push!(cmd0,l)
@@ -110,12 +117,70 @@ function capture_julia(cmd::AbstractString)
           error = "Error: $(string(e))"
           #close(io)
       end
+
+			##OUT: data_out = readavailable(outRead)
+
+			##OUT: push!(res,(join(cmd0,"\n"),echo_repl_julia(result),get_stdout_iobuffer(),data_out,error,get_stderr_iobuffer()))
 			push!(res,(join(cmd0,"\n"),echo_repl_julia(result),get_stdout_iobuffer(),error,get_stderr_iobuffer()))
+			cmd0=AbstractString[]
+		end
+		#println(res)
+	end
+	##OUT: close(outWrite);close(outRead)
+	res
+end
+
+## Rmk: some idea is to look at weave.jl (src/run.jl)
+getstdout() = Base.STDOUT
+function capture_output_expr(expr)
+    #oldSTDOUT = STDOUT
+    oldSTDOUT = getstdout()
+    out = nothing
+    obj = nothing
+    rw, wr = redirect_stdout()
+    reader = @async readstring(rw)
+    try
+        obj = eval(Dyndoc2Sandbox, expr)
+        obj != nothing && display(obj)
+    finally
+        redirect_stdout(oldSTDOUT)
+        close(wr)
+        out = wait(reader)
+        close(rw)
+    end
+    return (obj, out)
+end
+
+function capture_output_julia(cmd::AbstractString)
+	add,cmd0=true,AbstractString[]
+	res=Any[] #Dict{AbstractString,Any}()
+	#println(cmd)
+	#cmd=replace(cmd,r"\$","\$")
+
+	for l=split(cmd,"\n")
+		#println("l => ",l)
+		push!(cmd0,l)
+		pcmd0=Base.parse_input_line(join(cmd0,"\n"))
+		#print(join(cmd0,"\n")*":");println(pcmd0)
+		add = typeof(pcmd0)==Expr && pcmd0.head == :incomplete
+		if !add
+			#print("ici:")
+			#println(Base.eval(pcmd0))
+			result,error,out = "","",""
+			try
+				result,out=capture_output_expr(pcmd0)
+			catch e
+          #io = IOBuffer()
+          #print(io, "ERROR: ")
+          #Base.error_show(io, e)
+          error = "Error: $(string(e))"
+          #close(io)
+      end
+
+			push!(res,(join(cmd0,"\n"),echo_repl_julia(result),out,error,""))
 			cmd0=AbstractString[]
 		end
 		#println(res)
 	end
 	res
 end
-
-## Rmk: some idea is to look at weave.jl (src/run.jl)
