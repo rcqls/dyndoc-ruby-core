@@ -1,0 +1,28 @@
+[#rb<]
+  $jlfig=0
+  $jlfig_exts={:png=>".png",:jpeg =>".jpg",:pdf=>".pdf"}
+[#<]
+
+{#def]imgJL[#,] jlcode[] [#,] img[]
+[#,] widthR[15] [#,] heightR[15][#,] unitR[cm][#,] resR[72][#,] optR[]
+[#,] optTex[scale=0.75]
+[#,] newR[TRUE]
+[#=]delete[FALSE]
+[#?]Dyndoc.tmpl_mngr.fmtOutput == "tex"[#<]
+  {#if]#{0?img}[#=]img[:{File.join($dyn_rsrc,"img","jlfig_:{$jlfig+=1}:{$jlfig_exts[:png]}")}]
+  [#else][#<]
+    {#if]File.dirname(#{=img})=="."[#>]img[:{File.join($dyn_rsrc,"img",#{=img})}][#if}
+  [#if}
+[#?]Dyndoc.tmpl_mngr.fmtOutput == "html"[#<]
+  {#if]#{0?img}[#=]img[#r{gsub("\\\\","/",tempfile(fileext=".png"))}][#=]delete[TRUE][#if}
+[#?]#{+?jlcode}[#<]#{jlcode}[#?]end
+[#R<]require(base64)
+#print(#{=img})
+codeimg<-img(#{=img})
+#print(codeimg)
+if(#{delete}) unlink(#{=img})
+[#?]Dyndoc.tmpl_mngr.fmtOutput == "html"
+[#>][#r{codeimg}]
+[#?]Dyndoc.tmpl_mngr.fmtOutput == "tex"
+[#>][\includegraphics[#{optTex}]{#{img}}]
+[#}
