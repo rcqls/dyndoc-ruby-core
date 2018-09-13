@@ -1,9 +1,12 @@
-# include("ruby.jl")
+
 
 module Dyndoc
 
-import Base.setindex!,Base.getindex,Base.IO,Base.show,Base.showarray
-importall Ruby
+
+using Main.Ruby
+
+import Base.setindex!,Base.getindex,Base.IO,Base.show #,Base.showarray
+import Main.Ruby.start,Main.Ruby.stop,Main.Ruby.run,Main.Ruby.alive
 
 export DynVector,DynArray,getindex,setindex!,show,Vector,sync,getkey
 
@@ -11,11 +14,11 @@ export DynVector,DynArray,getindex,setindex!,show,Vector,sync,getkey
 # when change on the vector occurs
 
 
-type DynVector
+mutable struct DynVector
 	ary::Vector
 	key::String
 
-	DynVector(a::Vector,k::String)=(x=new();x.ary=a;x.key=k;x)
+	#DynVector(a::Vector,k::String)=(x=new();x.ary=a;x.key=k;x)
 end
 
 function getindex(dynvect::DynVector,i::Integer)
@@ -31,13 +34,12 @@ function setindex!(dynvect::DynVector,value,i::Integer)
 	end
 end
 
-show(io::IO,dynvect::DynVector)=showarray(io,dynvect.ary)
+show(io::IO,dynvect::DynVector)=show(io,dynvect.ary)
 
 # gather all the julia vectors connected to dyndoc.
 
-type DynArray
+mutable struct DynArray
 	vars::Dict
-
 	DynArray()=(x=new();x.vars=Dict();x)
 end
 

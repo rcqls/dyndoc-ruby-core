@@ -89,16 +89,17 @@ module Dyndoc
       # init rb4jl stuff
       # since inside ruby, no need Ruby.start and Ruby.stop like in rb4R.
       # sort of equivalent of JLServer.init_filter (but not yet defined)!
-      Julia << "include(\""+File.join(Dyndoc.cfg_dir[:gem_path],"share","julia","ruby.jl")+"\")"
+      #Julia << "Base.include(@__MODULE__,\"ruby.jl\")"
+      Julia << "Base.include(@__MODULE__,\""+File.join(Dyndoc.cfg_dir[:gem_path],"share","julia","ruby.jl")+ "\")"
       Dyndoc.logger.info "initJulia: ruby.jl"
-      Julia << "include(\""+File.join(Dyndoc.cfg_dir[:gem_path],"share","julia","dynArray.jl")+"\")"
+      Julia << "Base.include(@__MODULE__,\""+File.join(Dyndoc.cfg_dir[:gem_path],"share","julia","dynArray.jl")+ "\")"
       Dyndoc.logger.info "initJulia: dynArray.jl"
       #-| To debug ruby.jl and dynArray.jl => uncomment below and commnt above
       # Julia << "include(\""+File.expand_path("~/Github/dyndoc/share/julia/ruby.jl")+"\")"
       # Julia << "include(\""+File.expand_path("~/Github/dyndoc/share/julia/dynArray.jl")+"\")"
-      Julia << "using Dyndoc"
+      Julia << "using Main.Dyndoc"
       Dyndoc.logger.info "initJulia: using Dyndoc"
-      Julia << "Ruby.alive(true)"
+      Julia << "Dyndoc.Ruby.alive(true)"
       #Julia << "global const _dynArray=DynArray()"
       Dyndoc.logger.info "Julia initialized inside dyndoc!"
 

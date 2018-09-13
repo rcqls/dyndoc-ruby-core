@@ -293,10 +293,10 @@ module Dyndoc
 		      short[0]=short[0].to_i
 		      short[2]=short[2].to_i
 		      ## Dyndoc.warn "short",[short,txt]
-		      (0...short[0]).each{|i| txtout << txt[i].force_encoding("utf-8") << "\n"}
+		      (0...short[0]).each{|i| txtout << (txt[i] ? txt[i].force_encoding("utf-8") : "") << "\n"}
 		      txtout << short[1] << "\n"
 		      le = txt.length
-		      ((le-short[2])...le).each{|i| txtout << txt[i].force_encoding("utf-8") << "\n"}
+		      ((le-short[2])...le).each{|i| txtout << (txt[i] ? txt[i].force_encoding("utf-8") : "") << "\n"}
 		    else
 		    	txt=txt.map{|e| e.force_encoding("utf-8")}
 		      txtout << txt.join("\n")
@@ -828,7 +828,7 @@ module Dyndoc
 	@@initVerb=nil
 
 	def JLServer.initVerb
-		Julia << "include(\""+File.join(Dyndoc.cfg_dir[:gem_path],"share","julia","dyndoc.jl")+"\")"
+		Julia << "Base.include(@__MODULE__,\""+File.join(Dyndoc.cfg_dir[:gem_path],"share","julia","dyndoc.jl")+"\")"
     Julia << "push!(Libdl.DL_LOAD_PATH,\"/usr/lib\");push!(Libdl.DL_LOAD_PATH,\"/usr/local/lib\")"
   	@@initVerb=true
 	end
