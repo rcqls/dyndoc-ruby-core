@@ -498,7 +498,7 @@ p [vars,b2]
                 b2=[code.unshift(newblck)]
     ##puts "r<;rb<";p b2
                 filter.outType=":"+(blck[i].to_s)[0...-1]
-                #p filter.outType
+                #Dyndoc.warn "rb,jl,R block",filter.outType
                 parse(b2,filter)
                 filter.outType=nil
         	    end
@@ -1056,7 +1056,7 @@ p [vars,b2]
           when :binding
             i,*b2=next_block(blck,i)
             rbEnvir=b2[0][1].strip
-          when :do,:<,:out,:>,:"r<",:"rb<",:"r>",:"R>",:"R<",:"r>>",:rverb,:"rb>>",:rbverb,:"jl>>",:jlverb,:"rb>",:"?",:tag,:"??",:yield,:>>,:"=",:"+",:<<,:"txtl>",:"md>",:"adoc>",:"ttm>",:"html>",:"tex>",:"_>"
+          when :do,:<,:out,:>,:"r<",:"rb<",:"r>",:"R>",:"R<",:"r>>",:rverb,:"rb>>",:rbverb,:"jl>>",:jlverb,:"jl>",:"jl<",:"rb>",:"?",:tag,:"??",:yield,:>>,:"=",:"+",:<<,:"txtl>",:"md>",:"adoc>",:"ttm>",:"html>",:"tex>",:"_>"
             code = blck[i..-1].unshift(:blck)
           when :","
             i,*b2=next_block(blck,i)
@@ -2138,6 +2138,7 @@ p call
     def do_jl(tex,blck,filter)
       return unless Dyndoc.cfg_dyn[:langs].include? :jl
       ## jlBlock stuff
+      ## Dyndoc.warn "do_jl",blck
       as_default_tmpl_mngr! if
       dynBlock=dynBlock_in_doLangBlock?(blck)
       if dynBlock
@@ -2161,7 +2162,7 @@ p call
         as_default_tmpl_mngr!
         tex << JLServer.outputs(code,:block => true)
       else
-        JLServer.eval(code)
+        JLServer.outputs(code)
       end
       ## revert all the stuff
       if dynBlock

@@ -845,27 +845,35 @@ module Dyndoc
 	end
 
 	def JLServer.eval(code)
-		Julia.eval(code)
+		Julia.eval("capture_output_julia("+code.strip.inspect.gsub("$","\\$")+")")
 	end
 
 	def JLServer.output(code,opts={})
-		opts={:print=>true}.merge(opts)
+		#opts={:print=>true}.merge(opts)
 		## Dyndoc.warn "jlserv",code+"|"+Julia.eval(code,:print=>opts[:print]).to_s
-		Julia.eval(code,:print=>opts[:print]).to_s
+		#Julia.eval(code,:print=>opts[:print]).to_s
+		
+		res=JLServer.inputsAndOutputs(code,false)
+		Dyndoc.warn "jlserv.output",[code,res]
+		return "" unless res
+		res=res.map{|input,output,output2,error,error2|
+			#Dyndoc.warn "output",output
+			output
+		}
+		res.length==0 ? "" : res[-1] 
 	end
 
 	def JLServer.outputs(code,opts={}) #may have more than one lines in code
 		## Dyndoc.warn "JLServer.outputs opts",opts
-		## Dyndoc.warn "JLServer code",code
+		## 
+		Dyndoc.warn "JLServer code",code
+		res=JLServer.inputsAndOutputs(code,false)
 		if opts[:block]
-			res=JLServer.inputsAndOutputs(code,false)
 			return "" unless res
 			res.map{|input,output,output2,error,error2|
 				## Dyndoc.warn "output2",output2
-				output2
+				output
 			}.join("\n")
-		else
-			JLServer.eval(code)
 		end
 	end
 
