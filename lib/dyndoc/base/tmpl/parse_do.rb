@@ -29,7 +29,7 @@ module Dyndoc
 
     @@cmd=["newBlck","input","require","def","func","meth","new","super","blck","do","if","for","case", "loop","r","renv","rverb","rbverb","jlverb","rout","rb","var","set","hide","format","txt","code","<","<<",">","eval","ifndef","tags","keys","opt","document","yield","get","part","style"]
     ## Alias
-    @@cmdAlias={"unless"=>"if","out"=>"do","r<"=>"r","R<"=>"R","rb<"=>"rb","r>"=>"r","R>"=>"R","rb>"=>"rb","m<"=>"m","M<"=>"m","m>"=>"m","M>"=>"m","jl>"=>"jl","jl<"=>"jl","<"=>"txt","<<"=>"txt",">"=>"txt","code"=>"txt","dyn"=>"eval","r>>"=>"rverb","R>>"=>"rverb","rout"=>"rverb","rb>>" => "rbverb","jl>>" => "jlverb","saved"=>"blck","blckAnyTag"=>"blck"}
+    @@cmdAlias={"unless"=>"if","out"=>"do","r<"=>"r","R<"=>"R","rb<"=>"rb","r>"=>"r","R>"=>"R","rb>"=>"rb","m<"=>"m","M<"=>"m","m>"=>"m","M>"=>"m","jl>"=>"jl","jl<"=>"jl","sh<"=>"sh","<"=>"txt","<<"=>"txt",">"=>"txt","code"=>"txt","dyn"=>"eval","r>>"=>"rverb","R>>"=>"rverb","rout"=>"rverb","rb>>" => "rbverb","jl>>" => "jlverb","saved"=>"blck","blckAnyTag"=>"blck"}
     @@cmd += @@cmdAlias.keys
 
     def add_dtag(dtag,cmdAlias=nil)
@@ -482,7 +482,7 @@ p [vars,b2]
           when :do,:<
             i,*b2=next_block(blck,i)
             parse(b2,filter) if cond_tag and cond
-          when :"r<",:"rb<",:"R<",:"m<",:"M<",:"jl<"
+          when :"r<",:"rb<",:"R<",:"m<",:"M<",:"jl<",:"sh<"
             # if current_block_tag==:"jl<"
             #   ##p "iciiiii"
             # end
@@ -1056,7 +1056,7 @@ p [vars,b2]
           when :binding
             i,*b2=next_block(blck,i)
             rbEnvir=b2[0][1].strip
-          when :do,:<,:out,:>,:"r<",:"rb<",:"r>",:"R>",:"R<",:"r>>",:rverb,:"rb>>",:rbverb,:"jl>>",:jlverb,:"jl>",:"jl<",:"rb>",:"?",:tag,:"??",:yield,:>>,:"=",:"+",:<<,:"txtl>",:"md>",:"adoc>",:"ttm>",:"html>",:"tex>",:"_>"
+          when :do,:<,:out,:>,:"r<",:"rb<",:"r>",:"R>",:"R<",:"r>>",:rverb,:"rb>>",:rbverb,:"jl>>",:jlverb,:"jl>",:"jl<",:"sh<",:"rb>",:"?",:tag,:"??",:yield,:>>,:"=",:"+",:<<,:"txtl>",:"md>",:"adoc>",:"ttm>",:"html>",:"tex>",:"_>"
             code = blck[i..-1].unshift(:blck)
           when :","
             i,*b2=next_block(blck,i)
@@ -2169,6 +2169,15 @@ p call
         @doLangBlockEnvs -= @doLangBlock[jlBlockId][:env] #first remove useless envRs
         @doLangBlock.pop
       end
+      filter.outType=nil
+    end
+
+    def do_sh(tex,blck,filter)
+#Dyndoc.warn "do_sh: blck ";p blck[1..-1]
+      filter.outType="none"
+      code=parse(blck[1..-1],filter)
+      %x[ #{code} ]
+#Dyndoc.warn "do_sh: code ";p code
       filter.outType=nil
     end
 

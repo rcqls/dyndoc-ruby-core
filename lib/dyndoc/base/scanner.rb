@@ -219,7 +219,7 @@ module Dyndoc
         #IMPORTANT: process has to have as the second argument e[:type] corresponding to the inside_type and as the third argument res[:type] corresponding to the out_type
 ##Dyndoc.warn "scan",txt2,e[:type],res[:type],(filter ? filter.process(txt2,e[:type],res[:type]) : txt2)
         txt2=((filter and !(txt2=~/\[HTML\]/)) ? filter.process(txt2,e[:type],res[:type]) : txt2)
-##p txt2
+##p [:txt2,txt2]
         txt << txt2
       end
 #puts "txt";p txt
@@ -275,7 +275,7 @@ module Dyndoc
       init_tag(@tag_type) if [:dtag].include? @tag_type
     end
 
-    @@tagblck_set=[:<<,:<,:do,:>>,:>,:">!",:out,:nl,:"\\n",:"r<",:"R<",:"rb<",:"m<",:"M<",:"jl<",:"r>>",:"R>>",:rverb,:"rb>>",:rbverb,:"jl>>",:jlverb,:rout,:"r>",:"R>",:"rb>",:"m>",:"M>",:"jl>",:"_<",:"_>",:"__>",:"html>",:"tex>",:"txtl>",:"ttm>",:"md>",:"adoc>",:tag,:"??",:"?",:yield,:"=",:"-",:+,:"%",:"tex=",:"tex+",:"md=",:"md+",:"adoc=",:"adoc+",:"html=",:"html+",:"rb=",:"rb+",:"R=",:"R+",:"jl=",:"jl+",:"txtl=",:"txtl+"]
+    @@tagblck_set=[:<<,:<,:do,:>>,:>,:">!",:out,:nl,:"\\n",:"r<",:"R<",:"rb<",:"m<",:"M<",:"jl<",:"sh<",:"r>>",:"R>>",:rverb,:"rb>>",:rbverb,:"jl>>",:jlverb,:rout,:"r>",:"R>",:"rb>",:"m>",:"M>",:"jl>",:"_<",:"_>",:"__>",:"html>",:"tex>",:"txtl>",:"ttm>",:"md>",:"adoc>",:tag,:"??",:"?",:yield,:"=",:"-",:+,:"%",:"tex=",:"tex+",:"md=",:"md+",:"adoc=",:"adoc+",:"html=",:"html+",:"rb=",:"rb+",:"R=",:"R+",:"jl=",:"jl+",:"txtl=",:"txtl+"]
     #Rmk: when a symbol is included in another one, you have to place it before! Ex: :>> before :> and also :<< before :<
 
     @@tagblck_dyndoc_set = [:main,:content,:before,:after,:require,:helpers,:preamble,:postamble,:style,:title,:path,:first,:last,:default,:cfg]
@@ -302,6 +302,7 @@ module Dyndoc
           :"rb<" => [:blck, :"rb<"],
           :"R<" =>  [:blck, :"R<"],
           :"jl<" => [:blck, :"jl<"],
+          :"sh<" => [:blck, :"sh<"],
           :"r>>" => [:blck, :"r>>"],
           :"R>>" => [:blck, :"r>>"],
           :"*<" =>  [:blck, :"*<"],
@@ -366,7 +367,7 @@ module Dyndoc
       	},
         :mode_arg=>:next_block,
         :tag_code=>[:code,:<,:>,:<<,:txt], #used for arg mode!
-        :arg=>[:if,:unless,:elsif,:for,:case,:def,:func,:meth,:new,:super,:call,:input,:when,:break,:set,:style,:keys,:"?",:"rb<",:"r<",:"R<",:"m<",:"M<",:"jl<"],
+        :arg=>[:if,:unless,:elsif,:for,:case,:def,:func,:meth,:new,:super,:call,:input,:when,:break,:set,:style,:keys,:"?",:"rb<",:"r<",:"R<",:"m<",:"M<",:"jl<",:"sh<"],
         :blck=>{
           :instr=>[:document,:if,:unless,:case,:loop,:set,:tag,:keys,:rverb,:rbverb,:jlverb,:for],
           :keyword=>{

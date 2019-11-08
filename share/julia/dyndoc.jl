@@ -1,6 +1,12 @@
 module Dyndoc2Sandbox
 	import Main.Ruby.run,Main.Ruby.alive
 	import Main.Dyndoc.DynVector,Main.Dyndoc.DynArray,Main.Dyndoc.getindex,Main.Dyndoc.setindex!,Main.Dyndoc.show,Main.Dyndoc.Vector,Main.Dyndoc.sync,Main.Dyndoc.getkey
+	using InteractiveUtils
+end
+
+
+function replace_dyndoc2sandbox(txt)
+	replace(replace(txt,"Main.Dyndoc2Sandbox." => ""),"Main.Dyndoc2Sandbox" => "Main")
 end
 
 function echo_repl_julia(res)
@@ -9,7 +15,7 @@ function echo_repl_julia(res)
 #	display(td, res);
 #	takebuf_string(buf)
 #println(typeof(res))
-	replace(replace(repr("text/plain",res),"Main.Dyndoc2Sandbox." => ""),"Main.Dyndoc2Sandbox" => "Main")
+	replace_dyndoc2sandbox(repr("text/plain",res))
 end
 
 ## Rmk: The process is based on what is done in weave.jl (src/run.jl)
@@ -60,11 +66,11 @@ function capture_output_julia(cmd::AbstractString)
 				#io = IOBuffer()
 				#print(io, "ERROR: ")
 				#Base.error_show(io, e)
-				error = "Error: $(string(e))"
+				error = "ERROR: $(sprint(showerror,e))"
 				#close(io)
 			end
-
-			push!(res,(join(cmd0,"\n"),echo_repl_julia(result),out,error,""))
+			println(l)
+			push!(res,(join(cmd0,"\n"), echo_repl_julia(result),replace_dyndoc2sandbox(out),replace_dyndoc2sandbox(error),""))
 			cmd0=AbstractString[]
 		end
 		#println(res)

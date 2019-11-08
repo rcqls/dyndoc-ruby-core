@@ -2,7 +2,7 @@
 require 'rubygems/package_task'
 
 pkg_name='dyndoc-ruby-core'
-pkg_version='1.3.0'
+pkg_version='1.4.1'
 
 pkg_files=FileList[
     'lib/dyndoc-core.rb',
@@ -19,7 +19,7 @@ spec = Gem::Specification.new do |s|
     s.summary = "R and Ruby in text document"
     s.name = pkg_name
     s.version = pkg_version
-    s.licenses = ['MIT', 'GPL-2']
+    s.licenses = ['MIT', 'GPL-2.0']
     s.requirements << 'none'
     s.add_dependency("configliere","~>0.4",">=0.4.18")
     s.add_dependency("ultraviolet","~>1.0",">=1.0.0")

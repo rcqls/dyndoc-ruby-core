@@ -30,6 +30,7 @@ Settings.define 'cfg_dyn.cmd_pandoc_options', :type => Array, :default => []
 Settings.define 'cfg_dyn.options.pdflatex_nb_pass', :type => Integer, :default => 1
 Settings.define 'cfg_dyn.options.pdflatex_echo', :type => :boolean, :default => false
 Settings.define 'cfg_dyn.debug', :type => :boolean, :default => false
+Settings.define 'cfg_dyn.ruby_only', :type => :boolean, :default => false
 
 Settings.define 'cfg_dyn.dyndoc_session', :type => Symbol, :default => :normal #or :interactive
 
@@ -44,6 +45,7 @@ Settings.define 'cfg_dyn.devel_mode', :type=> Symbol, :default=> :none
 Settings.define 'cfg_dyn.ruby_debug', :type=> Symbol, :default=> :none
 
 Settings.define 'cfg_dyn.model_doc', :default => "default"
+Settings.define 'cfg_dyn.exec_mode', :default => "no"
 Settings.define 'cfg_dyn.format_doc', :default => :tex
 Settings.define 'cfg_dyn.pandoc_filter', :default => ""
 

@@ -121,8 +121,10 @@ module Dyndoc
       @cfg[:part_tag][0]=@cfg[:part_tag][0][1..-1] if !(@cfg[:part_tag].empty?) and (@partTag_add= (@cfg[:part_tag][0][0,1]=="+"))
 =end
       ## default system root appended
-      TemplateManager.initR if Dyndoc.cfg_dyn[:langs].include? :R
-      TemplateManager.initJulia if Dyndoc.cfg_dyn[:langs].include? :jl
+      unless  Dyndoc.cfg_dyn[:ruby_only]
+        TemplateManager.initR if Dyndoc.cfg_dyn[:langs].include? :R
+        TemplateManager.initJulia if Dyndoc.cfg_dyn[:langs].include? :jl
+      end
       rbenvir_init(binding)
       @rEnvir=["Global"]
       @envirs={}

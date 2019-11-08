@@ -880,20 +880,21 @@ module Dyndoc
 	def JLServer.echo(code,prompt="julia> ",tab=2)
 		out=""
 		res=JLServer.inputsAndOutputs(code)
-		## Dyndoc.warn "JLServer",res
+		## 
+		Dyndoc.warn "JLServer",res
     return "Error when executing: "+code unless res
 		res.each do |cmd|
 			## Dyndoc.warn "input",cmd
 		 	out << prompt+ cmd[:input].split("\n").each_with_index.map{|e,i| i==0 ? e : " "*(prompt.length)+e}.join("\n").gsub(/\t/," "*tab)
-			out << "\n"
+			out << "\n" unless cmd[:input].strip[-1]==";"
 			## Dyndoc.warn "output1",out
       if cmd[:error]==""
-  			out << (cmd[:output]=="nothing"  ? "" : cmd[:output])
-        out << cmd[:output2]
+  			out << ((cmd[:output]=="nothing" or (cmd[:input].strip)[-1]==";")  ? "" : cmd[:output])
+        out << ((cmd[:output2]=="nothing" or (cmd[:input].strip)[-1]==";")  ? "" : cmd[:output2]) #cmd[:output2]
   		else
 			  out << cmd[:error]
       end
-			out << (cmd[:output]=="nothing"  ? "" : "\n")
+			out << (cmd[:output]=="nothing" ? "" : "\n")
 			## Dyndoc.warn "output3",out
 		end
 		out
