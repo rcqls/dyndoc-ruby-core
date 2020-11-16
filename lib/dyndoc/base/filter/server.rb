@@ -93,7 +93,9 @@ module Dyndoc
 	        end
 
 	    rescue SyntaxError
-	        puts "RbServer syntax error in: "+code
+			
+			$outRbError="RbServer syntax error in: "+code
+			puts $outRbError
 	        raise SystemError if Dyndoc.cfg_dyn[:dyndoc_mode]==:normal and  Dyndoc.cfg_dyn[:ruby_debug]!=:none
 	        if Dyndoc.cfg_dyn[:dyndoc_mode]!=:normal
 	        	$dyn_logger.write("\nERROR Ruby Syntax:\n"+code+"\n")

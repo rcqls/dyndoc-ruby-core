@@ -201,13 +201,15 @@ module Dyndoc
 #p input
 =end
       	  # REPLACEMENT of  ABOVE!
-      	  unless @libs.keys.include? tmpl
-      	    input=Dyndoc.read_content_file(tmpl)
-      	    @libs[tmpl]=input
-      	    filter.envir["_FILENAME_"]=tmpl.dup #register name of template!!!
-      	    filter.envir["_FILENAME_ORIG_"]=tmpl_orig.dup #register name of template!!!
-      	    filter.envir["_PWD_"]=File.dirname(tmpl) #register name of template!!!
-      	    txt=parse(@libs[tmpl],filter,tags)
+          unless @libs.keys.include? tmpl
+            if tmpl and File.exists? tmpl
+              input=Dyndoc.read_content_file(tmpl)
+              @libs[tmpl]=input
+              filter.envir["_FILENAME_"]=tmpl.dup #register name of template!!!
+              filter.envir["_FILENAME_ORIG_"]=tmpl_orig.dup #register name of template!!!
+              filter.envir["_PWD_"]=File.dirname(tmpl) #register name of template!!!
+              txt=parse(@libs[tmpl],filter,tags)
+            end
       	  end
         }
       end 

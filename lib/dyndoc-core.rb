@@ -30,6 +30,8 @@ Settings.define 'cfg_dyn.cmd_pandoc_options', :type => Array, :default => []
 Settings.define 'cfg_dyn.options.pdflatex_nb_pass', :type => Integer, :default => 1
 Settings.define 'cfg_dyn.options.pdflatex_echo', :type => :boolean, :default => false
 Settings.define 'cfg_dyn.debug', :type => :boolean, :default => false
+Settings.define 'cfg_dyn.parse_rescue', :type => :boolean, :default => true
+Settings.define 'cfg_dyn.parse_rescue_mode', :type => Symbol, :default => :simple
 Settings.define 'cfg_dyn.ruby_only', :type => :boolean, :default => false
 
 Settings.define 'cfg_dyn.dyndoc_session', :type => Symbol, :default => :normal #or :interactive

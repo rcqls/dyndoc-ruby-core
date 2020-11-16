@@ -1,5 +1,7 @@
 # encoding: UTF-8
 
+require 'securerandom'
+
 ## TODO: .force_encoding("utf-8") needs to be added (see server.rb)
 module Dyndoc
 
@@ -26,6 +28,7 @@ module Dyndoc
   class TemplateManager
 
     @@depth=0
+    @@outError=""
 
     @@cmd=["newBlck","input","require","def","func","meth","new","super","blck","do","if","for","case", "loop","r","renv","rverb","rbverb","jlverb","rout","rb","var","set","hide","format","txt","code","<","<<",">","eval","ifndef","tags","keys","opt","document","yield","get","part","style"]
     ## Alias
@@ -87,7 +90,7 @@ module Dyndoc
       @vars,varsOld=filterLoc.envir,@vars
       Dyndoc.vars=@vars
       @filter=filterLoc unless @filter ##root filter
-      out=""
+      out,$outError ="",""
 #p texblock
       texblock.map{|b|
 #p b
@@ -96,33 +99,49 @@ module Dyndoc
         cmd=@@cmdAlias[cmd] if @@cmdAlias.keys.include? cmd
 #Dyndoc.warn "parse:cmd,b",[cmd,b]
         @@depth+=1
-        ###TO temporarily AVOID RESCUE MODE:
-        ###
-        if true; method("do_"+cmd).call(out,b,filterLoc); else
-        begin
-          ## Dyndoc.warn "cmd",[cmd,b]
+        ## To deactivate, put it inside ~/.dyndoc.yml
+        if Dyndoc.cfg_dyn[:parse_rescue]
+          begin
+            ## Dyndoc.warn "cmd",[cmd,b]
+            method("do_"+cmd).call(out,b,filterLoc)
+            ## Dyndoc.warn [:out,out] if cmd=="eval"
+          rescue
+            $outError << "=> Leaving block depth #{@@depth}: " << "\n"
+            codeText = b.inspect
+            ##Dyndoc.warn "codeText",codeText
+            nbChar=(Dyndoc.cfg_dyn[:nbChar_error]) ? Dyndoc.cfg_dyn[:nbChar_error] : 80
+            if codeText.length > nbChar
+              codeText=codeText[0..((nbChar*2/3).to_int)]+" ...... "+codeText[(-(nbChar/3).to_int)..-1]
+            end
+            $outError << codeText << "\n"
+            if $outRbError && !$outRbError.empty? 
+              $outError << $outRbError << "\n"
+              $outRbError = ""
+            end
+            if @@depth==1
+              $outError << "=> Exiting abnormally!</code>" << "\n"
+              @@outError << "<pre style='background-color: #EBECE4;'><code>"+$outError+"</code></pre>" << "\n"
+              puts "@@outError: \n"+@@outError
+              #raise SystemExit
+              out << @@outError
+              @@outError=""
+            else
+              @@outError << "<pre style='background-color: #EBECE4;'><code>Dyn Runtime Error\n"+$outError+"</code></pre>"
+              $outError=""
+              if Dyndoc.cfg_dyn[:parse_rescue_mode]==:simple 
+                out << @@outError
+                @@outError=""
+              else
+                raise RuntimeError, "Dyn Runtime Error"
+              end
+            end
+            Dyndoc.warn "out #{@@depth} :",$outError
+
+          ensure
+            @@depth -= 1
+          end
+        else
           method("do_"+cmd).call(out,b,filterLoc)
-          ## Dyndoc.warn [:out,out] if cmd=="eval"
-        rescue
-          puts "=> Leaving block depth #{@@depth}: "
-          codeText=b.inspect
-          ##Dyndoc.warn "codeText",codeText
-          nbChar=(Dyndoc.cfg_dyn[:nbChar_error]) ? Dyndoc.cfg_dyn[:nbChar_error] : 80
-          if codeText.length > nbChar
-            codeText=codeText[0..((nbChar*2/3).to_int)]+" ...... "+codeText[(-(nbChar/3).to_int)..-1]
-          end
-          puts codeText
-          if @@depth==1
-            puts "=> Exiting abnormally!\n"
-            raise SystemExit
-          else
-            raise RuntimeError, "Dyn Runtime Error"
-          end
-        ensure
-          @@depth -= 1
-        end
-        ###TO temporarily AVOID RESCUE MODE:
-        ###
         end
       }
       ##restore old partTag and vars
@@ -404,7 +423,7 @@ p [vars,b2]
         if @@newBlcks.keys.include? @blckDepth[-1]
           @blckName ||= []
           tmp=blck[1][1].strip
-          @blckName << (tmp.empty? ? `uuidgen`.strip : tmp)
+          @blckName << (tmp.empty? ? SecureRandom.uuid.strip : tmp)
           #puts "blckNAME";p @blckName
         end
 
