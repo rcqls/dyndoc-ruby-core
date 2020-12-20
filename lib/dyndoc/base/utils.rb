@@ -119,7 +119,7 @@ module Dyndoc
     end
 
     def Utils.protect_extraction(str)
-      str.gsub(/(?:\#|\#\#|@|#F|#R|#r|\:R|\:r|#Rb|#rb|\:|\:Rb|\:rb)+\{/) {|e| "\\"+e}
+      str.gsub(/(?:\#|\:dyn|\#\#|@|#F|#R|#r|\:R|\:r|#Rb|#rb|\:|\:Rb|\:rb)+\{/) {|e| "\\"+e}
     end
 
     ## the scanner converts automatically  {#toto#} in {#toto][#} and   {@toto@} in {@toto][#}

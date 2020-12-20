@@ -395,7 +395,7 @@ module Dyndoc
       when "@"
         return txt if  @mode==:pre
         res=CallFilter.output(txt,self)
-      when "#","##"
+      when "#","##","%"
 #p @envir
         #p @envir.output(txt,@mode,@escape)
         #p @envir.output(in_type+"{"+txt2+"}",@mode,@escape)
@@ -575,7 +575,7 @@ module Dyndoc
         else
           res.to_s
         end
-      when "=","@=","#=","##=" ,"none="
+      when "=","@=","#=","%=","##=" ,"none="
 #puts "convert [=]";p res
         if res.is_a? Array
           res.join(",")
@@ -587,7 +587,7 @@ module Dyndoc
             "%Q{"+res2+"}"
           end
         end
-      when "","@","#","##","none","#F"
+      when "","@","#","%","##","none","#F"
         if res.is_a? Array
           res.join(",")
         else

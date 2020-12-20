@@ -232,7 +232,7 @@ module Dyndoc
   class CallScanner < Scanner
 
     @@type[:call]={
-          :start=>/\\?(?:\#|\#\#|@|#F|#R|#r|\:R|\:r|#Rb|#rb|\:|\:Rb|\:rb|\:jl|#jl)?\{/,
+          :start=>/\\?(?:\#|\%|\#\#|@|#F|#R|#r|\:R|\:r|#Rb|#rb|\:|\:Rb|\:rb|\:jl|#jl)?\{/,
           :stop=>     /\\?\}/,
           :mode=>{:start=>-1,:stop=>0,:length=>1},
           :escape_start=>['\{'], #doivent être parsable dans start
@@ -257,11 +257,11 @@ module Dyndoc
         }
 =end
       @@type[:dtag] = {
-          :start=>'\{[\#\@]([\w\:\|-]*[<>]?[=?!><]?(\.\w*)?)\]',
-          :stop=>  '\[[\#\@]([\w\:\|-]*[<>]?[=?!><]?)\}',
-          :atom=>{:match=>/(\{[\#\@][\w\:\|]*)([\#\@]\})/,:replace=>{2=>"][#}"}},
+          :start=>'\{[\#\@\%]([\w\:\|-]*[<>]?[=?!><]?(\.\w*)?)\]',
+          :stop=>  '\[[\#\@\%]([\w\:\|-]*[<>]?[=?!><]?)\}',
+          :atom=>{:match=>/(\{[\#\@\%][\w\:\|]*)([\#\@\%]\})/,:replace=>{2=>"][#}"}},
           :block=> '\]', #no longer |
-          :keyword=>['\[[\#\@]','\]'],
+          :keyword=>['\[[\#\%\@]','\]'],
           :mode=>{:start=>0,:stop=>-1,:length=>1}
         }
 
@@ -621,11 +621,12 @@ module Dyndoc
 	        end
 ##Dyndoc.warn "to scan", @scan.string[@scan.pos..-1]
 ##Dyndoc.warn "tag_reg",[blocktag_reg,tag_reg]
+##p ["tag_reg",[blocktag_reg,tag_reg]]
 	      end
         if (tag_keyword and (@scan.check_until(blocktag_reg))) #or (!@named_tags.empty? and check_until_for_named_tags)
 	        check_until_for_named_tags unless @named_tags.empty?
           key=@scan[2]
-##Dyndoc.warn "keyword",[key,@scan[0],@scan[1],@scan[2]]
+##Dyndoc.warn p ["keyword",[key.scan(tag_reg),key.scan(tag_reg)[-1],key,@scan[0],@scan[1],@scan[2]]]
 ##Dyndoc.warn "pre_math,tag_selected",[@scan.pre_match,@tag_selected] if key=="[#tag]"
           res << find_text(from,key,inside)
           @is_arg=false if @is_arg
@@ -635,7 +636,7 @@ module Dyndoc
 	          res << (key=@tag_selected)
 	        else
 	    #key=tag_reg.match(key)[0]
-	          key= key.scan(tag_reg)[0]
+	          key= key.scan(tag_reg)[-1]
 ##Dyndoc.warn "key(AP)",key if key=="tag"
 	          res << (key=key.to_sym) if key and !key.empty?
 	        end

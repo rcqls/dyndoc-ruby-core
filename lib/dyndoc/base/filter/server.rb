@@ -831,8 +831,8 @@ module Dyndoc
 
 	def JLServer.initVerb
 		Julia << "Base.include(@__MODULE__,\""+File.join(Dyndoc.cfg_dir[:gem_path],"share","julia","dyndoc.jl")+"\")"
-    Julia << "push!(Libdl.DL_LOAD_PATH,\"/usr/lib\");push!(Libdl.DL_LOAD_PATH,\"/usr/local/lib\")"
-  	@@initVerb=true
+		Julia << "push!(Libdl.DL_LOAD_PATH,\"/usr/lib\");push!(Libdl.DL_LOAD_PATH,\"/usr/local/lib\")"
+		@@initVerb=true
 	end
 
 	def JLServer.inputsAndOutputs(code,hash=true)
