@@ -2,7 +2,7 @@
 require 'rubygems/package_task'
 
 pkg_name='dyndoc-ruby-core'
-pkg_version='1.5.0'
+pkg_version='1.5.1'
 
 pkg_files=FileList[
     'lib/dyndoc-core.rb',
@@ -31,6 +31,5 @@ spec = Gem::Specification.new do |s|
   EOF
     s.author = "CQLS"
     s.email= "rdrouilh@gmail.com"
-    s.homepage = "http://cqls.upmf-grenoble.fr"
-    s.rubyforge_project = nil
+    s.homepage = "http://cqls.dyndoc.fr"
 end

@@ -42,6 +42,7 @@ Settings.define 'cfg_dyn.working_dir', :type => String, :default => ""
 Settings.define 'cfg_dyn.root_doc', :type => String, :default => ""
 Settings.define 'cfg_dyn.nbChar_error', :type => Integer, :default => 300
 Settings.define 'cfg_dyn.langs', :type => Array, :default => ["R"]
+Settings.define 'cfg_dyn.require_first', :type => Array, :default => [""]
 
 Settings.define 'cfg_dyn.devel_mode', :type=> Symbol, :default=> :none
 Settings.define 'cfg_dyn.ruby_debug', :type=> Symbol, :default=> :none

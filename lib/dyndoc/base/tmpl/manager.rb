@@ -151,6 +151,9 @@ module Dyndoc
     ## equivalent to :pre_doc for not interactive document
     def require_first
       require_dyndoc_libs("Dyn/Base")
+      Dyndoc.cfg_dyn[:require_first].each do |libs|
+        require_dyndoc_libs(libs)
+      end
     end
 
     def require_dyndoc_libs(libs)
