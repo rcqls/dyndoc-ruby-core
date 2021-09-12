@@ -904,13 +904,15 @@ module Dyndoc
 
 	def JLServer.echo_verb(txt,mode)
       txtout=Dyndoc::JLServer.echo(txt).strip
+	  ## p [:jl_echo_verb,txtout]
       mode=:default unless Dyndoc::VERB.keys.include? mode
       header= (mode!=:default) and txtout.length>0
       out=""
       out << Dyndoc::VERB[mode][:begin] << "\n" if header
       out << txtout
       out << "\n" << Dyndoc::VERB[mode][:end] << "\n" if header
-      out
+      ## p [:out, out]
+	  out
     end
 
   end

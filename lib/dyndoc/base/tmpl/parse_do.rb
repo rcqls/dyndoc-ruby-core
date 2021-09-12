@@ -646,7 +646,7 @@ p [vars,b2]
       	         end
       	  when :"r>>",:"R>>",:rout,:rverb
       	    newblck=blck[i]
-                  i,*b2=next_block(blck,i)
+            i,*b2=next_block(blck,i)
       	    if cond_tag and cond
                   vars,b2=get_named_blck(b2,filter)
                   if b2
@@ -671,7 +671,7 @@ p [vars,b2]
       	    end
           when :"jl>>",:jlverb,:"rb>>",:rbverb
             newblck=blck[i]
-                  i,*b2=next_block(blck,i)
+            i,*b2=next_block(blck,i)
             if cond_tag and cond
                   vars,b2=get_named_blck(b2,filter)
                   if b2
@@ -690,12 +690,12 @@ p [vars,b2]
           tex << val
               end
 =end
-                    make_named_blck(tex,filter,vars,b2)
-                    filter.outType=nil
-                  end
+                make_named_blck(tex,filter,vars,b2)
+                filter.outType=nil
+              end
             end
-                when :>>
-                  i,*b2=next_block(blck,i)
+            when :>>
+              i,*b2=next_block(blck,i)
       	    if cond_tag and cond
                   file,b2=get_named_blck(b2,filter)
                   if b2 and file
@@ -1827,7 +1827,7 @@ p call
       require "dyndoc/common/uv" if @@interactive
 
       warn_level = $VERBOSE;$VERBOSE = nil
-      tex << (resUV=(@@interactive ? Uv.parse(res.force_encoding("utf-8"), "xhtml", File.join(Uv.syntax_path,"r.syntax") , false, "solarized",false) : res.force_encoding("utf-8") ))
+      tex << (resUV=(@@interactive ? Uv.parse(res.force_encoding("utf-8"), "xhtml", File.join(Uv.syntax_path,"source.r.syntax") , false, "solarized",false) : res.force_encoding("utf-8") ))
       $VERBOSE = warn_level
 #Dyndoc.warn "rverb:result",resUV
       @rEnvir.shift if inR
@@ -1860,7 +1860,7 @@ p call
       ## Dyndoc.warn "rbverb:res",res
       require "dyndoc/common/uv" if @@interactive
       warn_level = $VERBOSE;$VERBOSE = nil
-      tex << (@@interactive ? Uv.parse(res, "xhtml", File.join(Uv.syntax_path,"ruby.syntax") , false, "solarized",false) : res )
+      tex << (@@interactive ? Uv.parse(res.force_encoding("utf-8"), "xhtml", File.join(Uv.syntax_path,"source.ruby.syntax") , false, "solarized",false) : res )
       $VERBOSE = warn_level
 #puts "rverb:result";p res
 
@@ -1892,9 +1892,10 @@ p call
       res=JLServer.echo_verb(code,@@interactive ? :raw : mode)
       require "dyndoc/common/uv" if @@interactive
       warn_level = $VERBOSE;$VERBOSE = nil
-      tex << (@@interactive ? Uv.parse(res, "xhtml", File.join(Uv.syntax_path,"julia.syntax") , false, "solarized",false) : res )
+      ## puts "jlverb:result";p res
+      tex << (@@interactive ? Uv.parse(res.force_encoding("utf-8"), "xhtml", File.join(Uv.syntax_path,"source.julia.syntax") , false, "solarized",false) : res )
       $VERBOSE = warn_level
-#puts "rverb:result";p res
+# puts "jlverb:result";p res
 
       filter.outType=nil
     end
