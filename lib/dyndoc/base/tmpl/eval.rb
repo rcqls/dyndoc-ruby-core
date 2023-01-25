@@ -202,7 +202,7 @@ module Dyndoc
 =end
       	  # REPLACEMENT of  ABOVE!
           unless @libs.keys.include? tmpl
-            if tmpl and File.exists? tmpl
+            if tmpl and File.exist? tmpl
               input=Dyndoc.read_content_file(tmpl)
               @libs[tmpl]=input
               filter.envir["_FILENAME_"]=tmpl.dup #register name of template!!!

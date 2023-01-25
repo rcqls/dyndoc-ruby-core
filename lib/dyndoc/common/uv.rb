@@ -32,7 +32,7 @@ module Dyndoc
     def self.load(output, style = nil, line_numbers = false, headers = false)
       style  ||= Uv.default_style
       renderer = File.join( Uv.render_path, output,"#{style}.render")
-      raise( ArgumentError, "Output for #{output} in #{style} style is not yet implemented" ) unless File.exists?(renderer)
+      raise( ArgumentError, "Output for #{output} in #{style} style is not yet implemented" ) unless File.exist?(renderer)
       options   = YAML.load_file(renderer)
       processor = RenderProcessor.new(options, line_numbers, headers)
       yield processor if block_given?

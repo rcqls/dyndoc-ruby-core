@@ -41,7 +41,7 @@ To test the different format! (see method format for TemplateManager in parse_do
 [#rb<]#require "uv"
 syntax,render=#{=syntax}.strip.downcase,#{=render}.strip
 ## Dyndoc.warn "syntax",syntax
-#if File.exists? File.join(ENV["HOME"],"dyndoc","share","uv")
+#if File.exist? File.join(ENV["HOME"],"dyndoc","share","uv")
 #require File.join(ENV["HOME"],"dyndoc","share","uv","uv")
 require 'dyndoc/common/uv'
 syntax=File.join(Uv.syntax_path,syntax+".syntax")

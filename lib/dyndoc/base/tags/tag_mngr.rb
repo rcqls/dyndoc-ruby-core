@@ -12,10 +12,10 @@ module Dyndoc
       ## global aliases
       @@alias=""
       @@etc_alias=File.join(Dyndoc.cfg_dir[:etc],"alias")
-      @@alias << File.read(@@etc_alias).chomp << "\n"  if File.exists? @@etc_alias
+      @@alias << File.read(@@etc_alias).chomp << "\n"  if File.exist? @@etc_alias
       if Dyndoc.cfg_dir[:file]
         @@file_alias=File.join(Dyndoc.cfg_dir[:file],'.dyn_alias') 
-        @@alias << File.read(@@file_alias).chomp << "\n"  if File.exists? @@file_alias
+        @@alias << File.read(@@file_alias).chomp << "\n"  if File.exist? @@file_alias
       end
       TagManager.make_alias(aliases,@@alias.chomp.split("\n"))
     end 

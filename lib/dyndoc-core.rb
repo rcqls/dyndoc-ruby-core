@@ -57,7 +57,7 @@ Settings.finally do |c|
 end
 
 # The settings in this file will be merged with the above
-if File.exists? (dyndoc_yml=File.join(ENV["HOME"],".dyndoc.yml"))
+if File.exist? (dyndoc_yml=File.join(ENV["HOME"],".dyndoc.yml"))
 	Settings.read dyndoc_yml
 end
 

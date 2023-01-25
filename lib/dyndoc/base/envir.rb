@@ -103,8 +103,8 @@ module Dyndoc
 # ACCESS Envir ###############################
 
 ##########################
-# return curElt if exists? and text
-# return curEnv if exists? and !text
+# return curElt if exist? and text
+# return curEnv if exist? and !text
 # if text then check if the element is textElt 
 ##########################
     def Envir.elt_defined?(envir,keys,text=nil)

@@ -378,7 +378,8 @@ module Dyndoc
           $dyn_logger.write("ERROR R: #{txt} was not properly evaluated!\n") unless Dyndoc.cfg_dyn[:dyndoc_mode]==:normal
           res=txt
         end
-        #puts "#{txt} in #{@rEnvir[0]} is #{res}"
+        #
+        puts "#{txt} in #{@rEnvir[0]} is #{res}"
       when ":r","#r"
         return txt if @mode==:pre
         res=RServer.safe_output(txt2,@rEnvir[0],:pretty=>true)
@@ -387,7 +388,8 @@ module Dyndoc
           $dyn_logger.write("ERROR R: #{txt} was not properly evaluated!\n") unless Dyndoc.cfg_dyn[:dyndoc_mode]==:normal
           res=txt
         end
-        #puts "#{txt} in #{@rEnvir[0]} is #{res}"
+        #
+        puts "#{txt} in #{@rEnvir[0]} is #{res}"
       when ":jl","#jl"
         return txt if @mode==:pre
         ## puts "#jl:"+txt2
@@ -538,14 +540,14 @@ module Dyndoc
       return res unless out_type
       case out_type
       when ":=",":rb=",":Rb=","#rb=","#Rb="
-#         if res.is_a? String
-#          res.inspect
-# #puts out_type;p res;p res.inspect
-#         elsif res.is_a? Array and res.length==1
-#          res[0].inspect
-#         else
+        if res.is_a? String
+         res.inspect
+#puts out_type;p res;p res.inspect
+        elsif res.is_a? Array and res.length==1
+         res[0].inspect
+        else
           res.inspect
-        # end
+        end
       when ":",":rb",":Rb","#rb","#Rb"
 #puts "convert [rb]:";p res
         if res.is_a? Array

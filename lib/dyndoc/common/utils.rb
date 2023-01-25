@@ -18,20 +18,20 @@ module Dyndoc
 	end
 
 	module Utils
-		def Utils.cfg_file_exists?(tmpl)
+		def Utils.cfg_file_exist?(tmpl)
 	      name=File.join(File.dirname(tmpl),File.basename(tmpl,".*"))
-	      ([".cfg_dyn",".dyn_cfg"].map{|ext| name+ext}.select{|f| File.exists? f})[0]
+	      ([".cfg_dyn",".dyn_cfg"].map{|ext| name+ext}.select{|f| File.exist? f})[0]
 	    end
 
-	    def Utils.lib_file_exists?(tmpl)
+	    def Utils.lib_file_exist?(tmpl)
 	      name=File.join(File.dirname(tmpl),File.basename(tmpl,".*"))
-	      (["_lib.dyn",".dyn_lib"].map{|ext| name+ext}.select{|f| File.exists? f})[0]
+	      (["_lib.dyn",".dyn_lib"].map{|ext| name+ext}.select{|f| File.exist? f})[0]
 	    end
 
-	    def Utils.out_rsrc_exists?(tmpl)
+	    def Utils.out_rsrc_exist?(tmpl)
 	      name=File.join(File.dirname(tmpl),File.basename(tmpl,".*"))
 	      ## if not a directory it is the zipped version! TODO! 
-	      ([".dyn_out",".dyn_rsrc"].map{|ext| name+ext}.select{|f| File.exists? f})[0]
+	      ([".dyn_out",".dyn_rsrc"].map{|ext| name+ext}.select{|f| File.exist? f})[0]
 	    end
 
 	    def Utils.mkdir_out_rsrc(tmpl)

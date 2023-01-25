@@ -2,7 +2,7 @@
 require 'rubygems/package_task'
 
 pkg_name='dyndoc-ruby-core'
-pkg_version='1.5.2'
+pkg_version='1.5.5'
 
 pkg_files=FileList[
     'lib/dyndoc-core.rb',

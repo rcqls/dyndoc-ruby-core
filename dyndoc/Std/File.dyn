@@ -31,7 +31,7 @@ This doc mode is used to know if it is obtained by web
 [#}
 
 {#def]cqlsweb_path[#,]path[][#,]root[/export/cqlsWeb]
-[#rb>]dyndocWeb_path=(File.exists? File.join(ENV["HOME"],"dyndoc","web")) ? File.join(ENV["HOME"],"dyndoc","web") : #{=root}
+[#rb>]dyndocWeb_path=(File.exist? File.join(ENV["HOME"],"dyndoc","web")) ? File.join(ENV["HOME"],"dyndoc","web") : #{=root}
 File.join(dyndocWeb_path,#{=path})
 [#def}
 

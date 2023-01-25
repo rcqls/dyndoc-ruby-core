@@ -142,9 +142,9 @@ Object for testing dyn code
 [#rb<]
 expectedFile=File.join(#{=.dir},<key:>)
 
-<expected:> = File.read(expectedFile) if <expected:>.empty? and File.exists?(expectedFile)
+<expected:> = File.read(expectedFile) if <expected:>.empty? and File.exist?(expectedFile)
 
-unless File.exists?(expectedFile)
+unless File.exist?(expectedFile)
   File.open(expectedFile,"w") do |f| 
     #puts "result"; p #{=result}
     f << <result:>
@@ -165,9 +165,9 @@ end
 [#rb<]
 expectedFile=File.join(#{=.dir},<key:>)
 
-<expected:> = File.read(expectedFile) if <expected:>.empty? and File.exists?(expectedFile)
+<expected:> = File.read(expectedFile) if <expected:>.empty? and File.exist?(expectedFile)
 
-unless File.exists?(expectedFile)
+unless File.exist?(expectedFile)
   File.open(expectedFile,"w") do |f| #do not remove!!!!!
     #puts "result"; p #{=result}
     f << <result:>
@@ -189,18 +189,18 @@ result=File.join(#{=.dir},<key:>+".png")
 [#rb<]
 unless <expected:>.empty?
   tmpExpected=File.join(#{=.dir},<expected:>)
-  <expected:> = tmpExpected if !File.exists?(<expected:>) and File.exists?(tmpExpected)
+  <expected:> = tmpExpected if !File.exist?(<expected:>) and File.exist?(tmpExpected)
 else 
   tmpExpected = File.join(#{=.dir},<key:>+"-expected.png")
-  if File.exists? tmpExpected
+  if File.exist? tmpExpected
     <expected:> = tmpExpected
-  elsif File.exists?(result)
+  elsif File.exist?(result)
     <expected:> = tmpExpected
     require 'fileutils'
     FileUtils.cp(result,<expected:>)
   end
 end
-raise "Boom! expected image file "+<expected:>+" does not exists!" unless File.exists?(<expected:>)
+raise "Boom! expected image file "+<expected:>+" does not exists!" unless File.exist?(<expected:>)
 <.tests@> << <key:>
 #p <.codes@>
 <.report@>[<key:>]={:type=>:imgR,:code=>code,:expected=> <expected:> ,:result=> result,:file=> <file:>,:descr => <descr:>}

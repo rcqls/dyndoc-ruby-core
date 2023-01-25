@@ -30,10 +30,10 @@ module Dyndoc
         txt=echo_verb(txt,header)
       else    
         filename=File.expand_path(filename)
-        if (!File.exists?(filename))
+        if (!File.exist?(filename))
           require 'fileutils'
           tmp=File.dirname(filename)
-          FileUtils.mkdir_p(tmp) unless File.exists? tmp
+          FileUtils.mkdir_p(tmp) unless File.exist? tmp
           f=File.open(filename,"w")
           txt=filter.apply(b[1...-1].join("\n"))
           txt=echo_verb(txt,header)

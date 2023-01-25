@@ -12,7 +12,7 @@ module Dyndoc
 
 	def Dyndoc.find_subpath_before(subpath,before)
 		l=before.length+1
-		return [before[0..l],subpath] if File.exists? File.join(before[0..l],subpath) while (l-=1)>=0
+		return [before[0..l],subpath] if File.exist? File.join(before[0..l],subpath) while (l-=1)>=0
 		return nil
 	end
 

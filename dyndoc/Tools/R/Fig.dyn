@@ -24,7 +24,7 @@
   [#rb<]
     require 'fileutils'
     imgdir=File.expand_path(File.dirname(#{=img}))
-    FileUtils.mkdir_p(imgdir) unless File.exists? imgdir
+    FileUtils.mkdir_p(imgdir) unless File.exist? imgdir
     rcode=#{=rcode}.strip
     Utils.clean_eol(rcode)
   [#rb>]img[File.expand_path(#{=img})]
@@ -34,7 +34,7 @@
       :{rcode}
       dev.off()
     }[#in]#{Renvir}[#}
-  [#?] #{include} [#>]{#if]{#dyndoc_mode#} == :web[#>]{#if](File.exists? #{=img}) and (File.stat(#{=img}).size>0)[#>]<img src="{#cqlsweb_public_imgName]#{img}[#}" alt="rfig"/>[#else]<p>Error in the following figure R code!</p><code><pre>:{rcode}</pre></code>[#if}[#else][\includegraphics[#{optTex}]{#{img}}][#if}
+  [#?] #{include} [#>]{#if]{#dyndoc_mode#} == :web[#>]{#if](File.exist? #{=img}) and (File.stat(#{=img}).size>0)[#>]<img src="{#cqlsweb_public_imgName]#{img}[#}" alt="rfig"/>[#else]<p>Error in the following figure R code!</p><code><pre>:{rcode}</pre></code>[#if}[#else][\includegraphics[#{optTex}]{#{img}}][#if}
   [#}
 
   {#hide] WITH SHORTHANDOFF
@@ -59,7 +59,7 @@
   [#rb<]
     require 'fileutils'
     imgdir=File.expand_path(File.dirname(#{=img}))
-    FileUtils.mkdir_p(imgdir) unless File.exists? imgdir
+    FileUtils.mkdir_p(imgdir) unless File.exist? imgdir
     rcode=#{=rcode}.strip
     Utils.clean_eol(rcode)
   [#rb>]img[File.expand_path(#{=img})]
@@ -71,7 +71,7 @@
       :{rcode}
       dev.off()
     }[#in]#{Renvir}[#}
-  [#?] #{include} [#>]{#if]{#dyndoc_mode#} == :web[#>]{#if](File.exists? #{=img}) and (File.stat(#{=img}).size>0)[#>]<img src="{#cqlsweb_public_imgName]#{img}[#}" alt="rfig"/>[#else]<p>Error in the following figure R code!</p><code><pre>:{rcode}</pre></code>[#if}[#else][{#if]#{shorthandoff}==:ok[#>]{\shorthandoff{:}[#if}\includegraphics[#{optTex}]{#{img}}{#if]#{shorthandoff}==:ok[#>]}[#if}][#if}
+  [#?] #{include} [#>]{#if]{#dyndoc_mode#} == :web[#>]{#if](File.exist? #{=img}) and (File.stat(#{=img}).size>0)[#>]<img src="{#cqlsweb_public_imgName]#{img}[#}" alt="rfig"/>[#else]<p>Error in the following figure R code!</p><code><pre>:{rcode}</pre></code>[#if}[#else][{#if]#{shorthandoff}==:ok[#>]{\shorthandoff{:}[#if}\includegraphics[#{optTex}]{#{img}}{#if]#{shorthandoff}==:ok[#>]}[#if}][#if}
   [#} [#hide}
 
 
@@ -129,7 +129,7 @@
   [#rb<]
     require 'fileutils'
     imgdir=File.expand_path("~/dyndoc/tmp")
-    FileUtils.mkdir_p(imgdir) unless File.exists? imgdir
+    FileUtils.mkdir_p(imgdir) unless File.exist? imgdir
     rcode=#{=rcode}.strip
     Utils.clean_eol(rcode)
     img=File.join(imgdir,"last.svg")

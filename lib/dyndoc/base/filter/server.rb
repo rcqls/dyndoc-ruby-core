@@ -585,7 +585,7 @@ module Dyndoc
 	              evalOk &= (R4rb << cod )
 	            }
 	          end
-	          cptImg += 1 if File.exists? imgfile+(cptImg+1).to_s+".#{@@device}"
+	          cptImg += 1 if File.exist? imgfile+(cptImg+1).to_s+".#{@@device}"
 	          #p evalOk;p code;R4rb << "print(geterrmessage())";R4rb << "if(exists(\".output\") ) print(.output)"
 	          if evalOk
 	            txt=(@@out < '.output' ) ##.join("\n").split(/\n/)
@@ -648,7 +648,7 @@ module Dyndoc
       R4rb << "dev.off()"
       imgCopy.each{|e|
 	      FileUtils.mkdir_p File.dirname(e[:out]) unless File.exist? File.dirname(e[:out])
-	      if File.exists? e[:in]
+	      if File.exist? e[:in]
 	        FileUtils.mv(e[:in],e[:out])
 	      else
 	        Dyndoc.warn "WARNING! #{e[:in]} does not exists for #{e[:out]}"
@@ -807,7 +807,7 @@ module Dyndoc
     def RServer.init_filter
     	dyndocTools="~/dyndoc" #Same as DYNDOCROOT as default
     	# DYNDOCTOOLS is possibly defined inside the launcher of DyndocStudio (Mac and linux).
-    	dyndocTools=ENV["DYNDOCTOOLS"] if ENV["DYNDOCTOOLS"] and File.exists? ENV["DYNDOCTOOLS"]
+    	dyndocTools=ENV["DYNDOCTOOLS"] if ENV["DYNDOCTOOLS"] and File.exist? ENV["DYNDOCTOOLS"]
     	## if RUBY_ENGINE (ruby,jruby,rbx) defined (actually, not defined for 1.8.7)
     	if Object.constants.map{|e| e.to_s}.include? "RUBY_ENGINE"
     		version = RbConfig::CONFIG["exec_prefix"].split(File::Separator)[-1]

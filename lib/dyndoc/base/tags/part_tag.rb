@@ -12,12 +12,12 @@ module Dyndoc
       ## global aliases
       @@alias=""
       @@sys_alias=File.join(Dyndoc.cfg_dir[:sys],"alias")
-      @@alias << File.read(@@sys_alias).chomp << "\n"  if File.exists? @@sys_alias
+      @@alias << File.read(@@sys_alias).chomp << "\n"  if File.exist? @@sys_alias
       @@home_alias=File.join(Dyndoc.cfg_dir[:home],'alias')
-      @@alias << File.read(@@home_alias).chomp << "\n"  if File.exists? @@home_alias
+      @@alias << File.read(@@home_alias).chomp << "\n"  if File.exist? @@home_alias
       if Dyndoc.cfg_dir[:file]
         @@file_alias=File.join(Dyndoc.cfg_dir[:file],'.dyn_alias') 
-        @@alias << File.read(@@file_alias).chomp << "\n"  if File.exists? @@file_alias
+        @@alias << File.read(@@file_alias).chomp << "\n"  if File.exist? @@file_alias
       end
       PartTag.make_alias(aliases,@@alias.chomp.split("\n"))
     end 

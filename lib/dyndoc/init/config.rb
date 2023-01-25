@@ -83,7 +83,7 @@ module Dyndoc
   def Dyndoc.init_dyndoc_library_path
 
     [File.join(FileUtils.pwd,".dyndoc_library_path"),File.join(FileUtils.pwd,"dyndoc_library_path.txt"),File.join(@@cfg_dir[:etc],"dyndoc_library_path")].each do |dyndoc_library_path|
-      if File.exists? dyndoc_library_path
+      if File.exist? dyndoc_library_path
         path=File.read(dyndoc_library_path).strip
         path=path.split(Dyndoc::PATH_SEP).map{|pa| File.expand_path(pa)}.join(Dyndoc::PATH_SEP)
         if !ENV["DYNDOC_LIBRARY_PATH"] or ENV["DYNDOC_LIBRARY_PATH"].empty?
@@ -140,11 +140,11 @@ module Dyndoc
     @@append={}
     tmp=[]
     sys_append=File.join( @@cfg_dir[:etc],"alias")
-    tmp += File.readlines(sys_append) if File.exists? sys_append
+    tmp += File.readlines(sys_append) if File.exist? sys_append
     home_append=File.join(@@cfg_dir[:etc],'alias')
-    tmp += File.readlines(home_append)  if File.exists? home_append
+    tmp += File.readlines(home_append)  if File.exist? home_append
     file_append=File.join(@@cfg_dir[:file],'.dyn_alias')
-    tmp += File.readlines(file_append)  if File.exists? file_append
+    tmp += File.readlines(file_append)  if File.exist? file_append
     tmp.map{|l|
       if l.include? ">"
         l2=l.strip
@@ -159,14 +159,14 @@ module Dyndoc
   ## more useable than this !!!
   def Dyndoc.absolute_path(filename,pathenv)
 #puts "ici";p filename
-    return filename if File.exists? filename
+    return filename if File.exist? filename
     paths=pathenv##.split(":")
 #puts "absolute_path:filname";p filename
     name=nil
     paths.each{|e|
       f=File.expand_path(File.join([e,filename]))
 #p f
-      if (File.exists? f)
+      if (File.exist? f)
       	name=f
       	break
       end
@@ -220,11 +220,11 @@ module Dyndoc
   ## dynamically get pathenv!!!!
   def Dyndoc.get_pathenv(rootDoc=nil,with_currentRoot=true)
     pathenv =  Dyndoc.init_pathenv
-    pathenv += PATH_SEP + File.join(@@dyn_gem_path,"dyndoc") + PATH_SEP + File.join(@@dyn_gem_path,"dyndoc","Std") if File.exists? File.join(@@dyn_gem_path,"dyndoc")
+    pathenv += PATH_SEP + File.join(@@dyn_gem_path,"dyndoc") + PATH_SEP + File.join(@@dyn_gem_path,"dyndoc","Std") if File.exist? File.join(@@dyn_gem_path,"dyndoc")
     # high level of priority since provided by user
     pathenv += PATH_SEP + Dyndoc.user_root_doc  if Dyndoc.user_root_doc
     pathenv += PATH_SEP + ENV["DYNDOC_LIBRARY_PATH"] if ENV["DYNDOC_LIBRARY_PATH"] and !ENV["DYNDOC_LIBRARY_PATH"].empty?
-    pathenv += PATH_SEP + File.join(Dyndoc.cfg_dir[:root_path],"library") if File.exists? File.join(@@cfg_dir[:root_path],"library")
+    pathenv += PATH_SEP + File.join(Dyndoc.cfg_dir[:root_path],"library") if File.exist? File.join(@@cfg_dir[:root_path],"library")
     pathenv += PATH_SEP + @@cfg_dir[:current_doc_path] if with_currentRoot and !@@cfg_dir[:current_doc_path].empty?
     pathenv += PATH_SEP + rootDoc  if rootDoc and !rootDoc.empty?
     pathenv += PATH_SEP + Dyndoc.cfg_dyn[:root_doc]  unless Dyndoc.cfg_dyn[:root_doc].empty?
@@ -285,8 +285,8 @@ module Dyndoc
       name=name.gsub(/(?:#{dtags.map{|e| "_#{e}_" }.join("|")})/,"")
     end
 #puts "name";p name
-    #file exists?
-    if File.exists? name
+    #file exist?
+    if File.exist? name
       return name
     elsif name.scan(/([^\.]*)(#{@@tmplExt.map{|e| e[1]}.flatten.uniq.map{|e| Regexp.escape(e)}.join("|")})+$/)[0]
       pathenv=Dyndoc.get_pathenv(Dyndoc.cfg_dyn[:root_doc],false) #RMK: do not know if false really matters here (introduced just in case in get_pathenv!!!)
@@ -299,7 +299,7 @@ module Dyndoc
 
   def Dyndoc.make_dir(dir)
     tmp=File.expand_path(dir)
-    FileUtils.mkdir_p(tmp) unless File.exists? tmp
+    FileUtils.mkdir_p(tmp) unless File.exist? tmp
   end
 
 end
